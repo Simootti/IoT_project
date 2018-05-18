@@ -2,3 +2,5 @@ Per runnare in TOSSIM:
 - make micaz sim (nella cartella IoT_project, controllare che abbia avuto successo)
 - python run_nome_.py
 - clear (per pulire lo script dei comandi)
+
+dovrai runnare il file Python per fare la simulazione con Tossim (andrai a modificare _nome_ con l'effettivo nome del file)

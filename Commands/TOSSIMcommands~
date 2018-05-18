@@ -1,0 +1,3 @@
+Per runnare in TOSSIM:
+- make micaz sim (nella cartella IoT_project, controllare che abbia avuto successo)
+- python run_nome_.py

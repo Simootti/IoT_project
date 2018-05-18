@@ -1,0 +1,23 @@
+http://rogerdudler.github.io/git-guide/index.it.html (comandi in linux)
+https://www.youtube.com/watch?v=HVsySz-h9r4 (filmato con configurazione e comandi)
+
+Però prima di usare questi comandi bisogna CONFIGURARE:
+git config --global user.name "metti lo user di github"
+git config --global user.email "metti la mail di github"
+git config --list (per vedere se hai scritto tutto in modo corretto)
+
+PER CLONARE IL PROGETTO
+git clone http://....
+
+DA QUI IN POI DEVI ENTRARE NELLA CARTELLA DELLA REPOSITORY IN LINUX (comando: cd IoT_project)
+
+	PER PUSHARE
+	git add <nomedelfile>
+	git commit -m "Messaggio per la commit"
+	git push origin master
+
+	PER PULLARE
+	git pull origin master
+
+	PER RIPORTARE IL FILE COME NELL'ULTIMA MODIFICA
+	git checkout -- <nomedelfile>

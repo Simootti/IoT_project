@@ -52,6 +52,9 @@ print "Activate debug message on channel role"
 t.addChannel("role",out);
 
 
+#ora vengono creati i nodi (testualmente, non graficamente come in Cooja)
+#but this is more powerful
+
 print "Creating node 1...";
 node1 =t.getNode(1);
 time1 = 0*t.ticksPerSecond();
@@ -60,11 +63,13 @@ print ">>>Will boot at time",  time1/t.ticksPerSecond(), "[sec]";
 
 print "Creating node 2...";
 node2 = t.getNode(2);
-time2 = 1*t.ticksPerSecond();
+time2 = 1*t.ticksPerSecond();	#Node_2 verrà creato dopo 1 secondo
 node2.bootAtTime(time2);
 print ">>>Will boot at time", time2/t.ticksPerSecond(), "[sec]";
 
 
+
+#creazione dei canali (questi li copi e basta)
 print "Creating radio channels..."
 f = open(topofile, "r");
 lines = f.readlines()

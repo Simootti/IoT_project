@@ -1,6 +1,3 @@
-
-
-//************************************************************ ************************************************************ ************************************************************//
 #include "Project.h"
 #include "Timer.h"
 
@@ -8,14 +5,14 @@ module ProjectC {
 
   uses {
 	interface Boot;
-    	interface AMPacket;
-	interface Packet;
+    	interface AMPacket;	//to turning on the Radio and can modify the pkt I want to transmit
+	interface Packet;			
 	interface PacketAcknowledgements;
-    	interface AMSend;
-    	interface SplitControl;
+    	interface AMSend;			//interface to transmit the message
+    	interface SplitControl;			//used basically to turning on the radio
     	interface Receive;
     	interface Timer<TMilli> as MilliTimer;
-	interface Read<uint16_t>;
+	interface Read<uint16_t>;		//used to read Data from a sensor
   }
 
 } implementation {
@@ -26,20 +23,33 @@ module ProjectC {
 
   task void sendReq();
   task void sendResp();
+
+  // Tasks sono come le funzioni, MA eseguite in modo ASINCRONO //
+  // Le Task non vengono eseguite quando chiamate, ma vengono messe in queue //
+  // e lo scheduler di TinyOS decide quanl'è il miglior momento per eseguirle //
+  // Diventa molto più efficiente nel gestire gli eventi (dobbiamo usare le Tasks)//
   
   
   //***************** Task send request ********************//
+
   task void sendReq() {
 
 	my_msg_t* mess=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+//il type my_msg_t è stato definito nell'header file
+//assegno il contenuto
 	mess->msg_type = REQ;
 	mess->msg_id = counter++;
+//counter verrà incrementato ogni volta che viene richiamata la task
 	    
 	dbg("radio_send", "Try to send a request to node 2 at time %s \n", sim_time_string());
     
 	call PacketAcknowledgements.requestAck( &packet );
+//it will trigger an event to be fired if the ACK is received
+//ci permette di capire se il nostro pkt è stato ricevuto o no dal ricevitore
 
 	if(call AMSend.send(2,&packet,sizeof(my_msg_t)) == SUCCESS){
+//2 --> indica l'address della destinazione
+//&packet --> what pkt you have to transmit
 		
 	  dbg("radio_send", "Packet passed to lower layer successfully!\n");
 	  dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
@@ -59,28 +69,31 @@ module ProjectC {
 
   //****************** Task send response *****************//
   task void sendResp() {
-	call Read.read();
+	call Read.read();	//legge dal sensore
   }
 
   //***************** Boot interface ********************//
   event void Boot.booted() {
 	dbg("boot","Application booted.\n");
-	call SplitControl.start();
+	call SplitControl.start();		//in this way SplitControl starts the radio in the Boot
   }
 
   //***************** SplitControl interface ********************//
-  event void SplitControl.startDone(error_t err){
+
+//evento che si verifica appena finito SplitControl (.startDone)
+
+ event void SplitControl.startDone(error_t err){	
       
     if(err == SUCCESS) {
 
-	dbg("radio","Radio on!\n");
+	dbg("radio","Radio on!\n");	//video (April 22,IoT) min:35
 	if ( TOS_NODE_ID == 1 ) {
 	  dbg("role","I'm node 1: start sending periodical request\n");
-	  call MilliTimer.startPeriodic( 800 );
+	  call MilliTimer.startPeriodic( 800 );				//800 ms
 	}
     }
     else{
-	call SplitControl.start();
+	call SplitControl.start();	//se la Radio non è stata accesa bene, riprova
     }
 
   }
@@ -88,23 +101,25 @@ module ProjectC {
   event void SplitControl.stopDone(error_t err){}
 
   //***************** MilliTimer interface ********************//
-  event void MilliTimer.fired() {
-	post sendReq();
-  }
+  event void MilliTimer.fired() {		//when the Timer fires, I will "post" una sendReq()
+	post sendReq();				//eseguirà il codice all'interno di quella funzione
+  }						//sendReq viene definita prima
   
 
   //********************* AMSend interface ****************//
+//when you call the send command, you have to wait for the .sendDone event
+
   event void AMSend.sendDone(message_t* buf,error_t err) {
 
     if(&packet == buf && err == SUCCESS ) {
 	dbg("radio_send", "Packet sent...");
 
-	if ( call PacketAcknowledgements.wasAcked( buf ) ) {
-	  dbg_clear("radio_ack", "and ack received");
-	  call MilliTimer.stop();
+	if ( call PacketAcknowledgements.wasAcked( buf ) ) {	//se riceviamo l'ACK
+	  dbg_clear("radio_ack", "and ack received");		//allora
+	  call MilliTimer.stop();				//possiamo fermare il timer
 	} else {
-	  dbg_clear("radio_ack", "but ack was not received");
-	  post sendReq();
+	  dbg_clear("radio_ack", "but ack was not received");	//altrimenti possiamo mandare
+	  post sendReq();					//un'altra richiesta
 	}
 	dbg_clear("radio_send", " at time %s \n", sim_time_string());
     }
@@ -130,7 +145,7 @@ module ProjectC {
 	dbg_clear("radio_pack","\n");
 	
 	if ( mess->msg_type == REQ ) {
-		post sendResp();
+		post sendResp();		//chiama sendResp (send response) --> definita sopra
 	}
 
     return buf;

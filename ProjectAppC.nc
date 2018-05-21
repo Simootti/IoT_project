@@ -1,11 +1,11 @@
 
-#include "Project.h"
+#include "project.h"
 
 configuration ProjectAppC {}
 
 implementation {
 
-  components MainC, RandomC, ProjectC as App;
+  components MainC, RandomC, projectC as App;
   components new AMSenderC(AM_MY_MSG);		//Sender e Receiver attivi sul canale AM_MY_MSG
   components new AMReceiverC(AM_MY_MSG);	//AM_MY_MSG is the channel!!!
   components ActiveMessageC;

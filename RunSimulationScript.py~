@@ -1,3 +1,4 @@
+# coding=utf-8
 print "********************************************";
 print "*                                          *";
 print "*             TOSSIM Script                *";
@@ -55,19 +56,25 @@ t.addChannel("role",out);
 #ora vengono creati i nodi (testualmente, non graficamente come in Cooja)
 #but this is more powerful
 
-print "Creating node 1...";
+print "Creating node 1,2,3,4,5,6,7,8";
 node1 =t.getNode(1);
+node2 =t.getNode(2);
+node3 =t.getNode(3);
+node4 =t.getNode(4);
+node5 =t.getNode(5);
+node6 =t.getNode(6);
+node7 =t.getNode(7);
+node8 =t.getNode(8);
 time1 = 0*t.ticksPerSecond();
 node1.bootAtTime(time1);
+node2.bootAtTime(time1);
+node3.bootAtTime(time1);
+node4.bootAtTime(time1);
+node5.bootAtTime(time1);
+node6.bootAtTime(time1);
+node7.bootAtTime(time1);
+node8.bootAtTime(time1);
 print ">>>Will boot at time",  time1/t.ticksPerSecond(), "[sec]";
-
-print "Creating node 2...";
-node2 = t.getNode(2);
-time2 = 1*t.ticksPerSecond();	#Node_2 verrà creato dopo 1 secondo
-node2.bootAtTime(time2);
-print ">>>Will boot at time", time2/t.ticksPerSecond(), "[sec]";
-
-
 
 #creazione dei canali (questi li copi e basta)
 print "Creating radio channels..."
@@ -92,7 +99,7 @@ print "Loading:",
 for line in lines:
     str = line.strip()
     if (str != "") and ( compl < 10000 ):
-        val = int(str)
+        val = int(str);
         mid_compl = mid_compl + 1;
         if ( mid_compl > 5000 ):
             compl = compl + mid_compl;
@@ -109,7 +116,7 @@ for i in range(1, 3):
 
 print "Start simulation with TOSSIM! \n\n\n";
 
-for i in range(0,500):      # 500 è il tempo di simulazione
+for i in range(0,5000):      # 500 è il tempo di simulazione
 	t.runNextEvent()
 	
 print "\n\n\nSimulation finished!";

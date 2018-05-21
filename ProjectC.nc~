@@ -5,6 +5,7 @@ module ProjectC {
 
   uses {
 	interface Boot;
+	interface Random;
     	interface AMPacket;	//to turning on the Radio and can modify the pkt I want to transmit
 	interface Packet;			
 	interface PacketAcknowledgements;
@@ -17,12 +18,12 @@ module ProjectC {
 
 } implementation {
 
-  uint8_t counter=0;
+  uint32_t counter=0;
   uint8_t rec_id;
+  uint16_t i=1;
   message_t packet;
 
-  task void sendReq();
-  task void sendResp();
+  task void SendRandmsg();
 
   // Tasks sono come le funzioni, MA eseguite in modo ASINCRONO
   // Le Task non vengono eseguite quando chiamate, ma vengono messe in queue 
@@ -30,10 +31,101 @@ module ProjectC {
   // Diventa molto più efficiente nel gestire gli eventi (dobbiamo usare le Tasks)
 
   //******************************Point 1 of project*********************************//
-
- 
   
-  //***************** Task send request ********************//
+
+ task void SendRandmsg() {
+	
+	num = call Random.rand8();
+
+	my_msg_t* mess=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess->msg_type = RAND;
+	mess->msg_id = counter++;
+	mess->value1 = call Random.rand16();
+	mess->value2 = call Random.rand16();
+	mess->dst_add = num;
+
+ 	if(call AMSend.send(num,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	  dbg("radio_send", "SendRandmsg successfully!\n");
+	  dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+	  dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
+	  dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+	  dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
+	  dbg_clear("radio_pack","\t\t Payload \n" );
+	  dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
+	  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
+	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value1)
+	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value1);
+	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value2);
+	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->dst_add);
+	  dbg_clear("radio_send", "\n ");
+	  dbg_clear("radio_pack", "\n");
+      
+      }
+  }
+
+  //***************** Boot interface ********************//
+  event void Boot.booted() {
+	dbg("boot","Application booted.\n");
+	call SplitControl.start();	
+  }
+
+  //***************** SplitControl interface ********************//
+  event void SplitControl.startDone(error_t err){
+
+
+    if(err == SUCCESS) {
+	while (i < 9){
+		dbg("radio","Radio %i on!\n", &i);
+		if ( TOS_NODE_ID == i ) {
+		  dbg("role","I'm node %d: start sending periodical request\n" , &i );
+		  call MilliTimer.startPeriodic( 30000 );
+		}
+		i++;
+	}
+    }
+    else{
+	call SplitControl.start();
+    }
+
+  }
+  
+  event void SplitControl.stopDone(error_t err){}
+
+  //***************** MilliTimer interface ********************//
+  event void MilliTimer.fired() {		
+	post SendRandmsg();				
+  }
+
+  //********************* AMSend interface ****************//
+
+  event void AMSend.sendDone(message_t* buf,error_t err) {
+
+    if(&packet == buf && err == SUCCESS ) {
+
+	dbg("radio_send", "Packet sent...");
+
+	if ( call PacketAcknowledgements.wasAcked( buf ) ) {	
+
+	  dbg_clear("radio_ack", "and ack received");		
+	  call MilliTimer.stop();				
+	} else {
+	  dbg_clear("radio_ack", "but ack was not received");
+
+	  post sendReq();					
+	}
+	dbg_clear("radio_send", " at time %s \n", sim_time_string());
+
+    }
+
+  }						
+  
+
+  //*******************************************************************************************//
+  //*******************************************************************************************//
+
+/*
+
+  ***************** Task send request ********************
 
   task void sendReq() {
 
@@ -70,19 +162,19 @@ module ProjectC {
 
  }        
 
-  //****************** Task send response *****************//
+  ****************** Task send response *****************
   task void sendResp() {
 	call Read.read();	//legge dal sensore
   }				//il valore letto verrà poi messo come "data" nella .readDone
 				//nella "Receive interface"
 
-  //***************** Boot interface ********************//
+***************** Boot interface ********************
   event void Boot.booted() {
 	dbg("boot","Application booted.\n");
 	call SplitControl.start();		//in this way SplitControl starts the radio in the Boot
   }
 
-  //***************** SplitControl interface ********************//
+***************** SplitControl interface ********************
 
 //evento che si verifica appena finito SplitControl(.startDone)
 
@@ -104,13 +196,13 @@ module ProjectC {
   
   event void SplitControl.stopDone(error_t err){}
 
-  //***************** MilliTimer interface ********************//
+  ***************** MilliTimer interface ********************
   event void MilliTimer.fired() {		//when the Timer fires, I will "post" una sendReq()
 	post sendReq();				//eseguirà il codice all'interno di quella funzione
   }						//sendReq viene definita prima
   
 
-  //********************* AMSend interface ****************//
+  ********************* AMSend interface ****************
 //when you call the send command, you have to wait for the .sendDone event
 
   event void AMSend.sendDone(message_t* buf,error_t err) {
@@ -130,7 +222,7 @@ module ProjectC {
 
   }
 
-  //***************************** Receive interface *****************//
+  ***************************** Receive interface *****************
   event message_t* Receive.receive(message_t* buf,void* payload, uint8_t len) {
 
 	my_msg_t* mess=(my_msg_t*)payload;
@@ -156,7 +248,7 @@ module ProjectC {
 
   }
   
-  //************************* Read interface **********************//
+  ************************* Read interface **********************
   event void Read.readDone(error_t result, uint16_t data) {
 
 	my_msg_t* mess=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
@@ -185,4 +277,5 @@ module ProjectC {
   }
 
 }
+ */
 

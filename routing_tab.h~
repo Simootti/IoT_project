@@ -1,0 +1,19 @@
+//HEADER del punto 2 per costruire la routing table
+
+#ifndef ROUTING_TAB_H
+#define ROUTING_TAB_H
+
+typedef nx_struct tab {	
+	nx_uint8_t src_add;		
+	nx_uint16_t dst_add;	
+	nx_uint16_t next_hop;	
+	nx_uint8_t path;	//numero di nodi attraversati
+} tab_t;
+
+//#define REQ 1 già definita nell'altro header
+
+enum{
+AM_MY_MSG = 6,		//questo è l'active message ID (we will communicate over AM channel 6)
+};
+
+#endif

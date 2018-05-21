@@ -25,6 +25,8 @@ module projectC {
   message_t packet;
   uint8_t num=0;
 
+  
+
   task void sendRandmsg();
 
   
@@ -77,6 +79,8 @@ module projectC {
     else{
 	call SplitControl.start();
     }
+  
+  
 
   }
   
@@ -103,7 +107,13 @@ module projectC {
 
     }
 
-  }						
+  }	
+
+  //******************************Point 2 of project*********************************//	
+  
+  task void 
+
+		
   
 
   //*******************************************************************************************//

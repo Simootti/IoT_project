@@ -5,10 +5,10 @@ module ProjectC {
 
   uses {
 	interface Boot;
-    	interface AMPacket;	//to turning on the Radio and can modify the pkt I want to transmit
+    	interface Packet;	//to turning on the Radio and can modify the pkt I want to transmit
 	interface Packet;			
 	interface PacketAcknowledgements;
-    	interface AMSend;			//interface to transmit the message
+    	interface Send;			//interface to transmit the message
     	interface SplitControl;			//used basically to turning on the radio
     	interface Receive;
     	interface Timer<TMilli> as MilliTimer;
@@ -24,10 +24,42 @@ module ProjectC {
   task void sendReq();
   task void sendResp();
 
-  // Tasks sono come le funzioni, MA eseguite in modo ASINCRONO //
-  // Le Task non vengono eseguite quando chiamate, ma vengono messe in queue //
-  // e lo scheduler di TinyOS decide quanl'è il miglior momento per eseguirle //
-  // Diventa molto più efficiente nel gestire gli eventi (dobbiamo usare le Tasks)//
+  // Tasks sono come le funzioni, MA eseguite in modo ASINCRONO
+  // Le Task non vengono eseguite quando chiamate, ma vengono messe in queue 
+  // e lo scheduler di TinyOS decide quand'è il miglior momento per eseguirle 
+  // Diventa molto più efficiente nel gestire gli eventi (dobbiamo usare le Tasks)
+
+  //******************************Point 1 of project*********************************//
+
+  task void sendRandMess() {
+
+	my_msg_t* mess=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess->msg_type = RAN_MSG;
+	mess->msg_id = counter++;
+	    
+	dbg("msg_send", "Try to send a request to node 2 at time %s \n", sim_time_string());
+    
+	call PacketAcknowledgements.randomMsg( &packet ); //requestAck cambiato in randomMsg
+
+	if(call Send.send("random_function to put",&packet,sizeof(my_msg_t)) == SUCCESS){
+		
+	  dbg("msg_send", "Packet sent in right mode!\n");
+	  dbg("msg_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+	  dbg_clear("msg_pack","\t Source: %hhu \n ", call Packet.source( &packet ) );
+	  dbg_clear("msg_pack","\t Destination: %hhu \n ", call Packet.destination( &packet ) );
+	  dbg_clear("msg_pack","\t FType: %hhu \n ", call Packet.type( &packet ) );
+	  dbg_clear("msg_pack","\t\t Payload \n" );
+	  dbg_clear("msg_pack","\t\t msg_type: %hhu \n ", mess->msg_type);
+	  dbg_clear("msg_pack","\t\t msg_id: %hhu \n", mess->msg_id);
+	  dbg_clear("msg_pack","\t\t value: %hhu \n", mess->value);
+	  dbg_clear("msg_pack","\t\t data1: %hhu \n", mess->data1);
+	  dbg_clear("msg_pack","\t\t data2: %hhu \n", mess->data2)
+	  dbg_clear("msg_pack","\n ");
+	  dbg_clear("msg_pack","\n");
+      
+      }
+
+ }
   
   
   //***************** Task send request ********************//
@@ -81,7 +113,7 @@ module ProjectC {
 
   //***************** SplitControl interface ********************//
 
-//evento che si verifica appena finito SplitControl (.startDone)
+//evento che si verifica appena finito SplitControl(.startDone)
 
  event void SplitControl.startDone(error_t err){	
       

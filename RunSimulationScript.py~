@@ -56,14 +56,21 @@ t.addChannel("role",out);
 #ora vengono creati i nodi (testualmente, non graficamente come in Cooja)
 #but this is more powerful
 
-print "Creating node 1,2,3,4,5,6,7,8";
+print "Creating node 1";
 node1 =t.getNode(1);
+print "Creating node 2";
 node2 =t.getNode(2);
+print "Creating node 3";
 node3 =t.getNode(3);
+print "Creating node 4";
 node4 =t.getNode(4);
+print "Creating node 5";
 node5 =t.getNode(5);
+print "Creating node 6";
 node6 =t.getNode(6);
+print "Creating node 7";
 node7 =t.getNode(7);
+print "Creating node 8";
 node8 =t.getNode(8);
 time1 = 0*t.ticksPerSecond();
 node1.bootAtTime(time1);
@@ -74,7 +81,7 @@ node5.bootAtTime(time1);
 node6.bootAtTime(time1);
 node7.bootAtTime(time1);
 node8.bootAtTime(time1);
-print ">>>Will boot at time",  time1/t.ticksPerSecond(), "[sec]";
+print ">>>Will boot all nodes at time",  time1/t.ticksPerSecond(), "[sec]";
 
 #creazione dei canali (questi li copi e basta)
 print "Creating radio channels..."
@@ -99,24 +106,24 @@ print "Loading:",
 for line in lines:
     str = line.strip()
     if (str != "") and ( compl < 10000 ):
-        val = int(str);
+        val = int(str)
         mid_compl = mid_compl + 1;
         if ( mid_compl > 5000 ):
             compl = compl + mid_compl;
             mid_compl = 0;
             sys.stdout.write ("#")
             sys.stdout.flush()
-        for i in range(1, 3):
+        for i in range(1, 9):
             t.getNode(i).addNoiseTraceReading(val)
 print "Done!";
 
-for i in range(1, 3):
+for i in range(1, 9):
     print ">>>Creating noise model for node:",i;
     t.getNode(i).createNoiseModel()
 
 print "Start simulation with TOSSIM! \n\n\n";
 
-for i in range(0,5000):      # 500 è il tempo di simulazione
+for i in range(0,50000):      #intervallo di simulazione
 	t.runNextEvent()
 	
 print "\n\n\nSimulation finished!";

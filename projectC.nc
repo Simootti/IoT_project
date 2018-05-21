@@ -21,30 +21,24 @@ module projectC {
 
   uint32_t counter=0;
   uint8_t rec_id;
-  uint16_t i=1;
   my_msg_t* mess;
   message_t packet;
-  uint8_t num = 0;
+  uint8_t num=0;
 
   task void sendRandmsg();
 
-  // Tasks sono come le funzioni, MA eseguite in modo ASINCRONO
-  // Le Task non vengono eseguite quando chiamate, ma vengono messe in queue 
-  // e lo scheduler di TinyOS decide quand'è il miglior momento per eseguirle 
-  // Diventa molto più efficiente nel gestire gli eventi (dobbiamo usare le Tasks)
-
+  
   //******************************Point 1 of project*********************************//
   
 
  task void sendRandmsg() {
 	
-	num = call Random.rand16();
+	num = (call Random.rand16() % 8) + 1;
 
 	mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 	mess->msg_type = REQ;
 	mess->msg_id = counter++;
-	mess->value1 = call Random.rand16();
-	mess->value2 = call Random.rand16();
+	mess->value = call Random.rand16();
 	mess->dst_add = num;
 
  	if(call AMSend.send(num,&packet,sizeof(my_msg_t)) == SUCCESS){	
@@ -56,10 +50,8 @@ module projectC {
 	  dbg_clear("radio_pack","\t\t Payload \n" );
 	  dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
 	  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
-	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value1);
-	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value1);
-	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value2);
-	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->dst_add);
+	  dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
+	  dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 	  dbg_clear("radio_send", "\n ");
 	  dbg_clear("radio_pack", "\n");
       
@@ -75,16 +67,12 @@ module projectC {
   //***************** SplitControl interface ********************//
   event void SplitControl.startDone(error_t err){
 
-
     if(err == SUCCESS) {
-	while (i < 9){
-		dbg("radio","Radio %i on!\n", &i);
-		if ( TOS_NODE_ID == i ) {
-		  dbg("role","I'm node %d: start sending periodical request\n" , &i );
-		  call MilliTimer.startPeriodic( 30000 );
+		dbg("radio","Radio %d on!\n", TOS_NODE_ID);
+		if ( TOS_NODE_ID ) {
+		dbg("role","I'm node %d: start sending periodical request\n" , TOS_NODE_ID );
+		call MilliTimer.startPeriodic( 30000 );
 		}
-		i++;
-	}
     }
     else{
 	call SplitControl.start();
@@ -120,6 +108,11 @@ module projectC {
 
   //*******************************************************************************************//
   //*******************************************************************************************//
+
+  // Tasks sono come le funzioni, MA eseguite in modo ASINCRONO
+  // Le Task non vengono eseguite quando chiamate, ma vengono messe in queue 
+  // e lo scheduler di TinyOS decide quand'è il miglior momento per eseguirle 
+  // Diventa molto più efficiente nel gestire gli eventi (dobbiamo usare le Tasks)
 
 /*
 

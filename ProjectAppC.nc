@@ -10,14 +10,13 @@ implementation {
   components new AMReceiverC(AM_MY_MSG);	//AM_MY_MSG is the channel!!!
   components ActiveMessageC;
   components new TimerMilliC();
-  components new FakeSensorC();
 
   //Boot interface
   App.Boot -> MainC.Boot;		//la Boot interface viene fatta sempre
 
 
   //Send and Receive interfaces
-  App.Receive -> AMReceiverC;
+  	//App.Receive -> AMReceiverC;
   App.AMSend -> AMSenderC;
 
   //Radio Control
@@ -26,7 +25,7 @@ implementation {
   //Interfaces to access package fields
   App.AMPacket -> AMSenderC;
   App.Packet -> AMSenderC;
-  App.PacketAcknowledgements -> ActiveMessageC;
+  	//App.PacketAcknowledgements -> ActiveMessageC;
 
   //Timer interface
   App.MilliTimer -> TimerMilliC;

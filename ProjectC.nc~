@@ -1,3 +1,4 @@
+
 #include "Project.h"
 #include "Timer.h"
 
@@ -8,12 +9,12 @@ module ProjectC {
 	interface Random;
     	interface AMPacket;	//to turning on the Radio and can modify the pkt I want to transmit
 	interface Packet;			
-	interface PacketAcknowledgements;
+	//interface PacketAcknowledgements;
     	interface AMSend;			//interface to transmit the message
     	interface SplitControl;			//used basically to turning on the radio
-    	interface Receive;
+    	//interface Receive;
     	interface Timer<TMilli> as MilliTimer;
-	interface Read<uint16_t>;		//used to read Data from a sensor
+	//interface Read<uint16_t>;		//used to read Data from a sensor
   }
 
 } implementation {
@@ -22,6 +23,7 @@ module ProjectC {
   uint8_t rec_id;
   uint16_t i=1;
   message_t packet;
+  uint8_t num = 0;
 
   task void SendRandmsg();
 
@@ -35,10 +37,10 @@ module ProjectC {
 
  task void SendRandmsg() {
 	
-	num = call Random.rand8();
+	num = call Random.rand16();
 
-	my_msg_t* mess=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess->msg_type = RAND;
+	my_msg_t* mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess->msg_type = REQ;
 	mess->msg_id = counter++;
 	mess->value1 = call Random.rand16();
 	mess->value2 = call Random.rand16();
@@ -53,7 +55,7 @@ module ProjectC {
 	  dbg_clear("radio_pack","\t\t Payload \n" );
 	  dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
 	  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
-	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value1)
+	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value1);
 	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value1);
 	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value2);
 	  dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->dst_add);
@@ -101,18 +103,13 @@ module ProjectC {
   event void AMSend.sendDone(message_t* buf,error_t err) {
 
     if(&packet == buf && err == SUCCESS ) {
-
+	
 	dbg("radio_send", "Packet sent...");
-
-	if ( call PacketAcknowledgements.wasAcked( buf ) ) {	
-
-	  dbg_clear("radio_ack", "and ack received");		
-	  call MilliTimer.stop();				
+					
 	} else {
-	  dbg_clear("radio_ack", "but ack was not received");
-
-	  post sendReq();					
+	  dbg_clear("radio_ack", "but ack was not received"); 		
 	}
+	
 	dbg_clear("radio_send", " at time %s \n", sim_time_string());
 
     }

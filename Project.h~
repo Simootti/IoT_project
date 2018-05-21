@@ -7,8 +7,9 @@ typedef nx_struct my_msg {	//defines the payload of the msg
 				//metti nx per variabili che verranno trasmesse nel network
 	nx_uint16_t msg_id;	//16 bits unsigned variable
 	nx_uint16_t value;
-	nx_uint16_t data1;
-	nx_uint16_t data2;
+	nx_uint32_t dst_add;	//destination address
+	nx_uint16_t data1;	//Send a data 1 to a random destination
+	nx_uint16_t data2;	//Send a data 2 to a random destination
 } my_msg_t;
 
 #define REQ 1

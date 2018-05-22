@@ -18,9 +18,11 @@ AM_MY_MSG = 6,		//questo è l'active message ID (we will communicate over AM cha
 
 //**********************************************************************//
 
-typedef nx_struct route_message {	
-	nx_uint8_t msg_type;	
-	nx_uint16_t route_id;	
+typedef nx_struct route_message {
+	nx_uint8_t msg_type;		//deve dirci se è ROUTE_REQ o ROUTE_RESP
+	nx_uint16_t route_id;
+	nx_uint8_t src_add;
+	nx_uint8_t dst_add;
 } route_msg_t;
 
 //**********************************************************************//
@@ -33,5 +35,7 @@ typedef nx_struct tab {
 } tab_t;
 
 #define ROUTE_REQ 2
+
+#define ROUTE_RESP 3
 
 #endif

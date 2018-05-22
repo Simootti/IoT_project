@@ -1,4 +1,3 @@
-//HEADER del punto 1 per la costruzione del messaggio 
 
 #ifndef PROJECT_H
 #define PROJECT_H

@@ -24,10 +24,12 @@ module projectC {
   my_msg_t* mess;
   message_t packet;
   uint8_t num=0;
-
+  uint8_t n;
+  tab_t tab_complete[8];
   
 
   task void sendRandmsg();
+  //task void creationRoutTab();
 
   
   //******************************Point 1 of project*********************************//
@@ -42,7 +44,17 @@ module projectC {
 	mess->msg_id = counter++;
 	mess->value = call Random.rand16();
 	mess->dst_add = num;
-
+	
+	for (n=0; tab_complete[n].dst_add != mess->dst_add && n<9; n++){ //TODO pensare al valore 9 (lunghezza dell'array)
+	}
+	if (tab_complete[n].dst_add == mess->dst_add){
+		printf ("Find a match with destination \n");
+		printf ("Send to next-hop \n");
+	}else{
+		printf ("Do not find a match, updating a routing table \n");
+		//TODO aggiornamento tabella , broadcast req
+	}
+	
  	if(call AMSend.send(num,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	  dbg("radio_send", "SendRandmsg successfully!\n");
 	  dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
@@ -59,6 +71,28 @@ module projectC {
       
       }
   }
+
+  //******************************Point 2 of project*********************************//	
+/*
+  task void creationRoutTab() {
+  	
+	for (n=0; mess->dst_add == tab_t[n].dst_add; n++){
+			
+	}
+	
+	
+	
+	//mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess->msg_type = ROUTE_REQ;
+	dbg_clear("Verify the type of message....", "msg_type: %hhu", mess->msg_type);
+
+	if(call AMSend.send(BROADCAST,&packet,sizeof(my_msg_t)) == SUCCESS){
+		dgb_clear("Pacchetto inviato in Broadcast come ROUTE REQ");	
+	}
+  
+  }
+*/
+
 
   //***************** Boot interface ********************//
   event void Boot.booted() {
@@ -91,7 +125,7 @@ module projectC {
 	post sendRandmsg();				
   }
 
-  //********************* AMSend interface ****************//
+  //********************* AMSend interface *********************//
 
   event void AMSend.sendDone(message_t* buf,error_t err) {
 
@@ -109,10 +143,41 @@ module projectC {
 
   }	
 
-  //******************************Point 2 of project*********************************//	
-  
-  task void 
+  //***************************** Receive interface ********************************//
+/*
+  event message_t* Receive.receive(message_t* buf,void* payload, uint8_t len) {
 
+	my_msg_t* mess=(my_msg_t*)payload;
+	rec_id = mess->msg_id;
+
+	
+	dbg("radio_rec","Message received at time %s \n", sim_time_string());
+	dbg("radio_pack",">>>Pack \n \t Payload length %hhu \n", call Packet.payloadLength( buf ) );
+
+	dbg_clear("radio_pack","\t Source: %hhu \n", call AMPacket.source( buf ) );
+	dbg_clear("radio_pack","\t Destination: %hhu \n", call AMPacket.destination( buf ) );
+	dbg_clear("radio_pack","\t AM Type: %hhu \n", call AMPacket.type( buf ) );
+
+	dbg_clear("radio_pack","\t\t Payload \n" );
+	dbg_clear("radio_pack", "\t\t msg_type: %hhu \n", mess->msg_type);
+	dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
+	dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value);
+
+	dbg_clear("radio_rec", "\n ");
+	dbg_clear("radio_pack","\n");
+	
+
+	if ( mess->msg_type == REQ ) {
+		post sendResp();
+	}
+
+
+    return buf;
+
+  }
+
+  */
+  
 		
   
 

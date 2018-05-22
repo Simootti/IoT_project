@@ -25,17 +25,13 @@ module projectC {
   message_t packet;
   uint8_t num=0;
   uint8_t n;
-  tab_t tab_complete[8];
+  tab_t tab_complete[8];	
   
 
   task void sendRandmsg();
-  //task void creationRoutTab();
-
-  
-  //******************************Point 1 of project*********************************//
   
 
- task void sendRandmsg() {
+  task void sendRandmsg() {  // task che manda i messaggi casuali (punto 1) e controlla la tabella di routing (parte del punto 2)
 	
 	num = (call Random.rand16() % 8) + 1;
 
@@ -45,14 +41,24 @@ module projectC {
 	mess->value = call Random.rand16();
 	mess->dst_add = num;
 	
-	for (n=0; tab_complete[n].dst_add != mess->dst_add && n<9; n++){ //TODO pensare al valore 9 (lunghezza dell'array)
+	for (n=0; tab_complete[n].dst_add != mess->dst_add && n<(sizeof(tab_complete)/5); n++){
+		//printf("n = %d\n", n);	
 	}
 	if (tab_complete[n].dst_add == mess->dst_add){
 		printf ("Find a match with destination \n");
 		printf ("Send to next-hop \n");
 	}else{
 		printf ("Do not find a match, updating a routing table \n");
-		//TODO aggiornamento tabella , broadcast req
+		
+		//Invio dei route req in broadcast!
+		
+		mess->msg_type = ROUTE_REQ;    // cambio tipo da req a route_req
+
+		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
+			printf("Pacchetti inviati in Broadcast come ROUTE REQ \n");
+			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
+			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+		}
 	}
 	
  	if(call AMSend.send(num,&packet,sizeof(my_msg_t)) == SUCCESS){	
@@ -72,26 +78,6 @@ module projectC {
       }
   }
 
-  //******************************Point 2 of project*********************************//	
-/*
-  task void creationRoutTab() {
-  	
-	for (n=0; mess->dst_add == tab_t[n].dst_add; n++){
-			
-	}
-	
-	
-	
-	//mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess->msg_type = ROUTE_REQ;
-	dbg_clear("Verify the type of message....", "msg_type: %hhu", mess->msg_type);
-
-	if(call AMSend.send(BROADCAST,&packet,sizeof(my_msg_t)) == SUCCESS){
-		dgb_clear("Pacchetto inviato in Broadcast come ROUTE REQ");	
-	}
-  
-  }
-*/
 
 
   //***************** Boot interface ********************//

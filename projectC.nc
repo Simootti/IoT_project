@@ -75,8 +75,11 @@ module projectC {
 		
 		route_mess = (route_msg_t*)(call Packet.getPayload(&packet,sizeof(route_msg_t)));
 		route_mess->msg_type = ROUTE_REQ;
-		route_mess->msg_id = counter++;   
+		route_mess->msg_id = counter++;
+		route_mess->dst_add = mess->dst_add;
+		route_mess->dst_add = TOS_NODE_ID;   
 
+		// IL BROADCAST È FATTO SOLO DAL NODO MADRE E NON DA QUELLI INTERMEDI PER RAGGIUNGERE LA DESTINAZIONE ???
 		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(route_msg_t)) == SUCCESS){
 			printf("Pacchetti inviati in Broadcast come ROUTE REQ \n");
 			dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
@@ -88,9 +91,6 @@ module projectC {
 			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", route_mess->msg_type);
 			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->route_id);
 		}
-		
-		//Elimininazione dei duplicati
-		
 		
 		//TODO CREAZIONE DELLE TABELLE DI ROUTING
 		
@@ -131,7 +131,7 @@ module projectC {
 		}
     }
     else{
-	call SplitControl.start();
+	call SplitControl.start();,
     }
   
   
@@ -164,39 +164,37 @@ module projectC {
   }	
 
   //***************************** Receive interface ********************************//
-/*
+
   event message_t* Receive.receive(message_t* buf,void* payload, uint8_t len) {
 
-	my_msg_t* mess=(my_msg_t*)payload;
-	rec_id = mess->msg_id;
-
+	route_msg_t* route_mess=(route_msg_t*)payload;
 	
 	dbg("radio_rec","Message received at time %s \n", sim_time_string());
 	dbg("radio_pack",">>>Pack \n \t Payload length %hhu \n", call Packet.payloadLength( buf ) );
-
 	dbg_clear("radio_pack","\t Source: %hhu \n", call AMPacket.source( buf ) );
 	dbg_clear("radio_pack","\t Destination: %hhu \n", call AMPacket.destination( buf ) );
 	dbg_clear("radio_pack","\t AM Type: %hhu \n", call AMPacket.type( buf ) );
-
 	dbg_clear("radio_pack","\t\t Payload \n" );
-	dbg_clear("radio_pack", "\t\t msg_type: %hhu \n", mess->msg_type);
-	dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
-	dbg_clear("radio_pack", "\t\t value: %hhu \n", mess->value);
-
-	dbg_clear("radio_rec", "\n ");
+	dbg_clear("radio_pack", "\t\t msg_type: %hhu \n", route_mess->msg_type);
+	dbg_clear("radio_pack", "\t\t route request id: %hhu \n", route_mess->route_id);
+	dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->dst_add);
+	dbg_clear("radio_pack", "\t\t source address: %hhu \n", route_mess->src_add);
 	dbg_clear("radio_pack","\n");
 	
 
-	if ( mess->msg_type == REQ ) {
-		post sendResp();
+	if (route_mess->msg_type == ROUTE_REQ) {
+		//TODO ELIMINARE I DUPLICATI
 	}
+/*
+	if ( mess->msg_type == REQ ) {
+			post sendResp();
+	}
+*/
 
 
     return buf;
 
   }
-
-  */
   
 		
   

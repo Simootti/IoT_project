@@ -81,10 +81,16 @@ module projectC {
 			printf("Pacchetti inviati in Broadcast come ROUTE REQ \n");
 			dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
 			dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
-	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
-			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess_route->msg_type);
-			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess_route->route_id);
+			dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+			dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
+			dbg_clear("radio_pack","\t Source: %hhu \n ", route_mess->src_add);
+	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", route_mess->dst_add);
+			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", route_mess->msg_type);
+			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->route_id);
 		}
+		
+		//Elimininazione dei duplicati
+		
 		
 		//TODO CREAZIONE DELLE TABELLE DI ROUTING
 		

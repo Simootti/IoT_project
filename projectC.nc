@@ -22,6 +22,7 @@ module projectC {
   uint32_t counter=0;
   uint8_t rec_id;
   my_msg_t* mess;
+  route_msg_t* route_mess;
   message_t packet;
   uint8_t num=0;
   uint8_t n;
@@ -47,35 +48,62 @@ module projectC {
 	if (tab_complete[n].dst_add == mess->dst_add){
 		printf ("Find a match with destination \n");
 		printf ("Send to next-hop \n");
+		
+		if (tab_complete[n].next_hop == mess->dst_add){
+			printf("Packet sent to destination");		
+		}else{
+			printf("Packet sent to next hop");
+			//DA VERIFICARE!!!
+			//il pacchetto viene mandato al next-hop SE c'e' un match nella tabella
+			// ATTENZIONE: nel payload del pkt NON viene cambiata la dst, che verrà usata per
+			// 	       fare confronto nel nodo successivo
+			if(call AMSend.send(tab_complete[n].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+				  dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+				  dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
+				  dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+				  dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
+				  dbg_clear("radio_pack","\t\t Payload \n" );
+				  dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
+				  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
+				  dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
+				  dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+				  dbg_clear("radio_send", "\n");
+				  dbg_clear("radio_pack", "\n");	
+		}
 	}else{
 		printf ("Do not find a match, updating a routing table \n");
 		
-		//Invio dei route req in broadcast!
-		
-		mess->msg_type = ROUTE_REQ;    // cambio tipo da req a route_req
+		route_mess = (route_msg_t*)(call Packet.getPayload(&packet,sizeof(route_msg_t)));
+		route_mess->msg_type = ROUTE_REQ;
+		route_mess->msg_id = counter++;   
 
-		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
+		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(route_msg_t)) == SUCCESS){
 			printf("Pacchetti inviati in Broadcast come ROUTE REQ \n");
-			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
-			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+			dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+			dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
+	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess_route->msg_type);
+			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess_route->route_id);
 		}
+		
+		//TODO CREAZIONE DELLE TABELLE DI ROUTING
+		
+		
 	}
-	
- 	if(call AMSend.send(num,&packet,sizeof(my_msg_t)) == SUCCESS){	
-	  dbg("radio_send", "SendRandmsg successfully!\n");
-	  dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
-	  dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
-	  dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
-	  dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
-	  dbg_clear("radio_pack","\t\t Payload \n" );
-	  dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
-	  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
-	  dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
-	  dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
-	  dbg_clear("radio_send", "\n ");
-	  dbg_clear("radio_pack", "\n");
-      
-      }
+	/*
+ 	if(call AMSend.send(num,&packet,sizeof(my_msg_t)) == SUCCESS){    pacchetto casuale
+		dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+		dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
+		dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+		dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
+		dbg_clear("radio_pack","\t\t Payload \n" );
+		dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
+		dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
+		dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
+		dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+		dbg_clear("radio_send", "\n");
+		dbg_clear("radio_pack", "\n");
+	}*/
   }
 
 

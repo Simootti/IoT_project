@@ -18,6 +18,13 @@ AM_MY_MSG = 6,		//questo è l'active message ID (we will communicate over AM cha
 
 //**********************************************************************//
 
+typedef nx_struct route_message {	
+	nx_uint8_t msg_type;	
+	nx_uint16_t route_id;	
+} route_msg_t;
+
+//**********************************************************************//
+
 typedef nx_struct tab {
 	nx_uint8_t src_add;		
 	nx_uint16_t dst_add;	

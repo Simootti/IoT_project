@@ -81,6 +81,7 @@ module projectC {
 				  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
 				  dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
 				  dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+				  dbg_clear("radio_pack", "\t\t source address: %hhu \n", mess->src_add);
 				  dbg_clear("radio_send", "\n");
 				  dbg_clear("radio_pack", "\n");	
 			}
@@ -117,8 +118,9 @@ module projectC {
 			dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
 			dbg_clear("radio_pack","\t Source: %hhu \n ", route_mess->src_add);
 	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", route_mess->dst_add);
-			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", route_mess->msg_type);
-			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->route_id);
+			dbg_clear("radio_pack","\t Current node: %hhu \n ", route_mess->crt_node);
+			dbg_clear("radio_pack", "\t\t Msg_type: %hhu \n ", route_mess->msg_type);
+			dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", route_mess->route_id);
 	}
   }
 
@@ -210,6 +212,7 @@ module projectC {
 						  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
 						  dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
 						  dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+						  dbg_clear("radio_pack", "\t\t source address: %hhu \n", mess->src_add);
 						  dbg_clear("radio_send", "\n");
 						  dbg_clear("radio_pack", "\n");	
 				}

@@ -16,7 +16,7 @@ implementation {
 
 
   //Send and Receive interfaces
-  App.Receive -> AMReceiverC;
+  //App.Receive -> AMReceiverC;
   App.AMSend -> AMSenderC;
 
   //Radio Control

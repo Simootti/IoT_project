@@ -12,6 +12,8 @@ typedef nx_struct my_msg {	//defines the payload of the msg
 } my_msg_t;
 
 #define REQ 1
+#define ROUTE_REQ 2
+#define ROUTE_RESP 3
 
 enum{
 AM_MY_MSG = 6,		//questo è l'active message ID (we will communicate over AM channel 6)
@@ -35,9 +37,5 @@ typedef nx_struct tab {
 	nx_uint16_t next_hop;	
 	nx_uint8_t path;	//numero di nodi attraversati
 } tab_t;
-
-#define ROUTE_REQ 2
-
-#define ROUTE_RESP 3
 
 #endif

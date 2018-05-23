@@ -32,6 +32,7 @@ module projectC {
   
 
   task void sendRandmsg();
+  task void broadcast();
   
 
   task void sendRandmsg() {  // task che manda i messaggi casuali (punto 1) e controlla la tabella di routing (parte del punto 2)
@@ -83,19 +84,8 @@ module projectC {
 		route_mess->src_add = mess->src_add;
 		route_mess->crt_node = TOS_NODE_ID;  
 
-		// FARE UNA TASK PER LA FUNZIONE BROADCAST
-	//task void broadcast
-		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(route_msg_t)) == SUCCESS){
-			printf("Pacchetti inviati in Broadcast come ROUTE REQ \n");
-			dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
-			dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
-			dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
-			dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
-			dbg_clear("radio_pack","\t Source: %hhu \n ", route_mess->src_add);
-	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", route_mess->dst_add);
-			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", route_mess->msg_type);
-			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->route_id);
-		}
+		post broadcast();
+		
 		
 		//TODO CREAZIONE DELLE TABELLE DI ROUTING (con l'array tab_complete[8])
 		
@@ -117,6 +107,23 @@ module projectC {
 	}*/
   }
 
+
+  //***************** Broadcast task ********************//
+
+  task void broadcast (){
+
+  	if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(route_msg_t)) == SUCCESS){
+			printf("Pacchetti inviati in Broadcast come ROUTE REQ \n");
+			dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+			dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
+			dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+			dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
+			dbg_clear("radio_pack","\t Source: %hhu \n ", route_mess->src_add);
+	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", route_mess->dst_add);
+			dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", route_mess->msg_type);
+			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->route_id);
+		}
+  }
 
 
   //***************** Boot interface ********************//
@@ -185,11 +192,12 @@ module projectC {
 	dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->dst_add);
 	dbg_clear("radio_pack", "\t\t source address: %hhu \n", route_mess->src_add);
 	dbg_clear("radio_pack","\n");
+
+	// IL BROADCAST È FATTO SOLO DAL NODO MADRE E NON DA QUELLI INTERMEDI PER RAGGIUNGERE LA DESTINAZIONE
+	if(route_mess->dst_add != route_mess->crt_node){
+	  	post broadcast();
+	}
 /*
-	// IL BROADCAST È FATTO SOLO DAL NODO MADRE E NON DA QUELLI INTERMEDI PER RAGGIUNGERE LA DESTINAZIONE ???
-		if(route_mess->dst_add != route_mess->crt_node){
-		  	call task void broadcast;
-		  }
 
 	if (route_mess->msg_type == ROUTE_REQ && route_mess->msg_id != route_save[].msg_id) {
 		//TODO ELIMINARE I DUPLICATI MA PRIMA BISOGNA SALVARE LE ENTRY

@@ -26,7 +26,9 @@ module projectC {
   message_t packet;
   uint8_t num=0;
   uint8_t n;
-  tab_t tab_complete[8];	
+  tab_t tab_complete[8];
+  route_msg_t route_save[8]; //array per salvare la route request per poter eliminare i duplicati
+  uint8_t c=0; //counter per la route request	
   
 
   task void sendRandmsg();
@@ -41,6 +43,7 @@ module projectC {
 	mess->msg_id = counter++;
 	mess->value = call Random.rand16();
 	mess->dst_add = num;
+	mess->src_add = TOS_NODE_ID;
 	
 	for (n=0; tab_complete[n].dst_add != mess->dst_add && n<(sizeof(tab_complete)/5); n++){
 		//printf("n = %d\n", n);	
@@ -71,15 +74,17 @@ module projectC {
 				  dbg_clear("radio_pack", "\n");	
 		}
 	}else{
-		printf ("Do not find a match, updating a routing table \n");
+		printf ("Do not find a match,then update a routing table \n");
 		
 		route_mess = (route_msg_t*)(call Packet.getPayload(&packet,sizeof(route_msg_t)));
 		route_mess->msg_type = ROUTE_REQ;
-		route_mess->msg_id = counter++;
+		route_mess->msg_id = c++;
 		route_mess->dst_add = mess->dst_add;
-		route_mess->dst_add = TOS_NODE_ID;   
+		route_mess->src_add = mess->src_add;
+		route_mess->crt_node = TOS_NODE_ID;  
 
-		// IL BROADCAST È FATTO SOLO DAL NODO MADRE E NON DA QUELLI INTERMEDI PER RAGGIUNGERE LA DESTINAZIONE ???
+		// FARE UNA TASK PER LA FUNZIONE BROADCAST
+	//task void broadcast
 		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(route_msg_t)) == SUCCESS){
 			printf("Pacchetti inviati in Broadcast come ROUTE REQ \n");
 			dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
@@ -92,7 +97,7 @@ module projectC {
 			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->route_id);
 		}
 		
-		//TODO CREAZIONE DELLE TABELLE DI ROUTING
+		//TODO CREAZIONE DELLE TABELLE DI ROUTING (con l'array tab_complete[8])
 		
 		
 	}
@@ -180,12 +185,21 @@ module projectC {
 	dbg_clear("radio_pack", "\t\t destination address: %hhu \n", route_mess->dst_add);
 	dbg_clear("radio_pack", "\t\t source address: %hhu \n", route_mess->src_add);
 	dbg_clear("radio_pack","\n");
-	
-
-	if (route_mess->msg_type == ROUTE_REQ) {
-		//TODO ELIMINARE I DUPLICATI
-	}
 /*
+	// IL BROADCAST È FATTO SOLO DAL NODO MADRE E NON DA QUELLI INTERMEDI PER RAGGIUNGERE LA DESTINAZIONE ???
+		if(route_mess->dst_add != route_mess->crt_node){
+		  	call task void broadcast;
+		  }
+
+	if (route_mess->msg_type == ROUTE_REQ && route_mess->msg_id != route_save[].msg_id) {
+		//TODO ELIMINARE I DUPLICATI MA PRIMA BISOGNA SALVARE LE ENTRY
+		route_mess = (route_msg_t*)(call Packet.getPayload(&packet,sizeof(route_msg_t)));
+		route_save[].msg_type = route_mess->msg_type;
+		route_save[].msg_id = route_mess->msg_id;
+		route_save[].dst_add = route_mess->dst_add;
+		route_save[].src_add = route_mess->src_add;   
+	}
+
 	if ( mess->msg_type == REQ ) {
 			post sendResp();
 	}

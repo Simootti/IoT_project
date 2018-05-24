@@ -8,7 +8,7 @@ typedef nx_struct my_msg {	//defines the payload of the msg
 	nx_uint16_t value;	//data
 	nx_uint8_t dst_add;	//destination address
 	nx_uint8_t src_add;	//source address
-	nx_uint8_t crt_node;	//current node
+	//nx_uint8_t crt_node;	//current node
 } my_msg_t;
 
 #define REQ 1

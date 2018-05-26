@@ -24,7 +24,9 @@ AM_MY_MSG = 6,		//questo è l'active message ID (we will communicate over AM cha
 typedef nx_struct tab {
 	nx_uint8_t src_add;		
 	nx_uint16_t dst_add;	
-	nx_uint16_t next_hop;	
+	nx_uint16_t next_hop;
+	nx_uint16_t distance_from_dst;	//indicherà qual è la distanza che ci separa dalla destinazione 
+					// --->(valore che serve mettere nella Routing Table per verificare dopo il percorso migliore)
 	nx_uint8_t path;	//numero di nodi attraversati
 } tab_t;
 

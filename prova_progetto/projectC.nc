@@ -30,7 +30,6 @@ module projectC {
   tab_t tab_complete[8];
   uint8_t c=0; //counter per la route request
   uint8_t prova=0;
-  
 
   task void sendRandmsg();
   //task void broadcast();
@@ -49,12 +48,15 @@ module projectC {
 //	SOLO campi che sono presenti in qualsiasi tipo di messaggio
 
 	mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	//mess->msg_type = DATA;
 	mess->msg_id = counter++;
-	//mess->value = call Random.rand16();
+
 	mess->dst_add = (call Random.rand16() % 8) + 1;
+
 	mess->src_add = TOS_NODE_ID;
-	//mess->crt_node = TOS_NODE_ID;
+	mess->crt_node = TOS_NODE_ID;
+	dbg_clear("radio_send", "\n");
+	dbg_clear("radio_pack", "\n");
+	dbg_clear("radio_pack", "\t\t Stampo la Destinazione del nodo %hhu : %hhu \n",TOS_NODE_ID, mess->dst_add);
 	dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 
 
@@ -115,9 +117,7 @@ module projectC {
 		dbg("radio_pack","Match not found, sending in Broadcast in order to update the Routing Table \n");
 
 			mess->msg_type = ROUTE_REQ;	//--> settiamo solo questo, il valore è 2
-			//mess->crt_node = TOS_NODE_ID;  ---> non credo che servirà
-			mess->dst_add = (call Random.rand16() % 8) + 1;  //se non settiamo questo il broadcast non prende la destinazione del nostro messaggio route_req 
-									 // però la nostra destinazione cambia TODO PROBLEMA: TROVARE UN MODO TALE CHE LE DEST SIANO UGUALI
+			mess->path += 1 ;		//aggiorno il valore del path (in questo caso inizia da 1)
 			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 			//post broadcast();
 
@@ -132,10 +132,14 @@ module projectC {
 			dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
 			dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
 			dbg_clear("radio_pack","\t Source: %hhu \n ", mess->src_add);
-	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", mess->dst_add);
+	           	dbg_clear("radio_pack","\t Original Destination: %hhu \n ", mess->dst_add);
 			//dbg_clear("radio_pack","\t Current node: %hhu \n ", mess->crt_node);
 			dbg_clear("radio_pack", "\t\t Msg_type: %hhu \n ", mess->msg_type);
 			dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", mess->msg_id);*/
+
+
+
+// TODO IMPLEMENTARE CHE LA SORGENTE ASPETTA 1 SECONDO PER LA ROUTE_REPLY
 		}
 
 	}	//graffa che chiude l'else del Match non trovato
@@ -242,13 +246,13 @@ module projectC {
 //***************************************************************************************************************************************//
 
 
-// 1) IF msg_type is ROUTE REQ
-	if(mess->msg_type == ROUTE_REQ){
+// 1) IF msg_type is DATA
+	if(mess->msg_type == DATA){
 		
 		//controllo: sono io il nodo di destinazione?
 		//se lo sono, allora stampo tutto perchè avrò tutti i dati
 		if(mess->dst_add == TOS_NODE_ID){
-		dbg("radio_pack","ORIGINAL DESTINATION REACHED BY BROADCAST\n");
+		dbg("radio_pack","DATA packet reached the ORIGINAL DESTINATION correctly!\n");
 		/*
 		dbg("radio_rec","Message received at time %s \n", sim_time_string());
 		dbg("radio_pack",">>>Pack \n \t Payload length %hhu \n", call Packet.payloadLength( buf ) );
@@ -278,18 +282,36 @@ module projectC {
 					dbg("radio_pack","Packet sent to destination");	
 				}else{
 					dbg("radio_pack","Packet sent to next hop");
+					dbg_clear("radio_pack", "\t\t Next-Hop address: %hhu \n", tab_complete[n].next_hop);
 				}
 			//faccio la call di invio pacchetto al next-hop
 			//si verifica se ho trovato un match (quindi ho next_hop nella tabella)
 
 				call AMSend.send(tab_complete[n].next_hop,&packet,sizeof(my_msg_t));
+/*
+				dbg("radio_pack",">>>Pack \n \t Payload length %hhu \n", call Packet.payloadLength( buf ) );
+				dbg_clear("radio_pack","\t Source: %hhu \n", call AMPacket.source( buf ) );
+				dbg_clear("radio_pack","\t Destination: %hhu \n", call AMPacket.destination( buf ) );
+				dbg_clear("radio_pack","\t AM Type: %hhu \n", call AMPacket.type( buf ) );
+				dbg_clear("radio_pack","\t\t Payload \n" );
+				dbg_clear("radio_pack", "\t\t msg_type: %hhu \n", mess->msg_type);
+				dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
+				dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+				dbg_clear("radio_pack", "\t\t source address: %hhu \n", mess->src_add);
+				dbg_clear("radio_pack","\n");*/
+
+
+
 
 			}	//graffa che chiude [[if (tab_complete[n].dst_add == mess->dst_add)]]
 			else{
 			//dbg("radio_pack","Match not found, sending in Broadcast in order to update the Routing Table \n");
 			//NON DEVO MANDARE UN MESSAGGIO DEL TUTTO NUOVO, RIUTILIZZO L'ID DEL MESSAGGIO CHE HO RICEVUTO
 			//PER POTER RICONOSCERE CHE STO ANCORA PARLANDO DI QUELL'INVIO DA UNA SRC CHE NON SONO IO
-				if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
+
+// IN REALTÀ QUA NON CI FINIRÀ MAI ---> IN TEORIA I PACCHETTI DI TIPO DATA VENGONO INVIATI SOLO SE LA SORGENTE CONOSCE UN PATH
+				dbg("radio_pack","ERRORE : NON DOVRESTI ESSERE QUI");
+				//if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
 					/*dbg("radio_pack","Pacchetti inviati in Broadcast come ROUTE REQ DI INOLTRO da un broadcast della source \n");
 					dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
 					dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
@@ -301,17 +323,78 @@ module projectC {
 					dbg_clear("radio_pack", "\t\t Msg_type: %hhu \n ", mess->msg_type);
 					dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", mess->msg_id);*/
 				}
-			}
+			
 
 		}	//graffa che chiude l'else
 
 
 	} // graffa che chiude if(msg_type == 1) ---> DATA type 
+//********************************************************************************************************************************************//
+
+// 2) caso due : IF msg_type == ROUTE_REQ
+
+	if(mess->msg_type == ROUTE_REQ){
+
+//TODO PRIMO CONTROLLO: HO GIÀ RICEVUTO QUESTA ROUTE_REQ?
+	// SE msg_id e src_add e msg_id corrispondono a qualcosa che ho già in memoria, allora scarto la seconda
+	//--> ATTENTO 
+	// RICORDATI CHE LA RICHIESTA IMPLICA CHE I VALORI NELLE ROUTING TABLE SI AZZERINO, QUINDI ANCHE QUESTA MEMORIA     
 
 
 
 
+		// a) conrollo se sono io il nodo destinazione
 
+		if(mess->dst_add == TOS_NODE_ID){
+		dbg("radio_pack","I am the Destination of the Route_Req %hhu sent originally by Node %hhu \n",mess->msg_id, mess->src_add );
+		// dovrebbe stamparmi sia l'id della route_req sia la VERA sorgente
+		dbg("radio_pack","I send a ROUTE_REPLY to  %hhu  \n",mess->crt_node );
+		/*
+		deve stamparmi il nodo che mi ha "consegnato" la ROUTE_REQ (crt_node indica ancora l'ultimo hop che ha fatto forward)
+		se src e dst sono collegati, allora in questo caso src_add == crt_node
+		
+		nella richiesta non mi è richiesto di aggiornare la tabella della destinazione, quindi mi limito a mandare una ROUTE_REPLY
+		che riattraverserà tutti i nodi
+		-->la gestione del riattraversare tutti gli hop è affidata al ricevimento di una ROUTE_REPLY (definiamo più avanti) 
+		*/
+		
+		mess->msg_type = ROUTE_REPLY;
+		//mess->path non viene messo qui: infatti è un contatore incrementato ogni volte che
+		//		ricevo una ROUTE_REQ e devo fare forward (definisco più avanti). 
+		//		non c'è bisogno di definirlo qua
+		call AMSend.send(mess->crt_node,&packet,sizeof(my_msg_t));	//crt_node indica ancora l'ultimo nodo prima di questo
+
+
+		} 	// graffa che chiude [[if(mess->dst_add == TOS_NODE_ID)]] --> se esco da questo if, vuol dire che non sono io la DST
+		else{
+//se sono qui, vuol dire che non sono la destinazione --> ho altri due casi possibili
+//Ma prima devo scorrere la tabella 
+			for (n=0; tab_complete[n].dst_add != mess->dst_add && n<(sizeof(tab_complete)/5); n++){ 
+			}		
+		/* caso a) Ho già la destinazione nella mia tabella
+		mando una ROUTE_REPLY informando quanto mi manca dalla destinazione --> aggiorno path con il valore che ho nella tabella
+IMPORTANTE: LA DISTANZA DALLA DESTINAZIONE SARÀ UGUALE AL VALORE CHE HO GIÀ IN TABELLA CHE INDICA LA DISTANZA DA ME ALLA DESTINAZIONE CHE MI CHIEDE IL NODO PRIMA: VUOL DIRE CHE INSERISCO NEL MESSAGGIO SEMPLICEMENTE IL VALORE A CUI È ARRIVATO IL NODO PRIMA DI ME (DATO CHE AGGIORNA a ogni hop il valore path)
+		*/ 
+			if(tab_complete[n].dst_add == mess->dst_add){
+
+			mess->msg_type = ROUTE_REPLY;
+			mess->path += tab_complete[n].path;	//ora mess->path indica la distanza fra src e dst effettivi
+
+			call AMSend.send(mess->crt_node,&packet,sizeof(my_msg_t));	//crt_node indica ancora l'ultimo nodo prima di questo
+
+
+			}
+			else{
+		//caso b) non ho la destinazione nella mia tabella --> continuerò a fare forward aggiornando il valore path
+			}
+
+
+		}
+
+
+
+
+	}	//graffa che chiude if(mess->msg_type == ROUTE_REQ)
 
 
 

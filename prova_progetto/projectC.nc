@@ -43,7 +43,7 @@ module projectC {
 
   task void sendRandmsg() {  // task che manda i messaggi casuali (punto 1)
 	
-	//uint8_t num = (call Random.rand16() % 8) + 1;
+	//uint8_t num = (call Random.rand16() % 8) + 1; //lo lascio solo per poter settare il destination address del broadcast
 
 
 //	SOLO campi che sono presenti in qualsiasi tipo di messaggio
@@ -55,6 +55,7 @@ module projectC {
 	mess->dst_add = (call Random.rand16() % 8) + 1;
 	mess->src_add = TOS_NODE_ID;
 	//mess->crt_node = TOS_NODE_ID;
+	dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 
 
 //TODO CREAZIONE DELLE TABELLE DI ROUTING (con l'array tab_complete[8])
@@ -62,7 +63,7 @@ module projectC {
 // 1) per prima cosa, scorro la mia tabella per vedere se ho un match
 	for (n=0; tab_complete[n].dst_add != mess->dst_add && n<(sizeof(tab_complete)/5); n++){ 
 			//dbg("radio_pack","n = %d\n", n);	
-		}
+	}
 /* 2) ora ho un valore di "n" che può indicarmi: --> la posizione del match	
 						     (tab_complete[n].dst_add == mess->dst_add) oppure (tab_complete[n].dst_add == mess->dst_add)
 						 --> che non c'è stato match (quindi non vado nell' "else", dove userò la Task Broadcast)	
@@ -89,18 +90,18 @@ module projectC {
 
 	// mando effettivamente il pacchetto al (tab_complete[n].next_hop)
 		if(call AMSend.send(tab_complete[n].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
-		  dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength(&packet));
-		  dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
-		  dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
-		  dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
-		  dbg_clear("radio_pack","\t\t Payload \n" );
-		  dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
-		  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
-		  dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
-		  dbg_clear("radio_pack", "\t\t source address: %hhu \n", mess->src_add);
-		  dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
-		  dbg_clear("radio_send", "\n");
-		  dbg_clear("radio_pack", "\n");
+			  dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength(&packet));
+			  dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
+			  dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+			  dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
+			  dbg_clear("radio_pack","\t\t Payload \n" );
+			  dbg_clear("radio_pack", "\t\t msg_type: %hhu \n ", mess->msg_type);
+			  dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
+			  dbg_clear("radio_pack", "\t\t DATA: %hhu \n", mess->value);
+			  dbg_clear("radio_pack", "\t\t source address: %hhu \n", mess->src_add);
+			  dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+			  dbg_clear("radio_send", "\n");
+			  dbg_clear("radio_pack", "\n");
 		}
 
 	}else{		//ATTENTO ALLE PARENTESI
@@ -115,7 +116,9 @@ module projectC {
 
 			mess->msg_type = ROUTE_REQ;	//--> settiamo solo questo, il valore è 2
 			//mess->crt_node = TOS_NODE_ID;  ---> non credo che servirà
-
+			mess->dst_add = (call Random.rand16() % 8) + 1;  //se non settiamo questo il broadcast non prende la destinazione del nostro messaggio route_req 
+									 // però la nostra destinazione cambia TODO PROBLEMA: TROVARE UN MODO TALE CHE LE DEST SIANO UGUALI
+			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 			//post broadcast();
 
 //prova: mando in broadcast scrivendo tutto
@@ -123,7 +126,7 @@ module projectC {
 //sono sempre dentro l'else
 
   		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
-			dbg("radio_pack","Pacchetti inviati in Broadcast come ROUTE REQ \n");
+			/*dbg("radio_pack","Pacchetti inviati in Broadcast come ROUTE REQ \n");
 			dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
 			dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
 			dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
@@ -132,7 +135,7 @@ module projectC {
 	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", mess->dst_add);
 			//dbg_clear("radio_pack","\t Current node: %hhu \n ", mess->crt_node);
 			dbg_clear("radio_pack", "\t\t Msg_type: %hhu \n ", mess->msg_type);
-			dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", mess->msg_id);
+			dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", mess->msg_id);*/
 		}
 
 	}	//graffa che chiude l'else del Match non trovato
@@ -202,13 +205,13 @@ module projectC {
 
     if(&packet == buf && err == SUCCESS ) {
 	
-	dbg("radio_send", "Packet sent...");
+	//dbg("radio_send", "Packet sent...");
 					
     }else{
 	  dbg_clear("radio_ack", "but ack was not received"); 		
     }
 
-    dbg_clear("radio_send", " at time %s \n", sim_time_string());
+    //dbg_clear("radio_send", " at time %s \n", sim_time_string());
   }
 	
 
@@ -239,14 +242,14 @@ module projectC {
 //***************************************************************************************************************************************//
 
 
-// 1) IF msg_type is DATA
-	if(mess->msg_type == DATA){
+// 1) IF msg_type is ROUTE REQ
+	if(mess->msg_type == ROUTE_REQ){
 		
 		//controllo: sono io il nodo di destinazione?
 		//se lo sono, allora stampo tutto perchè avrò tutti i dati
 		if(mess->dst_add == TOS_NODE_ID){
-		dbg("radio_pack","ORIGINAL DESTINATION REACHED \n");
-
+		dbg("radio_pack","ORIGINAL DESTINATION REACHED BY BROADCAST\n");
+		/*
 		dbg("radio_rec","Message received at time %s \n", sim_time_string());
 		dbg("radio_pack",">>>Pack \n \t Payload length %hhu \n", call Packet.payloadLength( buf ) );
 		dbg_clear("radio_pack","\t Source: %hhu \n", call AMPacket.source( buf ) );
@@ -257,7 +260,7 @@ module projectC {
 		dbg_clear("radio_pack", "\t\t msg_id: %hhu \n", mess->msg_id);
 		dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 		dbg_clear("radio_pack", "\t\t source address: %hhu \n", mess->src_add);
-		dbg_clear("radio_pack","\n");
+		dbg_clear("radio_pack","\n");*/
 		}
 		else{
 		//SE NON SONO IO IL NODO DI DESTINAZIONE, ALLORA dovrò fare forward
@@ -283,10 +286,21 @@ module projectC {
 
 			}	//graffa che chiude [[if (tab_complete[n].dst_add == mess->dst_add)]]
 			else{
-			dbg("radio_pack","Match not found, sending in Broadcast in order to update the Routing Table \n");
+			//dbg("radio_pack","Match not found, sending in Broadcast in order to update the Routing Table \n");
 			//NON DEVO MANDARE UN MESSAGGIO DEL TUTTO NUOVO, RIUTILIZZO L'ID DEL MESSAGGIO CHE HO RICEVUTO
 			//PER POTER RICONOSCERE CHE STO ANCORA PARLANDO DI QUELL'INVIO DA UNA SRC CHE NON SONO IO
-			
+				if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
+					/*dbg("radio_pack","Pacchetti inviati in Broadcast come ROUTE REQ DI INOLTRO da un broadcast della source \n");
+					dbg("radio_pack",">>>Pack\n \t Payload length %hhu \n", call Packet.payloadLength( &packet ) );
+					dbg_clear("radio_pack","\t Source: %hhu \n ", call AMPacket.source( &packet ) );
+					dbg_clear("radio_pack","\t Destination: %hhu \n ", call AMPacket.destination( &packet ) );
+					dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
+					dbg_clear("radio_pack","\t Source nodo intermedio: %hhu \n ", mess->src_add);
+				   	dbg_clear("radio_pack","\t Destination: %hhu \n ", mess->dst_add);
+					//dbg_clear("radio_pack","\t Current node: %hhu \n ", mess->crt_node);
+					dbg_clear("radio_pack", "\t\t Msg_type: %hhu \n ", mess->msg_type);
+					dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", mess->msg_id);*/
+				}
 			}
 
 		}	//graffa che chiude l'else
@@ -341,7 +355,7 @@ module projectC {
 
 
 
-}  //parentesi graffa di chiususra implementation
+}  //parentesi graffa di chiusura implementation
 
 
 

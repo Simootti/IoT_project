@@ -27,6 +27,8 @@ typedef nx_struct tab {
 	nx_uint16_t dst_add;	//destinazione del pacchetto
 	nx_uint16_t next_hop;	//next_hop associato alla destinazione (segue il percorso, non importa che sia
 				//direttamente la destinazione)
+	nx_uint16 distance_from_dst;	//indicherà qual è la distanza che ci separa dalla destinazione 
+					//(valore che serve mettere nella Routing Table per verificare dopo il percorso migliore)
 	nx_uint8_t path;	//numero di nodi attraversati, serve per trovare il path migliore
 } tab_t;
 

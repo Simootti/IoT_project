@@ -43,7 +43,7 @@ module projectC {
 	//uint8_t num = (call Random.rand16() % 8) + 1;
 
 	mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess->msg_type = REQ;
+	mess->msg_type = ROUT_REQ;
 	mess->msg_id = counter++;
 	mess->value = call Random.rand16();
 	mess->dst_add = (call Random.rand16() % 8) + 1;
@@ -130,9 +130,9 @@ module projectC {
 			dbg_clear("radio_pack","\t AM Type: %hhu \n ", call AMPacket.type( &packet ) );
 			dbg_clear("radio_pack","\t Source: %hhu \n ", route_mess->src_add);
 	           	dbg_clear("radio_pack","\t Destination: %hhu \n ", route_mess->dst_add);
-			dbg_clear("radio_pack","\t Current node: %hhu \n ", route_mess->crt_node);
+			//dbg_clear("radio_pack","\t Current node: %hhu \n ", route_mess->crt_node);
 			dbg_clear("radio_pack", "\t\t Msg_type: %hhu \n ", route_mess->msg_type);
-			dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", route_mess->route_id);
+			dbg_clear("radio_pack", "\t\t Route request id: %hhu \n", route_mess->msg_id);
 	}
   }
 
@@ -202,8 +202,10 @@ module projectC {
 	dbg_clear("radio_pack","\n");
 
 /*
+
+//TODO ELIMINARE I DUPLICATI MA PRIMA BISOGNA SALVARE LE ENTRY
+
 	if (route_mess->msg_type == ROUTE_REQ && route_mess->msg_id != route_save[].msg_id) {
-		//TODO ELIMINARE I DUPLICATI MA PRIMA BISOGNA SALVARE LE ENTRY
 		route_mess = (route_msg_t*)(call Packet.getPayload(&packet,sizeof(route_msg_t)));
 		route_save[].msg_type = route_mess->msg_type;
 		route_save[].msg_id = route_mess->msg_id;

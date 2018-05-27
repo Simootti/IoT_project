@@ -2252,11 +2252,15 @@ enum __nesc_unnamed4280 {
 
 
 
+
+
 #line 24
 typedef nx_struct tab {
   nx_uint8_t src_add;
+
   nx_uint16_t dst_add;
   nx_uint16_t next_hop;
+
   nx_uint8_t path;
 } __attribute__((packed)) tab_t;
 # 25 "/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h"
@@ -6296,7 +6300,7 @@ static inline void projectC$sendRandmsg$runTask(void )
 
 
   projectC$mess[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
-  __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 1);
+  __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 2);
   __nesc_hton_uint16(projectC$mess[sim_node()]->msg_id.nxdata, projectC$counter[sim_node()]++);
   __nesc_hton_uint16(projectC$mess[sim_node()]->value.nxdata, projectC$Random$rand16());
   __nesc_hton_uint8(projectC$mess[sim_node()]->dst_add.nxdata, projectC$Random$rand16() % 8 + 1);

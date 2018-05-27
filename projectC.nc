@@ -43,7 +43,7 @@ module projectC {
 	//uint8_t num = (call Random.rand16() % 8) + 1;
 
 	mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess->msg_type = REQ;
+	mess->msg_type = ROUTE_REQ;
 	mess->msg_id = counter++;
 	mess->value = call Random.rand16();
 	mess->dst_add = (call Random.rand16() % 8) + 1;

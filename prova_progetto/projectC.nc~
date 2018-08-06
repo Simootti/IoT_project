@@ -24,7 +24,6 @@ module projectC {
   uint32_t counter=0;
   //uint32_t rec_id;
   my_msg_t* mess;
-  message_t packet;
   uint8_t n;
   tab_t tab_complete[10];
   tab_t tab_routing[8];
@@ -83,7 +82,7 @@ module projectC {
 			dbg("radio_pack","Packet sent to next hop");
 		}
 		
-		mess->msg_type = DATA;	//quindi deve essere 1
+		mess->msg_type = DATA;	//quindi deve essere 1, devo stare attento a non mandare un msg data prima che sia fatta tutta la route reply
 		mess->value = call Random.rand16();
 
 	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
@@ -283,6 +282,14 @@ module projectC {
 
 	if(mess->msg_type == ROUTE_REQ){
 
+	//TODO se il mio path è più grande di uno già esistente lo elimino, come lo faccio?
+		
+		if(tab_complete[n].src_add == mess->src_add && tab_complete[n].dst_add == mess->dst_add){
+
+			return buf;	//elimina il pacchetto duplicato
+
+		}
+
 	//TODO PRIMO CONTROLLO: HO GIÀ RICEVUTO QUESTA ROUTE_REQ?
 	// SE msg_id e src_add e msg_id corrispondono a qualcosa che ho già in memoria, allora scarto la seconda
 	//--> ATTENTO 
@@ -337,10 +344,20 @@ module projectC {
 				}else{
 				//TODO caso b) non ho la destinazione nella mia tabella --> devo fare una REQ in BROADCAST pure io 
 				//MA SENZA CREARE UN ALTRO PACCHETTO, "RICICLANDO LO STESSO"
+				//Attenzione all'uso della n, bisogna selezionare il giusto posto dove metterla 
 
 				tab_complete[n].msg_id = mess->msg_id;	//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni
 				tab_complete[n].src_add = mess->src_add;
-				tab_complete[n].dst_add = mess->msg_id;
+				tab_complete[n].dst_add = mess->dst_add;
+				tab_complete[n].prec_node = "......"; //qui devo salvare il nodo da qui il messaggio l'ho ricevuto
+				tab_complete[n].path += 1;
+
+				mess->msg_type = ROUTE_REQ; //replicare il messaggio di route request, COME FARE?
+
+				dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+
+			  		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
+					}
 
 				}
 
@@ -350,6 +367,8 @@ module projectC {
 	}	//graffa che chiude if(mess->msg_type == ROUTE_REQ)
 
 //********************************************************************************************************************************************************//
+
+// 2) caso due : IF msg_type == ROUTE_REPLY
 
 	if(mess->msg_type == ROUTE_REPLY){
 

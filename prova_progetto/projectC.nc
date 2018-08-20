@@ -25,8 +25,8 @@ module projectC {
   //uint32_t rec_id;
   my_msg_t* mess;
   uint8_t n;
-  tab_t tab_complete[10];
-  tab_t tab_routing[8];
+  tab_t tab_discovery[8];
+  tab_t tab_routing[10];
   uint8_t c=0; //counter per la route request
   uint8_t prova=0;
 
@@ -66,9 +66,7 @@ module projectC {
 						 --> che non c'è stato match (quindi non vado nell' "else", dove userò la Task Broadcast)	
 */
 
-//primo caso: trovo una corrispondenza nella Routing Table 
-
-//TODO CONFUSIONE CON TAB ROUTING E COMPLETE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//primo caso: trovo una corrispondenza nella Routing Table
 
 	if (tab_routing[n].dst_add == mess->dst_add){
 			dbg("radio_pack","Found a match in the Routing Table \n");
@@ -227,7 +225,7 @@ module projectC {
 		else{
 		//SE NON SONO IO IL NODO DI DESTINAZIONE, ALLORA dovrò fare forward
 		//controllo la tabella di routing
-
+		//TODO non fare confusione con routing table e tab complete (qui ci va tab complete secondo me)
 		// scorro la mia tabella per vedere se ho un match
 			for (n=0; tab_routing[n].dst_add != mess->dst_add && n<(sizeof(tab_routing)/5); n++){ 
 				//dbg("radio_pack","n = %d\n", n);	
@@ -284,20 +282,13 @@ module projectC {
 
 	if(mess->msg_type == ROUTE_REQ){
 
-	//TODO se il mio path è più grande di uno già esistente lo elimino, come lo faccio?
-		
-		if(tab_complete[n].src_add == mess->src_add && tab_complete[n].dst_add == mess->dst_add){
-
-			return buf;	//elimina il pacchetto duplicato
-
-		}
-
+	
 	//TODO PRIMO CONTROLLO: HO GIÀ RICEVUTO QUESTA ROUTE_REQ?
 	// SE msg_id e src_add e msg_id corrispondono a qualcosa che ho già in memoria, allora scarto la seconda
 	//--> ATTENTO 
 
 		//TODO trovare la n corrispondente   
-		if(tab_complete[n].src_add == mess->src_add && tab_complete[n].msg_id == mess->msg_id && tab_complete[n].dst_add == mess->dst_add){
+		if(tab_discovery[n].src_add == mess->src_add && tab_discovery[n].msg_id == mess->msg_id && tab_discovery[n].dst_add == mess->dst_add){
 
 			return buf;	//elimina il pacchetto duplicato
 
@@ -332,31 +323,31 @@ module projectC {
 				}		
 				/* caso a) Ho già la destinazione nella mia tabella
 				mando una ROUTE_REPLY informando quanto mi manca dalla destinazione --> aggiorno path con il valore che ho nella tabella
-				IMPORTANTE: LA DISTANZA DALLA DESTINAZIONE SARÀ UGUALE AL VALORE CHE HO GIÀ IN TABELLA CHE INDICA LA DISTANZA DA ME ALLA DESTINAZIONE CHE MI 				        CHIEDE IL NODO PRIMA: VUOL DIRE CHE INSERISCO NEL MESSAGGIO SEMPLICEMENTE IL VALORE A CUI È ARRIVATO IL NODO PRIMA DI ME (DATO CHE AGGIORNA a 					ogni hop il valore path)
+				IMPORTANTE: LA DISTANZA DALLA DESTINAZIONE SARÀ UGUALE AL VALORE CHE HO GIÀ IN TABELLA CHE INDICA LA DISTANZA DA ME ALLA DESTINAZIONE CHE 					MI CHIEDE IL NODO PRIMA: VUOL DIRE CHE INSERISCO NEL MESSAGGIO SEMPLICEMENTE IL VALORE A CUI È ARRIVATO IL NODO PRIMA DI ME (DATO CHE 					AGGIORNA a ogni hop il valore path)
 				*/ 
 				if(tab_routing[n].dst_add == mess->dst_add){
 
 					mess->msg_type = ROUTE_REPLY;
-					mess->path = tab_complete[n].path + 1;		//aggiorno il valore del path
-					tab_complete[n].prec_node = mess->prec_node;
+					mess->path = tab_routing[n].path + 1;		//aggiorno il valore del path
+					tab_routing[n].prec_node = mess->prec_node;
 					call AMSend.send(mess->prec_node,&packet,sizeof(my_msg_t));	//prec_node indica ancora l'ultimo nodo prima di questo
 					//TODO questo forse è un errore di logica perchè crt_node mi sa che indicherà sempre e solo il nodo precedente
 					// --> non fa fare il percorso all'indietro
 
 				}else{
-				//TODO caso b) non ho la destinazione nella mia tabella --> devo fare una REQ in BROADCAST pure io 
-				//MA SENZA CREARE UN ALTRO PACCHETTO, "RICICLANDO LO STESSO"
-				//Attenzione all'uso della n, bisogna selezionare il giusto posto dove metterla 
+					//TODO caso b) non ho la destinazione nella mia tabella --> devo fare una REQ in BROADCAST pure io 
+					//MA SENZA CREARE UN ALTRO PACCHETTO, "RICICLANDO LO STESSO"
+					//Attenzione all'uso della n, bisogna selezionare il giusto posto dove metterla 
 
-				tab_complete[n].msg_id = mess->msg_id;	//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni
-				tab_complete[n].src_add = mess->src_add;
-				tab_complete[n].dst_add = mess->dst_add;
-				tab_complete[n].prec_node = "......"; //qui devo salvare il nodo da qui il messaggio l'ho ricevuto
-				tab_complete[n].path += 1;
+					tab_discovery[n].msg_id = mess->msg_id;	//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i 						doppioni
+					tab_discovery[n].src_add = mess->src_add;
+					tab_discovery[n].dst_add = mess->dst_add;
+					tab_discovery[n].prec_node = "......"; //qui devo salvare il nodo da cui il messaggio l'ho ricevuto
+					tab_discovery[n].path += 1;
 
-				mess->msg_type = ROUTE_REQ; //replicare il messaggio di route request, COME FARE?
+					mess->msg_type = ROUTE_REQ; //TODO replicare il messaggio di route request, COME FARE?
 
-				dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+					dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 
 			  		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
 					}
@@ -370,7 +361,7 @@ module projectC {
 
 //********************************************************************************************************************************************************//
 
-// 2) caso due : IF msg_type == ROUTE_REPLY
+// 2) caso due : If msg_type == ROUTE_REPLY
 
 	if(mess->msg_type == ROUTE_REPLY){
 
@@ -416,25 +407,31 @@ module projectC {
 		} //graffa che chiude il "se sono io la sorgente"
 		else{
 			// se sono qui, vuol dire che non sono io la sorgente --> sono un nodo che diventerà un next-hop di quello prima di me
-			// aggiorno la mia tabella di routing e mando un messaggio a quello prima
-			//TODO : COME RITROVO QUELLO PRIMA DI ME?	--> non credo si possa utilizzare crt_node, provo con prec_node (salvato in tabella)
+			// aggiorno la mia tabella di discovery e mando un messaggio a quello prima
+			//TODO : COME RITROVO QUELLO PRIMA DI ME	--> non credo si possa utilizzare crt_node, provo con prec_node (salvato in tabella)
 			//TODO : CONTROLLO SULLA LUNGHEZZA DEL PATH
 
 			//prima di tutto aggiorno la mia tabella (infatti le REPLY vengono inviate solo dopo aver trovato una dst )
 			//prima scorro finchè non trovo un posto libero (con valori nulli)
-			for (n=0; tab_complete[n].dst_add != FALSE; n++){
+			for (n=0; tab_discovery[n].dst_add != FALSE; n++){
 			}
 			//una volta trovato, riempio i campi (stampo per verifica)
-			tab_complete[n].dst_add = mess->dst_add;
-			tab_complete[n].src_add = mess->src_add; // qua la sorgente è quella originaria, serve per il confronto sui duplicati
-			tab_complete[n].next_hop = mess->crt_node; //crt mi dice l'ultimo nodo che mi ha passato la reply
-			tab_complete[n].path = mess->path;
+			tab_discovery[n].dst_add = mess->dst_add;
+			tab_discovery[n].src_add = mess->src_add; // qua la sorgente è quella originaria, serve per il confronto sui duplicati
+			tab_discovery[n].next_hop = mess->crt_node; //crt mi dice l'ultimo nodo che mi ha passato la reply
+			tab_discovery[n].path = mess->path;
 			//stampo cosa ho aggiornato nella mia tabella
 			dbg("radio_rec","ROUTE_REPLY received at time %s \n", sim_time_string());
 			dbg_clear("radio_pack","\t\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, n );
-			dbg_clear("radio_pack", "\t\t Table --> Destination address: %hhu \n", tab_complete[n].dst_add);
-			dbg_clear("radio_pack", "\t\t Table --> source address: %hhu \n", tab_complete[n].src_add);
-			dbg_clear("radio_pack", "\t\t Table --> Next-Hop: %hhu \n", tab_complete[n].next_hop);		
+			dbg_clear("radio_pack", "\t\t Table --> Destination address: %hhu \n", tab_discovery[n].dst_add);
+			dbg_clear("radio_pack", "\t\t Table --> source address: %hhu \n", tab_discovery[n].src_add);
+			dbg_clear("radio_pack", "\t\t Table --> Next-Hop: %hhu \n", tab_discovery[n].next_hop);	
+			
+			mess->msg_type = ROUTE_REPLY; //TODO replicare il messaggio di route reply, COME FARE?
+
+			dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
+
+			if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){	
 
 			} //graffa che chiude else che diceva che non sono io la sorgente
 

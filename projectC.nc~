@@ -234,7 +234,8 @@ module projectC {
 			-->la gestione del riattraversare tutti gli hop è affidata al ricevimento di una ROUTE_REPLY (definiamo più avanti) 
 			*/
 
-			tab_discovery[len_disc].msg_id = mess->msg_id;	//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
+			tab_discovery[len_disc].msg_id = mess->msg_id;	
+			//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
@@ -269,7 +270,8 @@ module projectC {
 		 else{
 		 //se sono qui, vuol dire che non sono la destinazione
 
-			tab_discovery[len_disc].msg_id = mess->msg_id;	//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
+			tab_discovery[len_disc].msg_id = mess->msg_id;	
+			//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
@@ -375,5 +377,6 @@ module projectC {
 	} // chiude if (msq_type = ROUTE_REPLY)
 
 	return buf;
+  }
 
 }  //parentesi graffa di chiusura implementation

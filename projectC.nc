@@ -234,7 +234,8 @@ module projectC {
 			-->la gestione del riattraversare tutti gli hop è affidata al ricevimento di una ROUTE_REPLY (definiamo più avanti) 
 			*/
 
-			tab_discovery[len_disc].msg_id = mess->msg_id;	//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
+			tab_discovery[len_disc].msg_id = mess->msg_id;	
+			//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
@@ -269,7 +270,8 @@ module projectC {
 		 else{
 		 //se sono qui, vuol dire che non sono la destinazione
 
-			tab_discovery[len_disc].msg_id = mess->msg_id;	//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
+			tab_discovery[len_disc].msg_id = mess->msg_id;	
+			//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
@@ -343,7 +345,8 @@ module projectC {
 
 			//salvare valori nella tabella di routing
 			tab_routing[mess->dst_add].dst_add = mess->src_add;
-			tab_routing[mess->dst_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
+			tab_routing[mess->dst_add].next_hop = mess->crt_add; 
+			//nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
 			
 			//Fare la ricerca della tab discovery correlata per la RRES verso il percorso giusto
 			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].next_hop != TOS_NODE_ID; n++){

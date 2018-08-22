@@ -51,7 +51,7 @@ module projectC {
 	mess->msg_id = counter++;
 	mess->dst_add = (call Random.rand16() % 8) + 1;
 	mess->src_add = TOS_NODE_ID;
-	mess->crt_node = TOS_NODE_ID;
+	mess->crt_add = TOS_NODE_ID;
 
 	dbg_clear("radio_send", "\n");
 	dbg_clear("radio_pack", "\n");
@@ -114,9 +114,9 @@ module projectC {
 		dbg("role","I'm node %d: start sending periodical request\n" , TOS_NODE_ID );
 		call MilliTimer.startPeriodic( 30000 );
 	}
-    	}else{
+    }else{
 		call SplitControl.start();
-    	}
+    }
   }
   
   event void SplitControl.stopDone(error_t err){}
@@ -158,7 +158,6 @@ module projectC {
 		//se lo sono, allora stampo tutto perchè avrò tutti i dati
 		if(mess->dst_add == TOS_NODE_ID){
 			dbg("radio_pack","DATA packet reached the ORIGINAL DESTINATION correctly!\n");
-			
 		}
 		else{
 		//se non sono io la destinazione allora dovrò fare forward
@@ -180,7 +179,7 @@ module projectC {
 				mess_tipo1->type = DATA;
 				mess_tipo1->dst_add = mess->dst_add;
 				mess_tipo1->src_add = mess->src_add;
-				mess_tipo1->crt_node = TOS_NODE_ID; 
+				mess_tipo1->crt_add = TOS_NODE_ID; 
 
 				provando con messaggio unico 
 				*/
@@ -225,10 +224,10 @@ module projectC {
 		if(mess->dst_add == TOS_NODE_ID){
 			dbg("radio_pack","I am the Destination of the Route_Req %hhu sent originally by Node %hhu \n",mess->msg_id, mess->src_add );
 			// dovrebbe stamparmi sia l'id della route_req sia la VERA sorgente
-			dbg("radio_pack","I send a ROUTE_REPLY to  %hhu  \n",mess->crt_node );
+			dbg("radio_pack","I send a ROUTE_REPLY to  %hhu  \n",mess->crt_add );
 			/*
-			deve stamparmi il nodo che mi ha "consegnato" la ROUTE_REQ (crt_node indica ancora l'ultimo hop che ha fatto forward)
-			se src e dst sono collegati, allora in questo caso src_add == crt_node
+			deve stamparmi il nodo che mi ha "consegnato" la ROUTE_REQ (crt_add indica ancora l'ultimo hop che ha fatto forward)
+			se src e dst sono collegati, allora in questo caso src_add == crt_add )
 	
 			nella richiesta non mi è richiesto di aggiornare la tabella della destinazione, quindi mi limito a mandare una ROUTE_REPLY
 			che riattraverserà tutti i nodi
@@ -263,7 +262,7 @@ module projectC {
 			mess->dst_add = mess->src_add;
 			mess->src_add = mess->dst_add;
 			mess->crt_add = TOS_NODE_ID;
-			if(call AMSend.send(mess->dst_node,&packet,sizeof(my_msg_t)) == SUCCESS){
+			if(call AMSend.send(mess->dst_add,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
 
 		} 	// graffa che chiude [[if(mess->dst_add == TOS_NODE_ID)]] --> se esco da questo if, vuol dire che non sono io la DST
@@ -320,7 +319,7 @@ module projectC {
 			mess->dst_add = tab_routing[mess->dst_add].dst_add;
 			mess->src_add = TOS_NODE_ID;
 			mess->crt_add = TOS_NODE_ID;
-			mess->next_hop = tab_routing[mess->dst_add].next_hop;
+			//mess->next_hop = tab_routing[mess->dst_add].next_hop;
 
 			// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
 			if(call AMSend.send(tab_routing[mess->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
@@ -347,7 +346,7 @@ module projectC {
 			tab_routing[mess->dst_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
 			
 			//Fare la ricerca della tab discovery correlata per la RRES verso il percorso giusto
-			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id n<len_disc && tab_discovery[n].crt_add != TOS_NODE_ID; n++){
+			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].next_hop != TOS_NODE_ID; n++){
 			}
 			//Invio del pacchetto RRES
 			/*
@@ -367,8 +366,8 @@ module projectC {
 			mess->msg_type = ROUTE_REPLY; //non serve però io lo ribadisco
 			mess->msg_id = tab_discovery[n].msg_id;
 			mess->crt_add = TOS_NODE_ID;
-			mess->next_hop = tab_discovery[n].crt_add;	
-			if(call AMSend.send(mess->next_hop,&packet,sizeof(my_msg_t))){
+			//mess->next_hop = tab_discovery[n].prec_node;	
+			if(call AMSend.send(tab_discovery[n].prec_node,&packet,sizeof(my_msg_t))){
 			}
 
 		} //graffa che chiude else che diceva che non sono io la sorgente
@@ -376,5 +375,6 @@ module projectC {
 	} // chiude if (msq_type = ROUTE_REPLY)
 
 	return buf;
+  }
 
 }  //parentesi graffa di chiusura implementation

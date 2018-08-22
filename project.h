@@ -8,7 +8,7 @@ typedef nx_struct my_msg {	//defines the payload of the msg
 	nx_uint16_t value;	//data
 	nx_uint8_t dst_add;	//destination address
 	nx_uint8_t src_add;	//source address
-	nx_uint8_t crt_node;	//current node --> serve a identificare un next-hop a cui nel caso dobbiamo rispondere
+	nx_uint8_t crt_add;	//current node --> serve a identificare un next-hop a cui nel caso dobbiamo rispondere
 	//nx_uint8_t prec_node;	//identifica il nodo precedente
 				//crt_node mi serve per l'andata, prec_node per il ritorno
 
@@ -33,7 +33,7 @@ typedef nx_struct tab {
 
 //**********************************************************************//
 
-typedef nx_struct tab {
+typedef nx_struct tab2 {
 	nx_uint8_t src_add;	//salvo nella tabella la sorgente della richiesta (serve per aggiornare)
 				//---> serve forse alla ROUTE_RESP
 	nx_uint16_t dst_add;	//destinazione del pacchetto

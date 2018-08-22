@@ -147,7 +147,7 @@ module projectC {
 
   event message_t* Receive.receive(message_t* buf,void* payload, uint8_t len) {
 	
-	m=0; //contatore che serve più avanti (tener tracce del precedente path in modo da aumentarlo)
+	m=100; //contatore che serve più avanti (tener tracce del precedente path in modo da aumentarlo)
 	big_path=100; //contatore che serve più avanti (per trovare il più piccolo path di routing che serve per eliminare gli altri)
 	mess=(my_msg_t*)payload;
 
@@ -239,10 +239,12 @@ module projectC {
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
-			
+
+			//trovare il giusto riscontro per aumentare il path
+			//ci potrebbe essere un PROBLEMA di riscontro del path giusto perché qui io prendo quello con il path più piccolo e non quello giusto però arrivo sempre 				//al nodo che sta ricevendo (es. due id e ricevuto da questo nodo ma con 2 percorsi differenti 1-2-3 o 1-3)			
 			for (n=0; n<len_disc; n++){ //per aggiungere al msg_id il path precedente
-				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id){
-					if (tab_discovery[n].path >= m){
+				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].next_hop == TOS_NODE_ID){
+					if (tab_discovery[n].path <= m){
 						m = tab_discovery[n].path;
 					}
 				}
@@ -275,10 +277,12 @@ module projectC {
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
-			
+
+			//trovare il giusto riscontro per aumentare il path
+			//ci potrebbe essere un PROBLEMA di riscontro del path giusto perché qui io prendo quello con il path più piccolo e non quello giusto però arrivo sempre 				//al nodo che sta ricevendo (es. due id e ricevuto da questo nodo ma con 2 percorsi differenti 1-2-3 o 1-3)
 			for (n=0; n<len_disc; n++){ //per aggiungere al msg_id il path precedente
-				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].prec_node == tab_discovery[len_disc].prec_node){
-					if (m >= tab_discovery[n].path){
+				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].next_hop == TOS_NODE_ID){
+					if (tab_discovery[n].path <= m){
 						m = tab_discovery[n].path;
 					}
 				}

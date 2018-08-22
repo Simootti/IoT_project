@@ -147,7 +147,7 @@ module projectC {
 
   event message_t* Receive.receive(message_t* buf,void* payload, uint8_t len) {
 	
-	m=0; //contatore che serve più avanti (tener tracce del precedente path in modo da aumentarlo)
+	m=100; //contatore che serve più avanti (tener tracce del precedente path in modo da aumentarlo)
 	big_path=100; //contatore che serve più avanti (per trovare il più piccolo path di routing che serve per eliminare gli altri)
 	mess=(my_msg_t*)payload;
 
@@ -239,16 +239,12 @@ module projectC {
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
-			
-			for (n=0; n<len_disc; n++){ //per aggiungere al msg_id il path precedente
-				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id){
-					if (tab_discovery[n].path >= m){
-						m = tab_discovery[n].path;
-					}
-				}
+
+			//trovare il giusto riscontro per aumentare il path (TODO DA FINIRE)			
+			for (n=0; tab_discovery[n].msg_id==tab_discovery[len_disc].msg_id && tab_discovery[n].next_hop==tab_discovery[len_disc].prec_node && n<len_disc; n++){ 			
 			}
 			
-			tab_discovery[len_disc].path = m + 1;
+			tab_discovery[len_disc].path = tab_discovery[n].path + 1;
 			len_disc += 1;
 			/*
 			mess_tipo3 = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
@@ -277,8 +273,8 @@ module projectC {
 			tab_discovery[len_disc].prec_node = mess->crt_add;
 			
 			for (n=0; n<len_disc; n++){ //per aggiungere al msg_id il path precedente
-				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].prec_node == tab_discovery[len_disc].prec_node){
-					if (m >= tab_discovery[n].path){
+				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].next_hop == TOS_NODE_ID){
+					if (tab_discovery[n].path <= m){
 						m = tab_discovery[n].path;
 					}
 				}
@@ -345,7 +341,8 @@ module projectC {
 
 			//salvare valori nella tabella di routing
 			tab_routing[mess->dst_add].dst_add = mess->src_add;
-			tab_routing[mess->dst_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
+			tab_routing[mess->dst_add].next_hop = mess->crt_add; 
+			//nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
 			
 			//Fare la ricerca della tab discovery correlata per la RRES verso il percorso giusto
 			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].next_hop != TOS_NODE_ID; n++){

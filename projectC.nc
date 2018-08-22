@@ -25,6 +25,7 @@ module projectC {
   my_msg_t* mess;
   message_t packet;
   uint8_t len_disc=0; //per tenere il conto dell'occupazione della tab discovery
+  uint8_t temp;
   uint8_t n;
   uint8_t m;
   uint8_t big_path;
@@ -170,7 +171,7 @@ module projectC {
 				if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
 					dbg("radio_pack","Packet sent to destination");	
 				}else{
-					dbg("radio_pack","Packet sent to next hop");
+					dbg("radio_pack","Packet sent to next hop\n\n");
 					dbg_clear("radio_pack", "\t\t Next-Hop address: %hhu \n", tab_routing[mess->dst_add].next_hop);
 				}
 				/*
@@ -194,7 +195,7 @@ module projectC {
 
 			// Se siamo qui è perché c'è un errore nelle tabelle di routing
 
-				dbg("radio_pack","ERRORE : NON DOVRESTI ESSERE QUI, DOVRESTI ESSERE STATO INOLTRATO IN TABELLA");
+				dbg("radio_pack","ERRORE : NON DOVRESTI ESSERE QUI, DOVRESTI ESSERE STATO INOLTRATO IN TABELLA\n\n");
 
 			}
 
@@ -214,8 +215,9 @@ module projectC {
 		for (n=0; n<len_disc; n++){ 	
 			
 			if(tab_discovery[n].src_add == mess->src_add && tab_discovery[n].msg_id == mess->msg_id && tab_discovery[n].dst_add == mess->dst_add){
-			
+				dbg("radio_pack", "Elimino un duplicato della richiesta con id: %hhu originata da %hhu \n", mess->msg_id ,mess->src_add);
 				return buf;
+				dbg_clear("radio_pack", "Questo è un messaggio dopo il return_buf, non puoi vederlo\n\n");
 			}
 
 		} //elimina il pacchetto duplicato, se duplicato faccio return buf dentro al for così interrompo l'interfaccia receive
@@ -240,8 +242,12 @@ module projectC {
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
 
+			dbg("radio_pack","La ROUTE_REQ partita da %hhu a %hhu con id: %hhu ora è in %hhu, ovvero la destinazione\n", mess->src_add, mess->dst_add, mess->msg_id,TOS_NODE_ID );
+			dbg("radio_pack","La tab_discovery è stata aggiornata in posizione %hhu con \n id: %hhu,\n src_add: %hhu, \n dst_add: %hhu,\n prec_node: %hhu \n\n", len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add, tab_discovery[len_disc].dst_add = mess->dst_add, tab_discovery[len_disc].prec_node );
+
 			//trovare il giusto riscontro per aumentare il path
-			//ci potrebbe essere un PROBLEMA di riscontro del path giusto perché qui io prendo quello con il path più piccolo e non quello giusto però arrivo sempre 				//al nodo che sta ricevendo (es. due id e ricevuto da questo nodo ma con 2 percorsi differenti 1-2-3 o 1-3)			
+			//ci potrebbe essere un PROBLEMA di riscontro del path giusto perché qui io prendo quello con il path più piccolo e non quello giusto però 				  arrivo sempre 				
+			//al nodo che sta ricevendo (es. due id e ricevuto da questo nodo ma con 2 percorsi differenti 1-2-3 o 1-3)			
 			for (n=0; n<len_disc; n++){ //per aggiungere al msg_id il path precedente
 				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].next_hop == TOS_NODE_ID){
 					if (tab_discovery[n].path <= m){
@@ -250,8 +256,13 @@ module projectC {
 				}
 			}
 			
+
 			tab_discovery[len_disc].path = m + 1;
 			len_disc += 1;
+
+			dbg("radio_pack","La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n", mess->msg_id, tab_discovery[len_disc].path );
+			
+
 			/*
 			mess_tipo3 = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 			mess_tipo3->dst_add = mess->src_add;
@@ -262,9 +273,13 @@ module projectC {
 			call AMSend.send(mess_tipo3->dst_node,&packet,sizeof(my_msg_t));
 			*/
 			mess->msg_type = ROUTE_REPLY;
+			temp = mess->dst_add;
 			mess->dst_add = mess->src_add;
-			mess->src_add = mess->dst_add;
+			mess->src_add = temp;
 			mess->crt_add = TOS_NODE_ID;
+			
+			dbg("radio_pack","Invio una ROUTE_REPLY a %hhu, che equivale all'origine della ROUTE_REQ a cui sto rispondendo \n \n",mess->dst_add );
+
 			if(call AMSend.send(mess->dst_add,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
 
@@ -291,7 +306,12 @@ module projectC {
 			tab_discovery[len_disc].path = m + 1;
 			len_disc += 1;
 
+			dbg("radio_pack","La ROUTE_REQ con id: %hhu ora è in %hhu  \n", mess->msg_id, TOS_NODE_ID );
+			dbg("radio_pack","La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n \n", mess->msg_id, tab_discovery[len_disc].path );
+			
 			mess->crt_add = TOS_NODE_ID;
+
+			dbg("radio_pack","Invio una ROUTE_REQ in BROADCAST perchè NON sono io la dst \n \n" );
 
 	  		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
@@ -313,7 +333,7 @@ module projectC {
 			tab_routing[mess->dst_add].dst_add = mess->src_add;
 			tab_routing[mess->dst_add].next_hop = mess->crt_add;
 			
-			//stampo cosa ho aggiornato nella mia tabella
+			//stampo cosa ho aggiornato nella mia tabella	TODO : STAMPA LE COSE SBAGLIATE, LA SRC E LA DST SONO INVERTITE
 			dbg("radio_rec","ROUTE_REPLY received at time %s \n", sim_time_string());
 			dbg_clear("radio_pack","\t\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, mess->dst_add);
 			dbg_clear("radio_pack", "\t\t Table --> Destination address: %hhu \n", tab_routing[mess->dst_add].dst_add);

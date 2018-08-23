@@ -4000,7 +4000,7 @@ error_t error);
 # 110 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$sendDone(
 # 48 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-am_id_t arg_0x40a19b6c, 
+am_id_t arg_0x40a38b6c, 
 # 103 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 message_t * msg, 
 
@@ -4013,7 +4013,7 @@ error_t error);
 # 75 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$send(
 # 46 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x40a191d0, 
+uint8_t arg_0x40a381d0, 
 # 67 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -4027,7 +4027,7 @@ uint8_t len);
 #line 100
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone(
 # 46 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x40a191d0, 
+uint8_t arg_0x40a381d0, 
 # 96 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -4104,11 +4104,11 @@ static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$TimerFrom$fire
 #line 83
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$default$fired(
 # 48 "/home/user/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x40ba4644);
+uint8_t arg_0x40ba1644);
 # 64 "/home/user/tinyos-main/tos/lib/timer/Timer.nc"
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$startPeriodic(
 # 48 "/home/user/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x40ba4644, 
+uint8_t arg_0x40ba1644, 
 # 64 "/home/user/tinyos-main/tos/lib/timer/Timer.nc"
 uint32_t dt);
 # 82 "/home/user/tinyos-main/tos/lib/timer/Counter.nc"
@@ -4787,7 +4787,7 @@ tab_d projectC$tab_discovery[1000][100];
 tab_r projectC$tab_routing[1000][8];
 #line 45
 static inline void projectC$sendRandmsg$runTask(void );
-#line 104
+#line 105
 static inline void projectC$Boot$booted(void );
 
 
@@ -4795,7 +4795,7 @@ static inline void projectC$Boot$booted(void );
 
 
 static inline void projectC$SplitControl$startDone(error_t err);
-#line 123
+#line 124
 static inline void projectC$SplitControl$stopDone(error_t err);
 
 
@@ -4806,7 +4806,7 @@ static inline void projectC$MilliTimer$fired(void );
 
 
 static inline void projectC$AMSend$sendDone(message_t *buf, error_t err);
-#line 149
+#line 150
 static inline message_t *projectC$Receive$receive(message_t *buf, void *payload, uint8_t len);
 # 110 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static void /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntryP$0$AMSend$sendDone(
@@ -4864,7 +4864,7 @@ static inline void /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntryP$
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$send(
 # 48 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-am_id_t arg_0x40a19b6c, 
+am_id_t arg_0x40a38b6c, 
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 am_addr_t addr, 
 #line 71
@@ -4881,7 +4881,7 @@ uint8_t len);
 # 100 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(
 # 46 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x40a191d0, 
+uint8_t arg_0x40a381d0, 
 # 96 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -5281,7 +5281,7 @@ static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$TimerFrom$stop
 
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$fired(
 # 48 "/home/user/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x40ba4644);
+uint8_t arg_0x40ba1644);
 #line 71
 enum /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$__nesc_unnamed4338 {
 #line 71
@@ -5787,11 +5787,12 @@ inline static uint16_t projectC$Random$rand16(void ){
 #line 52
 }
 #line 52
-# 149 "projectC.nc"
+# 150 "projectC.nc"
 static inline message_t *projectC$Receive$receive(message_t *buf, void *payload, uint8_t len)
-#line 149
+#line 150
 {
 
+  projectC$temp[sim_node()] = 0;
   projectC$m[sim_node()] = 100;
   projectC$big_path[sim_node()] = 100;
   projectC$mess[sim_node()] = (my_msg_t *)payload;
@@ -5816,12 +5817,12 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
                   sim_log_debug(162U, "radio_pack", "Packet sent to destination");
                 }
               else 
-#line 173
+#line 175
                 {
                   sim_log_debug(163U, "radio_pack", "Packet sent to next hop\n\n");
                   sim_log_debug_clear(164U, "radio_pack", "\t\t Next-Hop address: %hhu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata));
                 }
-#line 188
+#line 190
               __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
 
               if (projectC$AMSend$send(__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata), &projectC$packet[sim_node()], sizeof(my_msg_t )) == SUCCESS) {
@@ -5829,7 +5830,6 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
             }
           else 
             {
-
 
 
               sim_log_debug(165U, "radio_pack", "ERRORE : NON DOVRESTI ESSERE QUI, DOVRESTI ESSERE STATO INOLTRATO IN TABELLA\n\n");
@@ -5853,7 +5853,9 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
 
           if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)) {
               sim_log_debug(166U, "radio_pack", "Elimino un duplicato della richiesta con id: %hhu originata da %hhu \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+
               return buf;
+
               sim_log_debug_clear(167U, "radio_pack", "Questo è un messaggio dopo il return_buf, non puoi vederlo\n\n");
             }
         }
@@ -5886,19 +5888,26 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
 
 
           for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
-              if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].next_hop.nxdata) == TOS_NODE_ID) {
+              if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].dst_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata)) {
                   if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) <= projectC$m[sim_node()]) {
                       projectC$m[sim_node()] = __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata);
                     }
                 }
             }
 
-
-          __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, projectC$m[sim_node()] + 1);
-          projectC$len_disc[sim_node()] += 1;
+          if (projectC$m[sim_node()] == 100) {
+              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, 1);
+            }
+          else 
+#line 264
+            {
+              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, projectC$m[sim_node()] + 1);
+            }
 
           sim_log_debug(172U, "radio_pack", "La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata));
-#line 275
+
+          projectC$len_disc[sim_node()] += 1;
+#line 282
           __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 3);
           projectC$temp[sim_node()] = __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata);
           __nesc_hton_uint8(projectC$mess[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
@@ -5923,18 +5932,27 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
 
 
           for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
-              if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].next_hop.nxdata) == TOS_NODE_ID) {
+              if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].dst_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata)) {
                   if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) <= projectC$m[sim_node()]) {
                       projectC$m[sim_node()] = __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata);
                     }
                 }
             }
 
-          __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, projectC$m[sim_node()] + 1);
-          projectC$len_disc[sim_node()] += 1;
+          if (projectC$m[sim_node()] == 100) {
+              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, 1);
+            }
+          else 
+#line 315
+            {
+              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, projectC$m[sim_node()] + 1);
+            }
 
           sim_log_debug(174U, "radio_pack", "La ROUTE_REQ con id: %hhu ora è in %hhu  \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), TOS_NODE_ID);
           sim_log_debug(175U, "radio_pack", "La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata));
+
+
+          projectC$len_disc[sim_node()] += 1;
 
           __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
 
@@ -5999,10 +6017,9 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
           __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
 
 
-
           for (projectC$n[sim_node()] = 0; __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) != __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) != __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata) && projectC$n[sim_node()] < projectC$len_disc[sim_node()] && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].next_hop.nxdata) != TOS_NODE_ID; projectC$n[sim_node()]++) {
             }
-#line 391
+#line 403
           __nesc_hton_uint8(projectC$mess[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata));
           __nesc_hton_uint8(projectC$mess[sim_node()]->src_add.nxdata, __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata));
           __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 3);
@@ -6097,13 +6114,13 @@ inline static void /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntryP$
 }
 #line 162
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
-inline static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$send(am_id_t arg_0x40a19b6c, am_addr_t addr, message_t * msg, uint8_t len){
+inline static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$send(am_id_t arg_0x40a38b6c, am_addr_t addr, message_t * msg, uint8_t len){
 #line 80
   unsigned char __nesc_result;
 #line 80
 
 #line 80
-  __nesc_result = TossimActiveMessageC$AMSend$send(arg_0x40a19b6c, addr, msg, len);
+  __nesc_result = TossimActiveMessageC$AMSend$send(arg_0x40a38b6c, addr, msg, len);
 #line 80
 
 #line 80
@@ -7252,9 +7269,9 @@ inline static void projectC$MilliTimer$startPeriodic(uint32_t dt){
 #line 64
 }
 #line 64
-# 110 "projectC.nc"
+# 111 "projectC.nc"
 static inline void projectC$SplitControl$startDone(error_t err)
-#line 110
+#line 111
 {
 
   if (err == SUCCESS) {
@@ -7265,7 +7282,7 @@ static inline void projectC$SplitControl$startDone(error_t err)
         }
     }
   else 
-#line 118
+#line 119
     {
       projectC$SplitControl$start();
     }
@@ -7286,9 +7303,9 @@ static inline void TossimPacketModelC$startDoneTask$runTask(void )
   TossimPacketModelC$Control$startDone(SUCCESS);
 }
 
-# 123 "projectC.nc"
+# 124 "projectC.nc"
 static inline void projectC$SplitControl$stopDone(error_t err)
-#line 123
+#line 124
 {
 }
 
@@ -7396,6 +7413,7 @@ static inline void projectC$sendRandmsg$runTask(void )
     }
   else {
 
+
       sim_log_debug(155U, "radio_pack", "Match not found, sending in Broadcast in order to update the Routing Table \n");
 
       __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 2);
@@ -7409,9 +7427,9 @@ static inline void projectC$sendRandmsg$runTask(void )
     }
 }
 
-#line 132
+#line 133
 static inline void projectC$AMSend$sendDone(message_t *buf, error_t err)
-#line 132
+#line 133
 {
 
   if (&projectC$packet[sim_node()] == buf && err == SUCCESS) {
@@ -7443,9 +7461,9 @@ static inline void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone
 }
 
 # 100 "/home/user/tinyos-main/tos/interfaces/Send.nc"
-inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(uint8_t arg_0x40a191d0, message_t * msg, error_t error){
+inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(uint8_t arg_0x40a381d0, message_t * msg, error_t error){
 #line 100
-  switch (arg_0x40a191d0) {
+  switch (arg_0x40a381d0) {
 #line 100
     case 0U:
 #line 100
@@ -7455,7 +7473,7 @@ inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(uint8_t
 #line 100
     default:
 #line 100
-      /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone(arg_0x40a191d0, msg, error);
+      /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone(arg_0x40a381d0, msg, error);
 #line 100
       break;
 #line 100
@@ -7801,9 +7819,9 @@ inline static error_t projectC$sendRandmsg$postTask(void ){
 #line 67
 }
 #line 67
-# 126 "projectC.nc"
+# 127 "projectC.nc"
 static inline void projectC$MilliTimer$fired(void )
-#line 126
+#line 127
 {
   projectC$sendRandmsg$postTask();
 }
@@ -7814,9 +7832,9 @@ static inline void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$d
 }
 
 # 83 "/home/user/tinyos-main/tos/lib/timer/Timer.nc"
-inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$fired(uint8_t arg_0x40ba4644){
+inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$fired(uint8_t arg_0x40ba1644){
 #line 83
-  switch (arg_0x40ba4644) {
+  switch (arg_0x40ba1644) {
 #line 83
     case 0U:
 #line 83
@@ -7826,7 +7844,7 @@ inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$f
 #line 83
     default:
 #line 83
-      /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$default$fired(arg_0x40ba4644);
+      /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$default$fired(arg_0x40ba1644);
 #line 83
       break;
 #line 83
@@ -8453,9 +8471,9 @@ inline static error_t SimMainP$SoftwareInit$init(void ){
 #line 62
 }
 #line 62
-# 104 "projectC.nc"
+# 105 "projectC.nc"
 static inline void projectC$Boot$booted(void )
-#line 104
+#line 105
 {
   sim_log_debug(157U, "boot", "Application booted.\n");
   projectC$SplitControl$start();

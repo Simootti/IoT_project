@@ -1297,7 +1297,7 @@ typedef struct sim_log_channel {
 } sim_log_channel_t;
 
 enum __nesc_unnamed4272 {
-  SIM_LOG_OUTPUT_COUNT = 213U
+  SIM_LOG_OUTPUT_COUNT = 212U
 };
 
 sim_log_output_t outputs[SIM_LOG_OUTPUT_COUNT];
@@ -2226,7 +2226,7 @@ enum __nesc_unnamed4279 {
 typedef uint8_t error_t  ;
 
 static inline error_t ecombine(error_t r1, error_t r2)  ;
-# 15 "project.h"
+# 16 "project.h"
 #line 5
 typedef nx_struct my_msg {
   nx_uint8_t msg_type;
@@ -2235,6 +2235,7 @@ typedef nx_struct my_msg {
   nx_uint8_t dst_add;
   nx_uint8_t src_add;
   nx_uint8_t crt_add;
+  nx_uint8_t path;
 } __attribute__((packed)) 
 
 
@@ -2255,15 +2256,15 @@ enum __nesc_unnamed4280 {
 
 
 
-#line 27
+#line 28
 typedef nx_struct tab {
 
   nx_uint16_t dst_add;
   nx_uint16_t next_hop;
   nx_uint16_t status;
 } __attribute__((packed)) tab_r;
-#line 45
-#line 36
+#line 46
+#line 37
 typedef nx_struct tab2 {
   nx_uint8_t src_add;
 
@@ -3766,7 +3767,7 @@ static long long int SimMoteP$SimMote$getStartTime(void );
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static error_t TossimActiveMessageC$AMSend$send(
 # 47 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x4088ec80, 
+am_id_t arg_0x4089ac80, 
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 am_addr_t addr, 
 #line 71
@@ -3789,7 +3790,7 @@ message_t *
 
 TossimActiveMessageC$Snoop$default$receive(
 # 49 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x40896d30, 
+am_id_t arg_0x40895d30, 
 # 71 "/home/user/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -3836,7 +3837,7 @@ message_t *
 
 TossimActiveMessageC$Receive$default$receive(
 # 48 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x408966d8, 
+am_id_t arg_0x408956d8, 
 # 71 "/home/user/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -4000,7 +4001,7 @@ error_t error);
 # 110 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$sendDone(
 # 48 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-am_id_t arg_0x40a38b6c, 
+am_id_t arg_0x40a19c7c, 
 # 103 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 message_t * msg, 
 
@@ -4013,7 +4014,7 @@ error_t error);
 # 75 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$send(
 # 46 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x40a381d0, 
+uint8_t arg_0x40a192e0, 
 # 67 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -4027,7 +4028,7 @@ uint8_t len);
 #line 100
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone(
 # 46 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x40a381d0, 
+uint8_t arg_0x40a192e0, 
 # 96 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -4104,11 +4105,11 @@ static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$TimerFrom$fire
 #line 83
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$default$fired(
 # 48 "/home/user/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x40ba1644);
+uint8_t arg_0x40ba3644);
 # 64 "/home/user/tinyos-main/tos/lib/timer/Timer.nc"
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$startPeriodic(
 # 48 "/home/user/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x40ba1644, 
+uint8_t arg_0x40ba3644, 
 # 64 "/home/user/tinyos-main/tos/lib/timer/Timer.nc"
 uint32_t dt);
 # 82 "/home/user/tinyos-main/tos/lib/timer/Counter.nc"
@@ -4325,7 +4326,7 @@ static am_addr_t TossimActiveMessageC$amAddress(void );
 # 110 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static void TossimActiveMessageC$AMSend$sendDone(
 # 47 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x4088ec80, 
+am_id_t arg_0x4089ac80, 
 # 103 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 message_t * msg, 
 
@@ -4344,7 +4345,7 @@ message_t *
 
 TossimActiveMessageC$Snoop$receive(
 # 49 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x40896d30, 
+am_id_t arg_0x40895d30, 
 # 71 "/home/user/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -4363,7 +4364,7 @@ message_t *
 
 TossimActiveMessageC$Receive$receive(
 # 48 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-am_id_t arg_0x408966d8, 
+am_id_t arg_0x408956d8, 
 # 71 "/home/user/tinyos-main/tos/interfaces/Receive.nc"
 message_t * msg, 
 void * payload, 
@@ -4767,16 +4768,17 @@ uint8_t len);
 static void projectC$MilliTimer$startPeriodic(uint32_t dt);
 # 67 "/home/user/tinyos-main/tos/interfaces/TaskBasic.nc"
 static error_t projectC$sendRandmsg$postTask(void );
-# 35 "projectC.nc"
+# 36 "projectC.nc"
 enum projectC$__nesc_unnamed4332 {
-#line 35
+#line 36
   projectC$sendRandmsg = 3U
 };
-#line 35
+#line 36
 typedef int projectC$__nesc_sillytask_sendRandmsg[projectC$sendRandmsg];
 #line 24
 uint32_t projectC$counter[1000];
 my_msg_t *projectC$mess[1000];
+my_msg_t *projectC$mess_out[1000];
 message_t projectC$packet[1000];
 uint8_t projectC$len_disc[1000];
 uint8_t projectC$temp[1000];
@@ -4785,9 +4787,14 @@ uint8_t projectC$m[1000];
 uint8_t projectC$big_path[1000];
 tab_d projectC$tab_discovery[1000][100];
 tab_r projectC$tab_routing[1000][8];
-#line 45
+
+
+
+
+
+
 static inline void projectC$sendRandmsg$runTask(void );
-#line 105
+#line 103
 static inline void projectC$Boot$booted(void );
 
 
@@ -4795,7 +4802,7 @@ static inline void projectC$Boot$booted(void );
 
 
 static inline void projectC$SplitControl$startDone(error_t err);
-#line 124
+#line 122
 static inline void projectC$SplitControl$stopDone(error_t err);
 
 
@@ -4806,7 +4813,7 @@ static inline void projectC$MilliTimer$fired(void );
 
 
 static inline void projectC$AMSend$sendDone(message_t *buf, error_t err);
-#line 150
+#line 148
 static inline message_t *projectC$Receive$receive(message_t *buf, void *payload, uint8_t len);
 # 110 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static void /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntryP$0$AMSend$sendDone(
@@ -4864,7 +4871,7 @@ static inline void /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntryP$
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$send(
 # 48 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-am_id_t arg_0x40a38b6c, 
+am_id_t arg_0x40a19c7c, 
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 am_addr_t addr, 
 #line 71
@@ -4881,7 +4888,7 @@ uint8_t len);
 # 100 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(
 # 46 "/home/user/tinyos-main/tos/system/AMQueueImplP.nc"
-uint8_t arg_0x40a381d0, 
+uint8_t arg_0x40a192e0, 
 # 96 "/home/user/tinyos-main/tos/interfaces/Send.nc"
 message_t * msg, 
 
@@ -5281,7 +5288,7 @@ static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$TimerFrom$stop
 
 static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$fired(
 # 48 "/home/user/tinyos-main/tos/lib/timer/VirtualizeTimerC.nc"
-uint8_t arg_0x40ba1644);
+uint8_t arg_0x40ba3644);
 #line 71
 enum /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$__nesc_unnamed4338 {
 #line 71
@@ -5765,6 +5772,33 @@ inline static error_t projectC$AMSend$send(am_addr_t addr, message_t * msg, uint
 #line 80
 }
 #line 80
+# 189 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
+static inline void *TossimActiveMessageC$Packet$getPayload(message_t *msg, uint8_t len)
+#line 189
+{
+  if (len <= 28) {
+      return msg->data;
+    }
+  else {
+      return (void *)0;
+    }
+}
+
+# 126 "/home/user/tinyos-main/tos/interfaces/Packet.nc"
+inline static void * projectC$Packet$getPayload(message_t * msg, uint8_t len){
+#line 126
+  void *__nesc_result;
+#line 126
+
+#line 126
+  __nesc_result = TossimActiveMessageC$Packet$getPayload(msg, len);
+#line 126
+
+#line 126
+  return __nesc_result;
+#line 126
+}
+#line 126
 # 89 "/home/user/tinyos-main/tos/system/RandomMlcgC.nc"
 static inline uint16_t RandomMlcgC$Random$rand16(void )
 #line 89
@@ -5787,9 +5821,9 @@ inline static uint16_t projectC$Random$rand16(void ){
 #line 52
 }
 #line 52
-# 150 "projectC.nc"
+# 148 "projectC.nc"
 static inline message_t *projectC$Receive$receive(message_t *buf, void *payload, uint8_t len)
-#line 150
+#line 148
 {
 
   projectC$temp[sim_node()] = 0;
@@ -5803,36 +5837,41 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
 
 
       if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == TOS_NODE_ID) {
-          sim_log_debug(160U, "radio_pack", "DATA packet reached the ORIGINAL DESTINATION correctly!\n");
+          sim_log_debug(159U, "radio_pack", "DATA packet reached the ORIGINAL DESTINATION correctly!\n");
         }
       else {
 
 
 
-
           if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].dst_add.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)) {
-              sim_log_debug(161U, "radio_pack", "Found a match in the Routing Table \n");
+              sim_log_debug(160U, "radio_pack", "Found a match in the Routing Table \n");
 
               if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)) {
-                  sim_log_debug(162U, "radio_pack", "Packet sent to destination");
+                  sim_log_debug(161U, "radio_pack", "Packet sent to destination\n");
                 }
               else 
-#line 175
+#line 172
                 {
-                  sim_log_debug(163U, "radio_pack", "Packet sent to next hop\n\n");
-                  sim_log_debug_clear(164U, "radio_pack", "\t\t Next-Hop address: %hhu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata));
+                  sim_log_debug(162U, "radio_pack", "Packet sent to next hop\n\n");
+                  sim_log_debug_clear(163U, "radio_pack", "\t\t Next-Hop address: %hhu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata));
                 }
-#line 190
-              __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
+#line 187
+              projectC$mess_out[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
+              __nesc_hton_uint16(projectC$mess_out[sim_node()]->msg_id.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata));
+              __nesc_hton_uint8(projectC$mess_out[sim_node()]->msg_type.nxdata, 1);
+              __nesc_hton_uint16(projectC$mess_out[sim_node()]->value.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->value.nxdata));
+              __nesc_hton_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
+              __nesc_hton_uint8(projectC$mess_out[sim_node()]->src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+              __nesc_hton_uint8(projectC$mess_out[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
 
-              if (projectC$AMSend$send(__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata), &projectC$packet[sim_node()], sizeof(my_msg_t )) == SUCCESS) {
+              if (projectC$AMSend$send(__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata)].next_hop.nxdata), &projectC$packet[sim_node()], sizeof(my_msg_t )) == SUCCESS) {
                 }
             }
           else 
             {
 
 
-              sim_log_debug(165U, "radio_pack", "ERRORE : NON DOVRESTI ESSERE QUI, DOVRESTI ESSERE STATO INOLTRATO IN TABELLA\n\n");
+              sim_log_debug(164U, "radio_pack", "ERRORE : NON DOVRESTI ESSERE QUI, DOVRESTI ESSERE STATO INOLTRATO IN TABELLA\n\n");
             }
         }
     }
@@ -5852,22 +5891,18 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
       for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
 
           if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)) {
-              sim_log_debug(166U, "radio_pack", "Elimino un duplicato della richiesta con id: %hhu originata da %hhu \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+              sim_log_debug(165U, "radio_pack", "Elimino un duplicato della richiesta con id: %hhu originata da %hhu e mandata da %hhu \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata), __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
 
               return buf;
-
-              sim_log_debug_clear(167U, "radio_pack", "Questo è un messaggio dopo il return_buf, non puoi vederlo\n\n");
             }
         }
 
 
 
       if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == TOS_NODE_ID) {
-          sim_log_debug(168U, "radio_pack", "I am the Destination of the Route_Req %hhu sent originally by Node %hhu \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+          sim_log_debug(166U, "radio_pack", "I am the Destination of the Route_Req sent originally by Node %hhu \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
 
-          sim_log_debug(169U, "radio_pack", "I send a ROUTE_REPLY to  %hhu  \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
-
-
+          sim_log_debug(167U, "radio_pack", "I send a ROUTE_REPLY to  %hhu  \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
 
 
 
@@ -5875,48 +5910,19 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
 
 
 
-          __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata));
-
-          __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
-          __nesc_hton_uint16(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
-          __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].prec_node.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
-
-          sim_log_debug(170U, "radio_pack", "La ROUTE_REQ partita da %hhu a %hhu con id: %hhu ora è in %hhu, ovvero la destinazione\n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata), __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata), __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), TOS_NODE_ID);
-          sim_log_debug(171U, "radio_pack", "La tab_discovery è stata aggiornata in posizione %hhu con \n id: %hhu,\n src_add: %hhu, \n dst_add: %hhu,\n prec_node: %hhu \n\n", projectC$len_disc[sim_node()], __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata), __nesc_hton_uint16(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].prec_node.nxdata));
 
 
+          projectC$mess_out[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
+          __nesc_hton_uint16(projectC$mess_out[sim_node()]->msg_id.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->msg_type.nxdata, 3);
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->path.nxdata, 1);
 
+          sim_log_debug(168U, "radio_pack", "Invio una ROUTE_REPLY a %hhu \n \n", __nesc_ntoh_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata));
 
-          for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
-              if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].dst_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata)) {
-                  if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) <= projectC$m[sim_node()]) {
-                      projectC$m[sim_node()] = __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata);
-                    }
-                }
-            }
-
-          if (projectC$m[sim_node()] == 100) {
-              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, 1);
-            }
-          else 
-#line 264
-            {
-              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, projectC$m[sim_node()] + 1);
-            }
-
-          sim_log_debug(172U, "radio_pack", "La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata));
-
-          projectC$len_disc[sim_node()] += 1;
-#line 282
-          __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 3);
-          projectC$temp[sim_node()] = __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata);
-          __nesc_hton_uint8(projectC$mess[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
-          __nesc_hton_uint8(projectC$mess[sim_node()]->src_add.nxdata, projectC$temp[sim_node()]);
-          __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
-
-          sim_log_debug(173U, "radio_pack", "Invio una ROUTE_REPLY a %hhu, che equivale all'origine della ROUTE_REQ a cui sto rispondendo \n \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
-
-          if (projectC$AMSend$send(__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata), &projectC$packet[sim_node()], sizeof(my_msg_t )) == SUCCESS) {
+          if (projectC$AMSend$send(__nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata), &projectC$packet[sim_node()], sizeof(my_msg_t )) == SUCCESS) {
             }
         }
       else 
@@ -5926,37 +5932,21 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
           __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata));
 
           __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+          __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, projectC$big_path[sim_node()]);
           __nesc_hton_uint16(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
           __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].prec_node.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
 
-
-
-          for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
-              if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata) && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].dst_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) == __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata)) {
-                  if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) <= projectC$m[sim_node()]) {
-                      projectC$m[sim_node()] = __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata);
-                    }
-                }
-            }
-
-          if (projectC$m[sim_node()] == 100) {
-              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, 1);
-            }
-          else 
-#line 315
-            {
-              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata, projectC$m[sim_node()] + 1);
-            }
-
-          sim_log_debug(174U, "radio_pack", "La ROUTE_REQ con id: %hhu ora è in %hhu  \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), TOS_NODE_ID);
-          sim_log_debug(175U, "radio_pack", "La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n \n", __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].path.nxdata));
-
-
           projectC$len_disc[sim_node()] += 1;
 
-          __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
+          projectC$mess_out[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
+          __nesc_hton_uint16(projectC$mess_out[sim_node()]->msg_id.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->msg_type.nxdata, 2);
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
 
-          sim_log_debug(176U, "radio_pack", "Invio una ROUTE_REQ in BROADCAST perchè NON sono io la dst \n \n");
+          sim_log_debug(169U, "radio_pack", "Invio una ROUTE_REQ in BROADCAST perchè NON sono io la dst \n \n");
+          sim_log_debug(170U, "radio_pack", "Invio una ROUTE_REQ da sorgente %hhu a destinazione %hhu \n \n", __nesc_ntoh_uint8(projectC$mess_out[sim_node()]->src_add.nxdata), __nesc_ntoh_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata));
 
           if (projectC$AMSend$send(AM_BROADCAST_ADDR, &projectC$packet[sim_node()], sizeof(my_msg_t )) == SUCCESS) {
             }
@@ -5971,26 +5961,37 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
 
   if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->msg_type.nxdata) == 3) {
 
-      if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) == TOS_NODE_ID) {
+      if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == TOS_NODE_ID) {
+
+          for (projectC$n[sim_node()] = 0; __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) != __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) != __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata) && projectC$n[sim_node()] < projectC$len_disc[sim_node()] && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) != __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata); projectC$n[sim_node()]++) {
+            }
+          if (projectC$n[sim_node()] == projectC$len_disc[sim_node()]) {
+              sim_log_debug(171U, "radio_pack", "Non ho trovato la corrispondente tab discovery della route req \n");
+              return buf;
+            }
+          if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) > __nesc_ntoh_uint8(projectC$mess[sim_node()]->path.nxdata)) {
+              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->path.nxdata));
+
+              __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+              __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].next_hop.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
+              sim_log_debug(172U, "radio_pack", "Aggiorno path nella tabella di discovery: %hhu dal nodo %hu al nodo %hhu \n", __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata), __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata));
+            }
 
 
-
-          __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
-          __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
-
-
-          sim_log_debug(177U, "radio_rec", "ROUTE_REPLY received at time %s \n", sim_time_string());
-          sim_log_debug_clear(178U, "radio_pack", "\t\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
-          sim_log_debug_clear(179U, "radio_pack", "\t\t Table --> Destination address: %hhu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].dst_add.nxdata));
-          sim_log_debug_clear(180U, "radio_pack", "\t\t Table --> Next-Hop: %hhu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata));
+          sim_log_debug(173U, "radio_rec", "Sono la destinazione della ROUTE_REPLY\n");
+          sim_log_debug(174U, "radio_rec", "ROUTE_REPLY received at time %s \n", sim_time_string());
+          sim_log_debug_clear(175U, "radio_pack", "\t\t Routing Table of the node %hu in position %hu \n", TOS_NODE_ID, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+          sim_log_debug_clear(176U, "radio_pack", "\t\t Table --> Destination address: %hu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata));
+          sim_log_debug_clear(177U, "radio_pack", "\t\t Table --> Next-Hop: %hu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].next_hop.nxdata));
 
 
-          __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 1);
-          __nesc_hton_uint16(projectC$mess[sim_node()]->value.nxdata, projectC$Random$rand16());
-          __nesc_hton_uint8(projectC$mess[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].dst_add.nxdata));
-          __nesc_hton_uint8(projectC$mess[sim_node()]->src_add.nxdata, TOS_NODE_ID);
-          __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
-
+          projectC$mess_out[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
+          __nesc_hton_uint16(projectC$mess_out[sim_node()]->msg_id.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->msg_type.nxdata, 1);
+          __nesc_hton_uint16(projectC$mess_out[sim_node()]->value.nxdata, projectC$Random$rand16());
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
 
 
           if (projectC$AMSend$send(__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata), &projectC$packet[sim_node()], sizeof(my_msg_t )) == SUCCESS) {
@@ -5999,32 +6000,27 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
       else 
         {
 
+          for (projectC$n[sim_node()] = 0; __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) != __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) != __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata) && projectC$n[sim_node()] < projectC$len_disc[sim_node()] && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) != __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata); projectC$n[sim_node()]++) {
+            }
+          if (projectC$n[sim_node()] == projectC$len_disc[sim_node()]) {
+              sim_log_debug(178U, "radio_pack", "Non ho trovato la corrispondente tab discovery della route req");
+              return buf;
+            }
+          if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) > __nesc_ntoh_uint8(projectC$mess[sim_node()]->path.nxdata)) {
+              __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->path.nxdata));
 
-
-          for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
-              if (__nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) == __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata)) {
-                  if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) <= projectC$big_path[sim_node()]) {
-                      projectC$big_path[sim_node()] = __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata);
-                    }
-                  if (__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata) > projectC$big_path[sim_node()]) {
-                      return buf;
-                    }
-                }
+              __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
+              __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].next_hop.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
+              sim_log_debug(179U, "radio_pack", "Aggiorno path nella tabella di discovery: %hhu dal nodo %hu al nodo %hhu \n", __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].path.nxdata), __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata), __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata));
             }
 
-
-          __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
-          __nesc_hton_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->crt_add.nxdata));
-
-
-          for (projectC$n[sim_node()] = 0; __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) != __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata) && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata) != __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata) && projectC$n[sim_node()] < projectC$len_disc[sim_node()] && __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].next_hop.nxdata) != TOS_NODE_ID; projectC$n[sim_node()]++) {
-            }
-#line 403
-          __nesc_hton_uint8(projectC$mess[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata));
-          __nesc_hton_uint8(projectC$mess[sim_node()]->src_add.nxdata, __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata));
-          __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 3);
-          __nesc_hton_uint16(projectC$mess[sim_node()]->msg_id.nxdata, __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata));
-          __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
+          projectC$mess_out[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->src_add.nxdata, __nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->msg_type.nxdata, 3);
+          __nesc_hton_uint16(projectC$mess_out[sim_node()]->msg_id.nxdata, __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].msg_id.nxdata));
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
+          __nesc_hton_uint8(projectC$mess_out[sim_node()]->path.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->path.nxdata) + 1);
 
           if (projectC$AMSend$send(__nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].prec_node.nxdata), &projectC$packet[sim_node()], sizeof(my_msg_t ))) {
             }
@@ -6044,13 +6040,13 @@ static inline message_t *TossimActiveMessageC$Receive$default$receive(am_id_t id
 }
 
 # 78 "/home/user/tinyos-main/tos/interfaces/Receive.nc"
-inline static message_t * TossimActiveMessageC$Receive$receive(am_id_t arg_0x408966d8, message_t * msg, void * payload, uint8_t len){
+inline static message_t * TossimActiveMessageC$Receive$receive(am_id_t arg_0x408956d8, message_t * msg, void * payload, uint8_t len){
 #line 78
   nx_struct message_t *__nesc_result;
 #line 78
 
 #line 78
-  switch (arg_0x408966d8) {
+  switch (arg_0x408956d8) {
 #line 78
     case 6:
 #line 78
@@ -6060,7 +6056,7 @@ inline static message_t * TossimActiveMessageC$Receive$receive(am_id_t arg_0x408
 #line 78
     default:
 #line 78
-      __nesc_result = TossimActiveMessageC$Receive$default$receive(arg_0x408966d8, msg, payload, len);
+      __nesc_result = TossimActiveMessageC$Receive$default$receive(arg_0x408956d8, msg, payload, len);
 #line 78
       break;
 #line 78
@@ -6114,13 +6110,13 @@ inline static void /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntryP$
 }
 #line 162
 # 80 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
-inline static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$send(am_id_t arg_0x40a38b6c, am_addr_t addr, message_t * msg, uint8_t len){
+inline static error_t /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$send(am_id_t arg_0x40a19c7c, am_addr_t addr, message_t * msg, uint8_t len){
 #line 80
   unsigned char __nesc_result;
 #line 80
 
 #line 80
-  __nesc_result = TossimActiveMessageC$AMSend$send(arg_0x40a38b6c, addr, msg, len);
+  __nesc_result = TossimActiveMessageC$AMSend$send(arg_0x40a19c7c, addr, msg, len);
 #line 80
 
 #line 80
@@ -6183,7 +6179,7 @@ uint8_t len)
   if (/*AMQueueP.AMQueueImplP*/AMQueueImplP$0$queue[sim_node()][clientId].msg != (void *)0) {
       return EBUSY;
     }
-  sim_log_debug(181U, "AMQueue", "AMQueue: request to send from %hhu (%p): passed checks\n", clientId, msg);
+  sim_log_debug(180U, "AMQueue", "AMQueue: request to send from %hhu (%p): passed checks\n", clientId, msg);
 
   /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$queue[sim_node()][clientId].msg = msg;
   /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Packet$setPayloadLength(msg, len);
@@ -6193,12 +6189,12 @@ uint8_t len)
       am_id_t amId = /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMPacket$type(msg);
       am_addr_t dest = /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMPacket$destination(msg);
 
-      sim_log_debug(182U, "AMQueue", "%s: request to send from %hhu (%p): queue empty\n", __FUNCTION__, clientId, msg);
+      sim_log_debug(181U, "AMQueue", "%s: request to send from %hhu (%p): queue empty\n", __FUNCTION__, clientId, msg);
       /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$current[sim_node()] = clientId;
 
       err = /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$send(amId, dest, msg, len);
       if (err != SUCCESS) {
-          sim_log_debug(183U, "AMQueue", "%s: underlying send failed.\n", __FUNCTION__);
+          sim_log_debug(182U, "AMQueue", "%s: underlying send failed.\n", __FUNCTION__);
           /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$current[sim_node()] = 1;
           /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$queue[sim_node()][clientId].msg = (void *)0;
         }
@@ -6206,7 +6202,7 @@ uint8_t len)
       return err;
     }
   else {
-      sim_log_debug(184U, "AMQueue", "AMQueue: request to send from %hhu (%p): queue not empty\n", clientId, msg);
+      sim_log_debug(183U, "AMQueue", "AMQueue: request to send from %hhu (%p): queue not empty\n", clientId, msg);
     }
   return SUCCESS;
 }
@@ -6227,9 +6223,9 @@ inline static error_t /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntr
 }
 #line 75
 # 110 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
-inline static void TossimActiveMessageC$AMSend$sendDone(am_id_t arg_0x4088ec80, message_t * msg, error_t error){
+inline static void TossimActiveMessageC$AMSend$sendDone(am_id_t arg_0x4089ac80, message_t * msg, error_t error){
 #line 110
-  /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$sendDone(arg_0x4088ec80, msg, error);
+  /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$sendDone(arg_0x4089ac80, msg, error);
 #line 110
 }
 #line 110
@@ -7049,13 +7045,13 @@ static inline message_t *TossimActiveMessageC$Snoop$default$receive(am_id_t id, 
 }
 
 # 78 "/home/user/tinyos-main/tos/interfaces/Receive.nc"
-inline static message_t * TossimActiveMessageC$Snoop$receive(am_id_t arg_0x40896d30, message_t * msg, void * payload, uint8_t len){
+inline static message_t * TossimActiveMessageC$Snoop$receive(am_id_t arg_0x40895d30, message_t * msg, void * payload, uint8_t len){
 #line 78
   nx_struct message_t *__nesc_result;
 #line 78
 
 #line 78
-    __nesc_result = TossimActiveMessageC$Snoop$default$receive(arg_0x40896d30, msg, payload, len);
+    __nesc_result = TossimActiveMessageC$Snoop$default$receive(arg_0x40895d30, msg, payload, len);
 #line 78
 
 #line 78
@@ -7269,20 +7265,20 @@ inline static void projectC$MilliTimer$startPeriodic(uint32_t dt){
 #line 64
 }
 #line 64
-# 111 "projectC.nc"
+# 109 "projectC.nc"
 static inline void projectC$SplitControl$startDone(error_t err)
-#line 111
+#line 109
 {
 
   if (err == SUCCESS) {
-      sim_log_debug(158U, "radio", "Radio %d on!\n", TOS_NODE_ID);
+      sim_log_debug(157U, "radio", "Radio %d on!\n", TOS_NODE_ID);
       if (TOS_NODE_ID) {
-          sim_log_debug(159U, "role", "I'm node %d: start sending periodical request\n", TOS_NODE_ID);
+          sim_log_debug(158U, "role", "I'm node %d: start sending periodical request\n", TOS_NODE_ID);
           projectC$MilliTimer$startPeriodic(30000);
         }
     }
   else 
-#line 119
+#line 117
     {
       projectC$SplitControl$start();
     }
@@ -7303,9 +7299,9 @@ static inline void TossimPacketModelC$startDoneTask$runTask(void )
   TossimPacketModelC$Control$startDone(SUCCESS);
 }
 
-# 124 "projectC.nc"
+# 122 "projectC.nc"
 static inline void projectC$SplitControl$stopDone(error_t err)
-#line 124
+#line 122
 {
 }
 
@@ -7339,36 +7335,9 @@ static inline void TossimPacketModelC$sendDoneTask$runTask(void )
   TossimPacketModelC$Packet$sendDone(msg, TossimPacketModelC$running[sim_node()] ? SUCCESS : EOFF);
 }
 
-# 189 "/home/user/tinyos-main/tos/lib/tossim/TossimActiveMessageC.nc"
-static inline void *TossimActiveMessageC$Packet$getPayload(message_t *msg, uint8_t len)
-#line 189
-{
-  if (len <= 28) {
-      return msg->data;
-    }
-  else {
-      return (void *)0;
-    }
-}
-
-# 126 "/home/user/tinyos-main/tos/interfaces/Packet.nc"
-inline static void * projectC$Packet$getPayload(message_t * msg, uint8_t len){
-#line 126
-  void *__nesc_result;
-#line 126
-
-#line 126
-  __nesc_result = TossimActiveMessageC$Packet$getPayload(msg, len);
-#line 126
-
-#line 126
-  return __nesc_result;
-#line 126
-}
-#line 126
-# 45 "projectC.nc"
+# 41 "projectC.nc"
 static inline void projectC$sendRandmsg$runTask(void )
-#line 45
+#line 41
 {
 
 
@@ -7378,17 +7347,19 @@ static inline void projectC$sendRandmsg$runTask(void )
   projectC$mess[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
   __nesc_hton_uint16(projectC$mess[sim_node()]->msg_id.nxdata, projectC$counter[sim_node()]++);
   __nesc_hton_uint8(projectC$mess[sim_node()]->dst_add.nxdata, projectC$Random$rand16() % 8 + 1);
+  if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == TOS_NODE_ID) {
+      sim_log_debug(148U, "radio_pack", "Invio il pacchetto a me stesso quindi non serve AODV\n\n");
+      return;
+    }
   __nesc_hton_uint8(projectC$mess[sim_node()]->src_add.nxdata, TOS_NODE_ID);
   __nesc_hton_uint8(projectC$mess[sim_node()]->crt_add.nxdata, TOS_NODE_ID);
 
-  sim_log_debug_clear(148U, "radio_send", "\n");
-  sim_log_debug_clear(149U, "radio_pack", "\n");
-  sim_log_debug_clear(150U, "radio_pack", "\t\t Stampo la Destinazione del nodo %hhu : %hhu \n", TOS_NODE_ID, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
-  sim_log_debug_clear(151U, "radio_pack", "\t\t destination address: %hhu \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
+  sim_log_debug_clear(149U, "radio_send", "\n");
+  sim_log_debug_clear(150U, "radio_pack", "\t\t destination address: %hhu \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
 
 
   if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].dst_add.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)) {
-      sim_log_debug(152U, "radio_pack", "Found a match in the Routing Table \n");
+      sim_log_debug(151U, "radio_pack", "Found a match in the Routing Table \n");
 
 
 
@@ -7396,12 +7367,12 @@ static inline void projectC$sendRandmsg$runTask(void )
 
 
       if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata) == __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)) {
-          sim_log_debug(153U, "radio_pack", "Packet sent to destination");
+          sim_log_debug(152U, "radio_pack", "Packet sent to destination\n");
         }
       else 
-#line 73
+#line 71
         {
-          sim_log_debug(154U, "radio_pack", "Packet sent to next hop");
+          sim_log_debug(153U, "radio_pack", "Packet sent to next hop\n");
         }
 
       __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 1);
@@ -7414,10 +7385,10 @@ static inline void projectC$sendRandmsg$runTask(void )
   else {
 
 
-      sim_log_debug(155U, "radio_pack", "Match not found, sending in Broadcast in order to update the Routing Table \n");
+      sim_log_debug(154U, "radio_pack", "Match not found, sending in Broadcast in order to update the Routing Table \n");
 
       __nesc_hton_uint8(projectC$mess[sim_node()]->msg_type.nxdata, 2);
-      sim_log_debug_clear(156U, "radio_pack", "\t\t destination address: %hhu \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
+      sim_log_debug_clear(155U, "radio_pack", "\t\t destination address: %hhu \n", __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
 
 
 
@@ -7427,9 +7398,9 @@ static inline void projectC$sendRandmsg$runTask(void )
     }
 }
 
-#line 133
+#line 131
 static inline void projectC$AMSend$sendDone(message_t *buf, error_t err)
-#line 133
+#line 131
 {
 
   if (&projectC$packet[sim_node()] == buf && err == SUCCESS) {
@@ -7461,9 +7432,9 @@ static inline void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone
 }
 
 # 100 "/home/user/tinyos-main/tos/interfaces/Send.nc"
-inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(uint8_t arg_0x40a381d0, message_t * msg, error_t error){
+inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(uint8_t arg_0x40a192e0, message_t * msg, error_t error){
 #line 100
-  switch (arg_0x40a381d0) {
+  switch (arg_0x40a192e0) {
 #line 100
     case 0U:
 #line 100
@@ -7473,7 +7444,7 @@ inline static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$sendDone(uint8_t
 #line 100
     default:
 #line 100
-      /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone(arg_0x40a381d0, msg, error);
+      /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$Send$default$sendDone(arg_0x40a192e0, msg, error);
 #line 100
       break;
 #line 100
@@ -7819,9 +7790,9 @@ inline static error_t projectC$sendRandmsg$postTask(void ){
 #line 67
 }
 #line 67
-# 127 "projectC.nc"
+# 125 "projectC.nc"
 static inline void projectC$MilliTimer$fired(void )
-#line 127
+#line 125
 {
   projectC$sendRandmsg$postTask();
 }
@@ -7832,9 +7803,9 @@ static inline void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$d
 }
 
 # 83 "/home/user/tinyos-main/tos/lib/timer/Timer.nc"
-inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$fired(uint8_t arg_0x40ba1644){
+inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$fired(uint8_t arg_0x40ba3644){
 #line 83
-  switch (arg_0x40ba1644) {
+  switch (arg_0x40ba3644) {
 #line 83
     case 0U:
 #line 83
@@ -7844,7 +7815,7 @@ inline static void /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$f
 #line 83
     default:
 #line 83
-      /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$default$fired(arg_0x40ba1644);
+      /*HilTimerMilliC.VirtualizeTimerC*/VirtualizeTimerC$0$Timer$default$fired(arg_0x40ba3644);
 #line 83
       break;
 #line 83
@@ -7918,7 +7889,7 @@ static inline void /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm
 static inline void HplAtm128Timer0AsyncP$cancel_compare(void )
 #line 577
 {
-  sim_log_debug(212U, "HplAtm128CompareC", "Cancelling compare at 0x%p\n", HplAtm128Timer0AsyncP$compare[sim_node()]);
+  sim_log_debug(211U, "HplAtm128CompareC", "Cancelling compare at 0x%p\n", HplAtm128Timer0AsyncP$compare[sim_node()]);
   if (HplAtm128Timer0AsyncP$compare[sim_node()] != (void *)0) {
       HplAtm128Timer0AsyncP$compare[sim_node()]->cancelled = 1;
       HplAtm128Timer0AsyncP$compare[sim_node()]->cleanup = sim_queue_cleanup_total;
@@ -7947,7 +7918,7 @@ static inline void HplAtm128Timer0AsyncP$cancel_overflow(void )
 {
   if (HplAtm128Timer0AsyncP$overflow[sim_node()] != (void *)0) {
       HplAtm128Timer0AsyncP$overflow[sim_node()]->cancelled = 1;
-      sim_log_debug(211U, "HplAtm128Timer0AsyncP", "Cancelling overflow %p.\n", HplAtm128Timer0AsyncP$overflow[sim_node()]);
+      sim_log_debug(210U, "HplAtm128Timer0AsyncP", "Cancelling overflow %p.\n", HplAtm128Timer0AsyncP$overflow[sim_node()]);
       HplAtm128Timer0AsyncP$overflow[sim_node()]->cleanup = sim_queue_cleanup_total;
     }
 }
@@ -7962,11 +7933,11 @@ static inline void HplAtm128Timer0AsyncP$timer0_overflow_handle(sim_event_t *evt
   else {
       if ((atm128RegFile[sim_node()][ATM128_TIMSK] & (1 << TOIE0)) != 0) {
           atm128RegFile[sim_node()][ATM128_TIFR] &= ~(1 << TOV0);
-          sim_log_debug(208U, "HplAtm128Timer0AsyncP", "Overflow interrupt at %s\n", sim_time_string());
+          sim_log_debug(207U, "HplAtm128Timer0AsyncP", "Overflow interrupt at %s\n", sim_time_string());
           INTERRUPT_16();
         }
       else {
-          sim_log_debug(209U, "HplAtm128Timer0AsyncP", "Setting overflow bit at %s\n", sim_time_string());
+          sim_log_debug(208U, "HplAtm128Timer0AsyncP", "Setting overflow bit at %s\n", sim_time_string());
           atm128RegFile[sim_node()][ATM128_TIFR] |= 1 << TOV0;
         }
       HplAtm128Timer0AsyncP$configure_overflow(evt);
@@ -8016,7 +7987,7 @@ static inline void HplAtm128Timer0AsyncP$Timer0$set(uint8_t newVal)
   uint8_t curVal = HplAtm128Timer0AsyncP$Timer0$get();
 
 #line 299
-  sim_log_debug(201U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Setting timer: %hhu\n", newVal);
+  sim_log_debug(200U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Setting timer: %hhu\n", newVal);
   if (newVal == curVal) {
       return;
     }
@@ -8043,7 +8014,7 @@ static inline void HplAtm128Timer0AsyncP$Timer0$set(uint8_t newVal)
 static inline void HplAtm128Timer0AsyncP$timer0_compare_handle(sim_event_t *evt)
 #line 187
 {
-  sim_log_debug(191U, "HplAtm128Timer0AsyncP", "Beginning compare 0x%p at %s\n", evt, sim_time_string());
+  sim_log_debug(190U, "HplAtm128Timer0AsyncP", "Beginning compare 0x%p at %s\n", evt, sim_time_string());
   if (evt->cancelled) {
       return;
     }
@@ -8052,21 +8023,21 @@ static inline void HplAtm128Timer0AsyncP$timer0_compare_handle(sim_event_t *evt)
 
 #line 194
       sim_print_now(timeStr, 128);
-      sim_log_debug(192U, "HplAtm128Timer0AsyncP", "Handling compare at 0x%p @ %s\n", evt, sim_time_string());
+      sim_log_debug(191U, "HplAtm128Timer0AsyncP", "Handling compare at 0x%p @ %s\n", evt, sim_time_string());
 
       if ((atm128RegFile[sim_node()][ATM128_TCCR0] & (1 << WGM01)) != 0 && !((atm128RegFile[sim_node()][ATM128_TCCR0] & (1 << WGM00)) != 0)) {
-          sim_log_debug(193U, "HplAtm128Timer0AsyncP", "%s: CTC is set, clear timer.\n", __FUNCTION__);
+          sim_log_debug(192U, "HplAtm128Timer0AsyncP", "%s: CTC is set, clear timer.\n", __FUNCTION__);
           HplAtm128Timer0AsyncP$Timer0$set(0);
         }
       else {
-          sim_log_debug(194U, "HplAtm128Timer0AsyncP", "%s: TCCR is 0x%hhx, %i, %i\n", __FUNCTION__, * (volatile uint8_t *)&atm128RegFile[sim_node()][0x33], (int )((atm128RegFile[sim_node()][ATM128_TCCR0] & (1 << WGM01)) != 0), (int )((atm128RegFile[sim_node()][ATM128_TCCR0] & (1 << WGM00)) != 0));
+          sim_log_debug(193U, "HplAtm128Timer0AsyncP", "%s: TCCR is 0x%hhx, %i, %i\n", __FUNCTION__, * (volatile uint8_t *)&atm128RegFile[sim_node()][0x33], (int )((atm128RegFile[sim_node()][ATM128_TCCR0] & (1 << WGM01)) != 0), (int )((atm128RegFile[sim_node()][ATM128_TCCR0] & (1 << WGM00)) != 0));
         }
 
       if ((atm128RegFile[sim_node()][ATM128_TIMSK] & (1 << OCIE0)) != 0) {
-          sim_log_debug(195U, "HplAtm128Timer0AsyncP", "TIFR is %hhx\n", * (volatile uint8_t *)&atm128RegFile[sim_node()][0x36]);
+          sim_log_debug(194U, "HplAtm128Timer0AsyncP", "TIFR is %hhx\n", * (volatile uint8_t *)&atm128RegFile[sim_node()][0x36]);
           atm128RegFile[sim_node()][ATM128_TIFR] &= ~(1 << OCF0);
-          sim_log_debug(196U, "HplAtm128Timer0AsyncP", "TIFR is %hhx\n", * (volatile uint8_t *)&atm128RegFile[sim_node()][0x36]);
-          sim_log_debug(197U, "HplAtm128Timer0AsyncP", "Compare interrupt @ %s\n", timeStr);
+          sim_log_debug(195U, "HplAtm128Timer0AsyncP", "TIFR is %hhx\n", * (volatile uint8_t *)&atm128RegFile[sim_node()][0x36]);
+          sim_log_debug(196U, "HplAtm128Timer0AsyncP", "Compare interrupt @ %s\n", timeStr);
           INTERRUPT_15();
         }
       else {
@@ -8086,7 +8057,7 @@ static inline sim_event_t *HplAtm128Timer0AsyncP$allocate_compare(void )
   sim_event_t *newEvent = sim_queue_allocate_event();
 
 #line 225
-  sim_log_debug(198U, "HplAtm128Timer0AsyncP", "Allocated compare at 0x%p\n", newEvent);
+  sim_log_debug(197U, "HplAtm128Timer0AsyncP", "Allocated compare at 0x%p\n", newEvent);
   newEvent->handle = HplAtm128Timer0AsyncP$timer0_compare_handle;
   newEvent->cleanup = sim_queue_cleanup_none;
   return newEvent;
@@ -8405,7 +8376,7 @@ inline static void /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm
 static inline void HplAtm128Timer0AsyncP$Timer0Ctrl$setControl(Atm128TimerControl_t x)
 #line 364
 {
-  sim_log_debug(203U, "HplAtm128Timer0AsyncP", "Setting control to be 0x%hhx\n", x.flat);
+  sim_log_debug(202U, "HplAtm128Timer0AsyncP", "Setting control to be 0x%hhx\n", x.flat);
   * (volatile uint8_t *)&atm128RegFile[sim_node()][0x33] = x.flat;
 }
 
@@ -8471,11 +8442,11 @@ inline static error_t SimMainP$SoftwareInit$init(void ){
 #line 62
 }
 #line 62
-# 105 "projectC.nc"
+# 103 "projectC.nc"
 static inline void projectC$Boot$booted(void )
-#line 105
+#line 103
 {
-  sim_log_debug(157U, "boot", "Application booted.\n");
+  sim_log_debug(156U, "boot", "Application booted.\n");
   projectC$SplitControl$start();
 }
 
@@ -10115,7 +10086,7 @@ static void /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$AMSend$sendDone(am_id_t id, 
       /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$sendDone(/*AMQueueP.AMQueueImplP*/AMQueueImplP$0$current[sim_node()], msg, err);
     }
   else {
-      sim_log_debug(185U, "PointerBug", "%s received send done for %p, signaling for %p.\n", __FUNCTION__, msg, /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$queue[sim_node()][/*AMQueueP.AMQueueImplP*/AMQueueImplP$0$current[sim_node()]].msg);
+      sim_log_debug(184U, "PointerBug", "%s received send done for %p, signaling for %p.\n", __FUNCTION__, msg, /*AMQueueP.AMQueueImplP*/AMQueueImplP$0$queue[sim_node()][/*AMQueueP.AMQueueImplP*/AMQueueImplP$0$current[sim_node()]].msg);
     }
 }
 
@@ -10395,7 +10366,7 @@ static uint8_t HplAtm128Timer0AsyncP$Timer0$get(void )
   elapsed = HplAtm128Timer0AsyncP$sim_to_clock(elapsed);
   elapsed = elapsed >> HplAtm128Timer0AsyncP$shiftFromScale();
   rval = (uint8_t )(elapsed & 0xff);
-  sim_log_debug(200U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Getting timer: %hhu\n", rval);
+  sim_log_debug(199U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Getting timer: %hhu\n", rval);
   return rval;
 }
 
@@ -10474,7 +10445,7 @@ static Atm128_TIFR_t HplAtm128Timer0AsyncP$Timer0Ctrl$getInterruptFlag(void )
 static uint8_t HplAtm128Timer0AsyncP$Compare$get(void )
 #line 457
 {
-  sim_log_debug(206U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Getting compare: %hhu\n", * (volatile uint8_t *)&atm128RegFile[sim_node()][0x31]);
+  sim_log_debug(205U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Getting compare: %hhu\n", * (volatile uint8_t *)&atm128RegFile[sim_node()][0x31]);
   return * (volatile uint8_t *)&atm128RegFile[sim_node()][0x31];
 }
 
@@ -10539,13 +10510,13 @@ static void /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128Alar
       uint8_t tifr = (uint8_t )/*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$TimerCtrl$getInterruptFlag().flat;
 
 #line 101
-      sim_log_debug(186U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: TIFR is %hhx\n", tifr);
+      sim_log_debug(185U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: TIFR is %hhx\n", tifr);
       if ((interrupt_in != 0 && interrupt_in < /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$MINDT) || tifr & (1 << OCF0)) {
           if (interrupt_in < /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$MINDT) {
-              sim_log_debug(187U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: under min: %hhu.\n", interrupt_in);
+              sim_log_debug(186U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: under min: %hhu.\n", interrupt_in);
             }
           else {
-              sim_log_debug(188U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: OCF set.\n");
+              sim_log_debug(187U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: OCF set.\n");
             }
           {
 #line 109
@@ -10557,14 +10528,14 @@ static void /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128Alar
 
       if (!/*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$set[sim_node()]) {
           newOcr0 = /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$MAXT;
-          sim_log_debug(189U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: no alarm set, set at max.\n");
+          sim_log_debug(188U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: no alarm set, set at max.\n");
         }
       else 
         {
           uint32_t now = /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$Counter$get();
 
 #line 120
-          sim_log_debug(190U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: now-t0 = %llu, dt = %llu\n", now - /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$t0[sim_node()], /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$dt[sim_node()]);
+          sim_log_debug(189U, "Atm128AlarmAsyncP", "Atm128AlarmAsyncP: now-t0 = %llu, dt = %llu\n", now - /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$t0[sim_node()], /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$dt[sim_node()]);
 
           if ((uint32_t )(now - /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$t0[sim_node()]) >= /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128AlarmAsyncP$0$dt[sim_node()]) 
             {
@@ -10608,7 +10579,7 @@ static void /*AlarmCounterMilliP.Atm128AlarmAsyncC.Atm128AlarmAsyncP*/Atm128Alar
 static void HplAtm128Timer0AsyncP$Compare$set(uint8_t t)
 #line 463
 {
-  sim_log_debug(207U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Setting compare: %hhu\n", t);
+  sim_log_debug(206U, "HplAtm128Timer0AsyncP", "HplAtm128Timer0AsyncP: Setting compare: %hhu\n", t);
   /* atomic removed: atomic calls only */
 #line 465
   {
@@ -10689,7 +10660,7 @@ static void HplAtm128Timer0AsyncP$configure_overflow(sim_event_t *evt)
   overflowTime += sim_time();
   overflowTime -= (sim_time() - HplAtm128Timer0AsyncP$last_zero()) % (1 << HplAtm128Timer0AsyncP$shiftFromScale());
 
-  sim_log_debug(210U, "HplAtm128Timer0AsyncP", "Scheduling new overflow for %i at time %llu\n", sim_node(), overflowTime);
+  sim_log_debug(209U, "HplAtm128Timer0AsyncP", "Scheduling new overflow for %i at time %llu\n", sim_node(), overflowTime);
 
   evt->time = overflowTime;
 }
@@ -10736,7 +10707,7 @@ static void HplAtm128Timer0AsyncP$configure_compare(sim_event_t *evt)
   phaseOffset %= HplAtm128Timer0AsyncP$clock_to_sim(1 << HplAtm128Timer0AsyncP$shiftFromScale());
   compareTime -= phaseOffset;
 
-  sim_log_debug(199U, "HplAtm128Timer0AsyncP", "Configuring new compare of %i for %i at time %llu  (@ %llu)\n", (int )compareVal, sim_node(), compareTime, sim_time());
+  sim_log_debug(198U, "HplAtm128Timer0AsyncP", "Configuring new compare of %i for %i at time %llu  (@ %llu)\n", (int )compareVal, sim_node(), compareTime, sim_time());
 
   evt->time = compareTime;
 }
@@ -11252,6 +11223,12 @@ static int __nesc_nido_resolve(int __nesc_mote,
     *size = sizeof(projectC$mess[__nesc_mote]);
     return 0;
   }
+  if (!strcmp(varname, "projectC$mess_out"))
+  {
+    *addr = (uintptr_t)&projectC$mess_out[__nesc_mote];
+    *size = sizeof(projectC$mess_out[__nesc_mote]);
+    return 0;
+  }
   if (!strcmp(varname, "projectC$packet"))
   {
     *addr = (uintptr_t)&projectC$packet[__nesc_mote];
@@ -11589,6 +11566,7 @@ static void __nesc_nido_initialise(int __nesc_mote)
   /* Module projectC */
   projectC$counter[__nesc_mote] = 0;
   memset((void *)&projectC$mess[__nesc_mote], 0, sizeof projectC$mess[__nesc_mote]);
+  memset((void *)&projectC$mess_out[__nesc_mote], 0, sizeof projectC$mess_out[__nesc_mote]);
   memset((void *)&projectC$packet[__nesc_mote], 0, sizeof projectC$packet[__nesc_mote]);
   projectC$len_disc[__nesc_mote] = 0;
   memset((void *)&projectC$temp[__nesc_mote], 0, sizeof projectC$temp[__nesc_mote]);

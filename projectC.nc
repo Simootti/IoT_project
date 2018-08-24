@@ -23,6 +23,7 @@ module projectC {
 
   uint32_t counter=0;
   my_msg_t* mess;
+  my_msg_t* mess_out;
   message_t packet;
   uint8_t len_disc=0; //per tenere il conto dell'occupazione della tab discovery
   uint8_t temp;
@@ -33,11 +34,6 @@ module projectC {
   tab_r tab_routing[8];
 
   task void sendRandmsg();
-
-//TODO IMPORTANTISSIMO : VEDERE COME SISTEMARE I VARI PACCHETTI IN MODO DA MANDARE I PACCHEETI GIUSTI E FARE GLI IF GIUSTI NELL'INTERFACCIA DI RICEZIONE
-//STO PROVANDO SE FUNZIONA CON UN SINGOLO MESSAGGIO MESS AL POSTO CHE 3 TIPI DI MESSAGGIO DIFFERENTI (CON LA DIFFERENZIAZIONE TRA I 3 MEDIANTE MSG TYPE)
-
-//IMPORTANTISSIMO (l'assunzione sopra)!!!!!
 
 //*********************** Task Send Random Messages *********************************************************************//
 
@@ -51,12 +47,14 @@ module projectC {
 	mess = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 	mess->msg_id = counter++;
 	mess->dst_add = (call Random.rand16() % 8) + 1;
+	if (mess->dst_add == TOS_NODE_ID){
+		dbg("radio_pack","Invio il pacchetto a me stesso quindi non serve AODV\n\n");
+		return;
+	}
 	mess->src_add = TOS_NODE_ID;
 	mess->crt_add = TOS_NODE_ID;
 
 	dbg_clear("radio_send", "\n");
-	dbg_clear("radio_pack", "\n");
-	dbg_clear("radio_pack", "\t\t Stampo la Destinazione del nodo %hhu : %hhu \n",TOS_NODE_ID, mess->dst_add);
 	dbg_clear("radio_pack", "\t\t destination address: %hhu \n", mess->dst_add);
 
 	//primo caso: trovo una corrispondenza nella Routing Table
@@ -69,9 +67,9 @@ module projectC {
 		// inoltre, aggiungo i dati (msg_value, msg_type = 1 (DATA))
 
 		if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
-			dbg("radio_pack","Packet sent to destination");	
+			dbg("radio_pack","Packet sent to destination\n");	
 		}else{
-			dbg("radio_pack","Packet sent to next hop");
+			dbg("radio_pack","Packet sent to next hop\n");
 		}
 		
 		mess->msg_type = DATA;	
@@ -165,13 +163,12 @@ module projectC {
 		else{
 		//se non sono io la destinazione allora dovrò fare forward
 		//controllo la tabella di routing
-		//TODO controllare se valido il valore nella tabella di routing?? Vedere se funziona anche senza controllo
 
 			if (tab_routing[mess->dst_add].dst_add == mess->dst_add){
 				dbg("radio_pack","Found a match in the Routing Table \n");
 				
 				if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
-					dbg("radio_pack","Packet sent to destination");	
+					dbg("radio_pack","Packet sent to destination\n");	
 				}else{
 					dbg("radio_pack","Packet sent to next hop\n\n");
 					dbg_clear("radio_pack", "\t\t Next-Hop address: %hhu \n", tab_routing[mess->dst_add].next_hop);
@@ -187,9 +184,15 @@ module projectC {
 				provando con messaggio unico 
 				*/
 				
-				mess->crt_add = TOS_NODE_ID;
+				mess_out = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+				mess_out->msg_id = mess->msg_id;
+				mess_out->msg_type = DATA;
+				mess_out->value = mess->value;
+				mess_out->dst_add = mess->dst_add;
+				mess_out->src_add = mess->src_add;
+				mess_out->crt_add = TOS_NODE_ID;
 				
-				if(call AMSend.send(tab_routing[mess->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){
+				if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){
 				}
 
 			}	//graffa che chiude [[if (tab_routing[mess->dst_add].dst_add == mess->dst_add)]]
@@ -216,18 +219,16 @@ module projectC {
 		for (n=0; n<len_disc; n++){ 	
 			
 			if(tab_discovery[n].src_add == mess->src_add && tab_discovery[n].msg_id == mess->msg_id && tab_discovery[n].dst_add == mess->dst_add){
-				dbg("radio_pack", "Elimino un duplicato della richiesta con id: %hhu originata da %hhu \n", mess->msg_id ,mess->src_add);
+				dbg("radio_pack", "Elimino un duplicato della richiesta con id: %hhu originata da %hhu e mandata da %hhu \n", mess->msg_id ,mess->src_add, mess->crt_add);
 
 				return buf;
-
-				dbg_clear("radio_pack", "Questo è un messaggio dopo il return_buf, non puoi vederlo\n\n");
 			}
 
 		} //elimina il pacchetto duplicato, se duplicato faccio return buf dentro al for così interrompo l'interfaccia receive
 		
 		// a) controllo se sono io il nodo destinazione
 		if(mess->dst_add == TOS_NODE_ID){
-			dbg("radio_pack","I am the Destination of the Route_Req %hhu sent originally by Node %hhu \n",mess->msg_id, mess->src_add );
+			dbg("radio_pack","I am the Destination of the Route_Req sent originally by Node %hhu \n", mess->src_add );
 			// dovrebbe stamparmi sia l'id della route_req sia la VERA sorgente
 			dbg("radio_pack","I send a ROUTE_REPLY to  %hhu  \n",mess->crt_add );
 			/*
@@ -238,56 +239,18 @@ module projectC {
 			che riattraverserà tutti i nodi
 			-->la gestione del riattraversare tutti gli hop è affidata al ricevimento di una ROUTE_REPLY (definiamo più avanti) 
 			*/
-
-			tab_discovery[len_disc].msg_id = mess->msg_id;	
-			//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
-			tab_discovery[len_disc].src_add = mess->src_add;
-			tab_discovery[len_disc].dst_add = mess->dst_add;
-			tab_discovery[len_disc].prec_node = mess->crt_add;
-
-			dbg("radio_pack","La ROUTE_REQ partita da %hhu a %hhu con id: %hhu ora è in %hhu, ovvero la destinazione\n", mess->src_add, mess->dst_add, mess->msg_id,TOS_NODE_ID );
-			dbg("radio_pack","La tab_discovery è stata aggiornata in posizione %hhu con \n id: %hhu,\n src_add: %hhu, \n dst_add: %hhu,\n prec_node: %hhu \n\n", len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add, tab_discovery[len_disc].dst_add = mess->dst_add, tab_discovery[len_disc].prec_node );
-
-			//trovare il giusto riscontro per aumentare il path
-			//ci potrebbe essere un PROBLEMA di riscontro del path giusto perché qui io prendo quello con il path più piccolo e non quello giusto però arrivo sempre
-			//al nodo che sta ricevendo (es. due id e ricevuto da questo nodo ma con 2 percorsi differenti 1-2-3 o 1-3)			
-			for (n=0; n<len_disc; n++){ //per aggiungere al msg_id il path precedente
-				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].dst_add == tab_discovery[len_disc].dst_add && tab_discovery[n].src_add == tab_discovery[len_disc].src_add){
-					if (tab_discovery[n].path <= m){
-						m = tab_discovery[n].path;
-					}
-				}
-			}
 			
-			if (m == 100){ // fatto per vedere le era la prima tab_discovery che facevo, se è la prima allora la setto a uno
-				tab_discovery[len_disc].path = 1;
-			}else{
-				tab_discovery[len_disc].path = m + 1;			
-			}
-
-			dbg("radio_pack","La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n", mess->msg_id, tab_discovery[len_disc].path );
-
-			len_disc += 1;
+			mess_out = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+			mess_out->msg_id = mess->msg_id;
+			mess_out->msg_type = ROUTE_REPLY;
+			mess_out->dst_add = mess->src_add;
+			mess_out->src_add = mess->dst_add;
+			mess_out->crt_add = TOS_NODE_ID;
+			mess_out->path = 1;
 			
+			dbg("radio_pack","Invio una ROUTE_REPLY a %hhu \n \n",mess_out->dst_add );
 
-			/*
-			mess_tipo3 = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-			mess_tipo3->dst_add = mess->src_add;
-			mess_tipo3->src_add = mess->dst_add;
-			mess_tipo3->msg_type = ROUTE_REPLY;
-			mess_tipo3->msg_id = mess->msg_id;
-			mess_tipo3->crt_add = TOS_NODE_ID;
-			call AMSend.send(mess_tipo3->dst_node,&packet,sizeof(my_msg_t));
-			*/
-			mess->msg_type = ROUTE_REPLY;
-			temp = mess->dst_add;
-			mess->dst_add = mess->src_add;
-			mess->src_add = temp;
-			mess->crt_add = TOS_NODE_ID;
-			
-			dbg("radio_pack","Invio una ROUTE_REPLY a %hhu, che equivale all'origine della ROUTE_REQ a cui sto rispondendo \n \n",mess->dst_add );
-
-			if(call AMSend.send(mess->dst_add,&packet,sizeof(my_msg_t)) == SUCCESS){
+			if(call AMSend.send(mess->crt_add,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
 
 		} 	// graffa che chiude [[if(mess->dst_add == TOS_NODE_ID)]] --> se esco da questo if, vuol dire che non sono io la DST
@@ -297,34 +260,21 @@ module projectC {
 			tab_discovery[len_disc].msg_id = mess->msg_id;	
 			//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
 			tab_discovery[len_disc].src_add = mess->src_add;
+			tab_discovery[len_disc].path = big_path;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
 
-			//trovare il giusto riscontro per aumentare il path
-			//ci potrebbe essere un PROBLEMA di riscontro del path giusto perché qui io prendo quello con il path più piccolo e non quello giusto però arrivo sempre 				//al nodo che sta ricevendo (es. due id e ricevuto da questo nodo ma con 2 percorsi differenti 1-2-3 o 1-3)
-			for (n=0; n<len_disc; n++){ //per aggiungere al msg_id il path precedente
-				if (tab_discovery[n].msg_id == tab_discovery[len_disc].msg_id && tab_discovery[n].dst_add == tab_discovery[len_disc].dst_add && tab_discovery[n].src_add == tab_discovery[len_disc].src_add){
-					if (tab_discovery[n].path <= m){
-						m = tab_discovery[n].path;
-					}
-				}
-			}
-			
-			if (m == 100){ // fatto per vedere le era la prima tab_discovery che facevo, se è la prima allora la setto a uno
-				tab_discovery[len_disc].path = 1;
-			}else{
-				tab_discovery[len_disc].path = m + 1;			
-			}
-
-			dbg("radio_pack","La ROUTE_REQ con id: %hhu ora è in %hhu  \n", mess->msg_id, TOS_NODE_ID );
-			dbg("radio_pack","La ROUTE_REQ con id: %hhu ha attraversato un path lungo %hhu step \n \n", mess->msg_id, tab_discovery[len_disc].path );
-
-
 			len_disc += 1;
 			
-			mess->crt_add = TOS_NODE_ID;
+			mess_out = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+			mess_out->msg_id = mess->msg_id;
+			mess_out->msg_type = ROUTE_REQ;
+			mess_out->dst_add = mess->dst_add;
+			mess_out->src_add = mess->src_add;
+			mess_out->crt_add = TOS_NODE_ID;
 
 			dbg("radio_pack","Invio una ROUTE_REQ in BROADCAST perchè NON sono io la dst \n \n" );
+			dbg("radio_pack","Invio una ROUTE_REQ da sorgente %hhu a destinazione %hhu \n \n", mess_out->src_add, mess_out->dst_add );
 
 	  		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
@@ -339,26 +289,37 @@ module projectC {
 
 	if(mess->msg_type == ROUTE_REPLY){
 
-		if(mess->src_add == TOS_NODE_ID){	//se sono io la sorgente
+		if(mess->dst_add == TOS_NODE_ID){	//se sono io la sorgente
 			
-			//Qui non faccio il controllo del path perché c'è bisogno di farlo solo quando fa il primo RREP dove no
-			//Metto i dati in tabella
-			tab_routing[mess->dst_add].dst_add = mess->src_add;
-			tab_routing[mess->dst_add].next_hop = mess->crt_add;
+			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].src_add != mess->dst_add; n++){
+			}
+			if (n == len_disc){
+				dbg("radio_pack","Non ho trovato la corrispondente tab discovery della route req \n");
+				return buf;
+			}
+			if (tab_discovery[n].path > mess->path){
+				tab_discovery[n].path = mess->path;
+				//salvare valori nella tabella di routing
+				tab_routing[mess->src_add].dst_add = mess->src_add;
+				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
+				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+			}
 			
-			//stampo cosa ho aggiornato nella mia tabella	TODO : STAMPA LE COSE SBAGLIATE, LA SRC E LA DST SONO INVERTITE
+			//stampo cosa ho aggiornato nella mia tabella
+			dbg("radio_rec","Sono la destinazione della ROUTE_REPLY\n");
 			dbg("radio_rec","ROUTE_REPLY received at time %s \n", sim_time_string());
-			dbg_clear("radio_pack","\t\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, mess->dst_add);
-			dbg_clear("radio_pack", "\t\t Table --> Destination address: %hhu \n", tab_routing[mess->dst_add].dst_add);
-			dbg_clear("radio_pack", "\t\t Table --> Next-Hop: %hhu \n", tab_routing[mess->dst_add].next_hop);		
+			dbg_clear("radio_pack","\t\t Routing Table of the node %hu in position %hu \n", TOS_NODE_ID, mess->src_add);
+			dbg_clear("radio_pack", "\t\t Table --> Destination address: %hu \n", tab_routing[mess->src_add].dst_add);
+			dbg_clear("radio_pack", "\t\t Table --> Next-Hop: %hu \n", tab_routing[mess->src_add].next_hop);		
 
 			//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
-			mess->msg_type = DATA;
-			mess->value = call Random.rand16();
-			mess->dst_add = tab_routing[mess->dst_add].dst_add;
-			mess->src_add = TOS_NODE_ID;
-			mess->crt_add = TOS_NODE_ID;
-			//mess->next_hop = tab_routing[mess->dst_add].next_hop;
+			mess_out = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+			mess_out->msg_id = mess->msg_id;
+			mess_out->msg_type = DATA;
+			mess_out->value = call Random.rand16();
+			mess_out->dst_add = mess->src_add;
+			mess_out->src_add = mess->dst_add;
+			mess_out->crt_add = TOS_NODE_ID;
 
 			// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
 			if(call AMSend.send(tab_routing[mess->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
@@ -366,46 +327,29 @@ module projectC {
 
 		} //graffa che chiude il "se sono io la sorgente"
 		else{ 
-			//se non sono io la sorgente --> sono un nodo che diventerà un next-hop di quello prima di me
-			//Controllo dei path
-				
-			for (n=0; n<len_disc; n++){ //per controllare la lunghezza del path, che se maggiore rispetto a una con uguale id la elimino
-				if (tab_discovery[n].dst_add == mess->src_add && tab_discovery[n].msg_id == mess->msg_id){
-					if (tab_discovery[n].path <= big_path){
-						big_path = tab_discovery[n].path;
-					}
-					if (tab_discovery[n].path > big_path){
-						return buf;
-					}
-				}
-			}
-
-			//salvare valori nella tabella di routing
-			tab_routing[mess->dst_add].dst_add = mess->src_add;
-			tab_routing[mess->dst_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
 			
-			//Fare la ricerca della tab discovery correlata per la RRES verso il percorso giusto
-			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].next_hop != TOS_NODE_ID; n++){
+			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].src_add != mess->dst_add; n++){
 			}
-			//Invio del pacchetto RRES
-			/*
-			mess_tipo3 = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-			mess_tipo3->dst_add = tab_discovery[n].src_add;
-			mess_tipo3->src_add = tab_discovery[n].dst_add;
-			mess_tipo3->msg_type = ROUTE_REPLY;
-			mess_tipo3->msg_id = mess->msg_id;
-			mess_tipo3->crt_add = TOS_NODE_ID;
-			mess_tipo3->next_hop = tab_discovery[n].crt_add;
-			if(call AMSend.send(mess_tipo3->next_hop,&packet,sizeof(my_msg_t))){
+			if (n == len_disc){
+				dbg("radio_pack","Non ho trovato la corrispondente tab discovery della route req");
+				return buf;
 			}
-			*/
+			if (tab_discovery[n].path > mess->path){
+				tab_discovery[n].path = mess->path;
+				//salvare valori nella tabella di routing
+				tab_routing[mess->src_add].dst_add = mess->src_add;
+				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
+				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+			}
 
-			mess->dst_add = tab_discovery[n].src_add;
-			mess->src_add = tab_discovery[n].dst_add;
-			mess->msg_type = ROUTE_REPLY; //non serve però io lo ribadisco
-			mess->msg_id = tab_discovery[n].msg_id;
-			mess->crt_add = TOS_NODE_ID;
-			//mess->next_hop = tab_discovery[n].prec_node;	
+			mess_out = (my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+			mess_out->dst_add = tab_discovery[n].src_add;
+			mess_out->src_add = tab_discovery[n].dst_add;
+			mess_out->msg_type = ROUTE_REPLY;
+			mess_out->msg_id = tab_discovery[n].msg_id;
+			mess_out->crt_add = TOS_NODE_ID;
+			mess_out->path = mess->path + 1;
+
 			if(call AMSend.send(tab_discovery[n].prec_node,&packet,sizeof(my_msg_t))){
 			}
 

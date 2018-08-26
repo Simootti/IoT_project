@@ -95,6 +95,8 @@ module projectC {
 		tab_discovery[len_disc].prec_node = mess->crt_add;
 		//tab_discovery[len_disc].next_hop = TOS_NODE_ID;
 
+		dbg("radio_pack","Ho aggiornato la Tab_Discovery del nodo %hhu \n in posizione %hhu \ncoi seguenti paramentri:\n\t Message ID: %hhu \n\t Source Address: %hhu \n\t Lunghezza del Path: %hhu \n\t Destination Address: %hhu \n\t Prec Node: %hhu \n\n", TOS_NODE_ID, len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add,tab_discovery[len_disc].path, tab_discovery[len_disc].dst_add, tab_discovery[len_disc].prec_node);
+
 		len_disc += 1;
 
 		//prova: mando in broadcast scrivendo tutto
@@ -171,7 +173,7 @@ module projectC {
 			dbg("radio_pack","DATA packet reached the ORIGINAL DESTINATION correctly!\n");
 		}
 		else{
-		//se non sono io la destinazione allora dovrò fare forward
+		//se NON sono io la destinazione allora dovrò fare forward
 		dbg("radio_pack","Sono il nodo %hhu e ho ricevuto un pkt da %hhu verso %hhu \n", TOS_NODE_ID , mess->src_add, mess->dst_add);
 
 		//controllo la tabella di routing
@@ -179,7 +181,11 @@ module projectC {
 			if (tab_routing[mess->dst_add].dst_add == mess->dst_add){
 
 				dbg("radio_pack","Found a match in the Routing Table \n");
-				
+				dbg("radio_pack","In questo nodo (numero %hhu) ho una corrispondenza nella routing table\n", TOS_NODE_ID);
+				dbg("radio_pack","nella posizione %hhu, infatti\n", mess->dst_add);
+				dbg("radio_pack"," Destination: %hhu == %hhu \n",tab_routing[mess->dst_add].dst_add , mess->dst_add);
+				dbg("radio_pack"," Source: %hhu == %hhu \n\n",tab_routing[mess->dst_add].src_add , mess->src_add);	
+			
 				if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
 					dbg("radio_pack","Packet sent to destination\n");	
 				}else{
@@ -230,9 +236,10 @@ module projectC {
 		
 		// a) controllo se sono io il nodo destinazione
 		if(mess->dst_add == TOS_NODE_ID){
-			dbg("radio_pack","I am the Destination of the Route_Req sent originally by Node %hhu of the message with ID: %hhu \n", mess->src_add , mess->msg_id );
+
+			dbg("radio_pack","I am Node %hhu, the Destination of the Route_Req sent originally by Node %hhu of the message with ID: %hhu \n",TOS_NODE_ID, mess->src_add , mess->msg_id );
 			// dovrebbe stamparmi sia l'id della route_req sia la VERA sorgente
-			dbg("radio_pack","I send a ROUTE_REPLY to %hhu with destination %hhu \n\n",mess->crt_add, mess_out->dst_add );
+			dbg("radio_pack","I send a ROUTE_REPLY to %hhu with destination %hhu \n\n",mess->crt_add, mess->dst_add );
 			/*
 			deve stamparmi il nodo che mi ha "consegnato" la ROUTE_REQ (crt_add indica ancora l'ultimo hop che ha fatto forward)
 			se src e dst sono collegati, allora in questo caso src_add == crt_add )
@@ -247,10 +254,11 @@ module projectC {
 			mess_out->msg_type = ROUTE_REPLY;
 			mess_out->dst_add = mess->src_add;
 			mess_out->src_add = mess->dst_add;
+			temp = mess->crt_add;
 			mess_out->crt_add = TOS_NODE_ID;
-			mess_out->path = 1;
+			mess_out->path = 1;		//inizia il calcolo del path da qua, e troverà un percorso grazie alle tab_discovery
 
-			if(call AMSend.send(mess->crt_add,&packet,sizeof(my_msg_t)) == SUCCESS){
+			if(call AMSend.send(temp,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
 
 		} 	// graffa che chiude [[if(mess->dst_add == TOS_NODE_ID)]] --> se esco da questo if, vuol dire che non sono io la DST

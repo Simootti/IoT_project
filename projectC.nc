@@ -184,7 +184,7 @@ module projectC {
 				dbg("radio_pack","In questo nodo (numero %hhu) ho una corrispondenza nella routing table\n", TOS_NODE_ID);
 				dbg("radio_pack","nella posizione %hhu, infatti\n", mess->dst_add);
 				dbg("radio_pack"," Destination: %hhu == %hhu \n",tab_routing[mess->dst_add].dst_add , mess->dst_add);
-				dbg("radio_pack"," Source: %hhu == %hhu \n\n",tab_routing[mess->dst_add].src_add , mess->src_add);	
+
 			
 				if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
 					dbg("radio_pack","Packet sent to destination\n");	

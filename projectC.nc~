@@ -115,6 +115,9 @@ module projectC {
   //***************** Boot interface ********************//
   event void Boot.booted() {
 	dbg("boot","Application booted.\n");
+	for(n=0;n<9;n++){
+		tab_routing[n].status = 0;
+	}
 	call SplitControl.start();	
   }
 
@@ -181,9 +184,9 @@ module projectC {
 			if (tab_routing[mess->dst_add].dst_add == mess->dst_add && tab_routing[mess->dst_add].status == 1){
 
 				dbg("radio_pack","Found a match in the Routing Table \n");
-				dbg("radio_pack","In questo nodo (numero %hhu) ho una corrispondenza nella routing table\n", TOS_NODE_ID);
-				dbg("radio_pack","nella posizione %hhu, infatti\n", mess->dst_add);
-				dbg("radio_pack","Destination: %hhu == %hhu \n",tab_routing[mess->dst_add].dst_add , mess->dst_add);
+				//dbg("radio_pack","In questo nodo (numero %hhu) ho una corrispondenza nella routing table\n", TOS_NODE_ID);
+				//dbg("radio_pack","nella posizione %hhu, infatti\n", mess->dst_add);
+				//dbg("radio_pack","Destination: %hhu == %hhu \n",tab_routing[mess->dst_add].dst_add , mess->dst_add);
 
 			
 				if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
@@ -300,7 +303,7 @@ module projectC {
 
 		if(mess->dst_add == TOS_NODE_ID){	//se sono io la sorgente
 			
-			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].src_add != mess->dst_add; n++){
+			for (n=0; (tab_discovery[n].dst_add != mess->src_add || tab_discovery[n].msg_id != mess->msg_id || tab_discovery[n].src_add != mess->dst_add) && n<len_disc; n++){
 			}
 			if (n == len_disc){
 				dbg("radio_pack","Non ho trovato la corrispondente tab discovery della Route_Req \n");
@@ -311,7 +314,7 @@ module projectC {
 				//salvare valori nella tabella di routing
 				tab_routing[mess->src_add].dst_add = mess->src_add;
 				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
-				tab_routing[mess->dst_add].status = 1;
+				tab_routing[mess->src_add].status = 1;
 				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hhu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 			}
 			
@@ -337,7 +340,7 @@ module projectC {
 
 		}else{ //graffa che chiude il "se non sono io la sorgente"
 			
-			for (n=0; tab_discovery[n].dst_add != mess->src_add && tab_discovery[n].msg_id != mess->msg_id && n<len_disc && tab_discovery[n].src_add != mess->dst_add; n++){
+			for (n=0; (tab_discovery[n].dst_add != mess->src_add || tab_discovery[n].msg_id != mess->msg_id || tab_discovery[n].src_add != mess->dst_add) && n<len_disc; n++){
 			}
 			if (n == len_disc){
 				dbg("radio_pack","Non ho trovato la corrispondente tab discovery della route req");
@@ -348,15 +351,15 @@ module projectC {
 				//salvare valori nella tabella di routing
 				tab_routing[mess->src_add].dst_add = mess->src_add;
 				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
-				tab_routing[mess->dst_add].status = 1;
+				tab_routing[mess->src_add].status = 1;
 				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hhu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 			}
 
 			mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-			mess_out->dst_add = tab_discovery[n].src_add;
-			mess_out->src_add = tab_discovery[n].dst_add;
+			mess_out->dst_add = mess->dst_add;
+			mess_out->src_add = mess->src_add;
 			mess_out->msg_type = ROUTE_REPLY;
-			mess_out->msg_id = tab_discovery[n].msg_id;
+			mess_out->msg_id = mess->msg_id;
 			mess_out->crt_add = TOS_NODE_ID;
 			mess_out->path = mess->path + 1;
 

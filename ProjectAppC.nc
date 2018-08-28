@@ -11,7 +11,7 @@ implementation {
   components ActiveMessageC;
   components new TimerMilliC();
 
-  components new TimerMilliC() as Timer_rout_1C;
+  components new TimerMilliC() as Timer_rout_1C; //Timer per ogni valore della tab_routing valida (cioè tutti tranne 0)
   components new TimerMilliC() as Timer_rout_2C;
   components new TimerMilliC() as Timer_rout_3C;
   components new TimerMilliC() as Timer_rout_4C;
@@ -20,7 +20,7 @@ implementation {
   components new TimerMilliC() as Timer_rout_7C;
   components new TimerMilliC() as Timer_rout_8C;
 
-  components new TimerMilliC() as Timer_rrep_1C;
+  components new TimerMilliC() as Timer_rrep_1C; //Timer(per ogni sorgente) per invalidare tutto quello inviato da questo nodo fino alla specifica di destinazione se non arriva in tempo RREP
   components new TimerMilliC() as Timer_rrep_2C;
   components new TimerMilliC() as Timer_rrep_3C;
   components new TimerMilliC() as Timer_rrep_4C;
@@ -43,7 +43,6 @@ implementation {
   //Interfaces to access package fields
   App.AMPacket -> AMSenderC;
   App.Packet -> AMSenderC;
-  	//App.PacketAcknowledgements -> ActiveMessageC;
 
   //Timer interface
   App.MilliTimer -> TimerMilliC;

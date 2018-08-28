@@ -2226,7 +2226,7 @@ enum __nesc_unnamed4279 {
 typedef uint8_t error_t  ;
 
 static inline error_t ecombine(error_t r1, error_t r2)  ;
-# 16 "project.h"
+# 14 "project.h"
 #line 5
 typedef nx_struct my_msg {
   nx_uint8_t msg_type;
@@ -2237,8 +2237,6 @@ typedef nx_struct my_msg {
   nx_uint8_t crt_add;
   nx_uint8_t path;
 } __attribute__((packed)) 
-
-
 my_msg_t;
 
 
@@ -2256,21 +2254,19 @@ enum __nesc_unnamed4280 {
 
 
 
-#line 28
+#line 26
 typedef nx_struct tab {
 
   nx_uint16_t dst_add;
   nx_uint16_t next_hop;
   nx_uint16_t status;
 } __attribute__((packed)) tab_r;
-#line 47
-#line 37
+#line 43
+#line 35
 typedef nx_struct tab2 {
   nx_uint8_t src_add;
 
   nx_uint16_t dst_add;
-
-
   nx_uint8_t status;
   nx_uint8_t path;
   nx_uint8_t msg_id;
@@ -4869,14 +4865,14 @@ static void projectC$Timer_rout_2$startOneShot(uint32_t dt);
 static void projectC$Timer_rrep_8$startOneShot(uint32_t dt);
 #line 73
 static void projectC$Timer_rout_5$startOneShot(uint32_t dt);
-# 51 "projectC.nc"
+# 49 "projectC.nc"
 enum projectC$__nesc_unnamed4332 {
-#line 51
+#line 49
   projectC$sendRandmsg = 3U
 };
-#line 51
+#line 49
 typedef int projectC$__nesc_sillytask_sendRandmsg[projectC$sendRandmsg];
-#line 40
+#line 38
 uint32_t projectC$counter[1000];
 my_msg_t *projectC$mess[1000];
 my_msg_t *projectC$mess_out[1000];
@@ -4894,7 +4890,7 @@ tab_r projectC$tab_routing[1000][9];
 
 
 static inline void projectC$sendRandmsg$runTask(void );
-#line 150
+#line 144
 static inline void projectC$Boot$booted(void );
 
 
@@ -4905,7 +4901,7 @@ static inline void projectC$Boot$booted(void );
 
 
 static inline void projectC$SplitControl$startDone(error_t err);
-#line 172
+#line 166
 static inline void projectC$SplitControl$stopDone(error_t err);
 
 
@@ -4916,9 +4912,9 @@ static inline void projectC$MilliTimer$fired(void );
 
 
 static void projectC$AMSend$sendDone(message_t *buf, error_t err);
-#line 198
+#line 192
 static inline message_t *projectC$Receive$receive(message_t *buf, void *payload, uint8_t len);
-#line 441
+#line 436
 static inline void projectC$Timer_rout_1$fired(void );
 
 
@@ -4954,19 +4950,19 @@ static inline void projectC$Timer_rout_8$fired(void );
 
 
 static inline void projectC$Timer_rrep_1$fired(void );
-#line 497
+#line 493
 static inline void projectC$Timer_rrep_2$fired(void );
-#line 519
+#line 515
 static inline void projectC$Timer_rrep_3$fired(void );
-#line 541
+#line 537
 static inline void projectC$Timer_rrep_4$fired(void );
-#line 563
+#line 559
 static inline void projectC$Timer_rrep_5$fired(void );
-#line 585
+#line 581
 static inline void projectC$Timer_rrep_6$fired(void );
-#line 607
+#line 603
 static inline void projectC$Timer_rrep_7$fired(void );
-#line 629
+#line 625
 static inline void projectC$Timer_rrep_8$fired(void );
 # 110 "/home/user/tinyos-main/tos/interfaces/AMSend.nc"
 static void /*ProjectAppC.AMSenderC.SenderC.AMQueueEntryP*/AMQueueEntryP$0$AMSend$sendDone(
@@ -6013,9 +6009,9 @@ inline static void projectC$Timer_rout_1$startOneShot(uint32_t dt){
 #line 73
 }
 #line 73
-# 198 "projectC.nc"
+# 192 "projectC.nc"
 static inline message_t *projectC$Receive$receive(message_t *buf, void *payload, uint8_t len)
-#line 198
+#line 192
 {
 
   projectC$temp[sim_node()] = 0;
@@ -6032,7 +6028,7 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
           sim_log_debug(162U, "radio_pack", "DATA packet reached the ORIGINAL DESTINATION correctly!\n");
         }
       else 
-#line 212
+#line 206
         {
 
           sim_log_debug(163U, "radio_pack", "Sono il nodo %hhu e ho ricevuto un pkt da %hhu verso %hhu \n", TOS_NODE_ID, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata), __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
@@ -6051,7 +6047,7 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
                   sim_log_debug(165U, "radio_pack", "Packet sent to destination\n");
                 }
               else 
-#line 228
+#line 222
                 {
                   sim_log_debug(166U, "radio_pack", "Packet sent to next hop");
                   sim_log_debug_clear(167U, "radio_pack", "\t Next-Hop address: %hhu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata));
@@ -6188,37 +6184,37 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
                   projectC$Timer_rout_1$startOneShot(90000);
                 }
               else {
-#line 362
+#line 356
                 if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 2) {
                     projectC$Timer_rout_2$startOneShot(90000);
                   }
                 else {
-#line 364
+#line 358
                   if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 3) {
                       projectC$Timer_rout_3$startOneShot(90000);
                     }
                   else {
-#line 366
+#line 360
                     if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 4) {
                         projectC$Timer_rout_4$startOneShot(90000);
                       }
                     else {
-#line 368
+#line 362
                       if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 5) {
                           projectC$Timer_rout_5$startOneShot(90000);
                         }
                       else {
-#line 370
+#line 364
                         if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 6) {
                             projectC$Timer_rout_6$startOneShot(90000);
                           }
                         else {
-#line 372
+#line 366
                           if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 7) {
                               projectC$Timer_rout_7$startOneShot(90000);
                             }
                           else {
-#line 374
+#line 368
                             if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 8) {
                                 projectC$Timer_rout_8$startOneShot(90000);
                               }
@@ -6230,7 +6226,7 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
                   }
                 }
             }
-#line 380
+#line 374
           sim_log_debug(177U, "radio_rec", "Sono la destinazione della ROUTE_REPLY\n");
           sim_log_debug(178U, "radio_rec", "ROUTE_REPLY received at time %s \n", sim_time_string());
           sim_log_debug_clear(179U, "radio_pack", "\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
@@ -6256,37 +6252,37 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
                   projectC$Timer_rout_1$startOneShot(90000);
                 }
               else {
-#line 403
+#line 397
                 if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 2) {
                     projectC$Timer_rout_2$startOneShot(90000);
                   }
                 else {
-#line 405
+#line 399
                   if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 3) {
                       projectC$Timer_rout_3$startOneShot(90000);
                     }
                   else {
-#line 407
+#line 401
                     if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 4) {
                         projectC$Timer_rout_4$startOneShot(90000);
                       }
                     else {
-#line 409
+#line 403
                       if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 5) {
                           projectC$Timer_rout_5$startOneShot(90000);
                         }
                       else {
-#line 411
+#line 405
                         if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 6) {
                             projectC$Timer_rout_6$startOneShot(90000);
                           }
                         else {
-#line 413
+#line 407
                           if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 7) {
                               projectC$Timer_rout_7$startOneShot(90000);
                             }
                           else {
-#line 415
+#line 409
                             if (__nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata)].dst_add.nxdata) == 8) {
                                 projectC$Timer_rout_8$startOneShot(90000);
                               }
@@ -6298,7 +6294,7 @@ static inline message_t *projectC$Receive$receive(message_t *buf, void *payload,
                   }
                 }
             }
-#line 420
+#line 414
           projectC$mess_out[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
           __nesc_hton_uint8(projectC$mess_out[sim_node()]->dst_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata));
           __nesc_hton_uint8(projectC$mess_out[sim_node()]->src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
@@ -7534,9 +7530,9 @@ inline static void projectC$MilliTimer$startPeriodic(uint32_t dt){
 #line 64
 }
 #line 64
-# 159 "projectC.nc"
+# 153 "projectC.nc"
 static inline void projectC$SplitControl$startDone(error_t err)
-#line 159
+#line 153
 {
 
   if (err == SUCCESS) {
@@ -7547,7 +7543,7 @@ static inline void projectC$SplitControl$startDone(error_t err)
         }
     }
   else 
-#line 167
+#line 161
     {
       projectC$SplitControl$start();
     }
@@ -7568,9 +7564,9 @@ static inline void TossimPacketModelC$startDoneTask$runTask(void )
   TossimPacketModelC$Control$startDone(SUCCESS);
 }
 
-# 172 "projectC.nc"
+# 166 "projectC.nc"
 static inline void projectC$SplitControl$stopDone(error_t err)
-#line 172
+#line 166
 {
 }
 
@@ -7675,14 +7671,10 @@ inline static uint16_t projectC$Random$rand16(void ){
 #line 52
 }
 #line 52
-# 56 "projectC.nc"
+# 54 "projectC.nc"
 static inline void projectC$sendRandmsg$runTask(void )
-#line 56
+#line 54
 {
-
-
-
-
 
   projectC$mess[sim_node()] = (my_msg_t *)projectC$Packet$getPayload(&projectC$packet[sim_node()], sizeof(my_msg_t ));
   __nesc_hton_uint16(projectC$mess[sim_node()]->msg_id.nxdata, projectC$counter[sim_node()]);
@@ -7712,7 +7704,7 @@ static inline void projectC$sendRandmsg$runTask(void )
           sim_log_debug(152U, "radio_pack", "Packet sent to destination\n");
         }
       else 
-#line 88
+#line 82
         {
           sim_log_debug(153U, "radio_pack", "Packet sent to next hop");
           sim_log_debug_clear(154U, "radio_pack", "\t Next-Hop address: %hhu \n", __nesc_ntoh_uint16(projectC$tab_routing[sim_node()][__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata)].next_hop.nxdata));
@@ -7736,37 +7728,37 @@ static inline void projectC$sendRandmsg$runTask(void )
           projectC$Timer_rrep_1$startOneShot(1000);
         }
       else {
-#line 109
+#line 103
         if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == 2) {
             projectC$Timer_rrep_2$startOneShot(1000);
           }
         else {
-#line 111
+#line 105
           if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == 3) {
               projectC$Timer_rrep_3$startOneShot(1000);
             }
           else {
-#line 113
+#line 107
             if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == 4) {
                 projectC$Timer_rrep_4$startOneShot(1000);
               }
             else {
-#line 115
+#line 109
               if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == 5) {
                   projectC$Timer_rrep_5$startOneShot(1000);
                 }
               else {
-#line 117
+#line 111
                 if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == 6) {
                     projectC$Timer_rrep_6$startOneShot(1000);
                   }
                 else {
-#line 119
+#line 113
                   if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == 7) {
                       projectC$Timer_rrep_7$startOneShot(1000);
                     }
                   else {
-#line 121
+#line 115
                     if (__nesc_ntoh_uint8(projectC$mess[sim_node()]->dst_add.nxdata) == 8) {
                         projectC$Timer_rrep_8$startOneShot(1000);
                       }
@@ -7777,7 +7769,7 @@ static inline void projectC$sendRandmsg$runTask(void )
             }
           }
         }
-#line 125
+#line 119
       __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].msg_id.nxdata, __nesc_ntoh_uint16(projectC$mess[sim_node()]->msg_id.nxdata));
 
       __nesc_hton_uint8(projectC$tab_discovery[sim_node()][projectC$len_disc[sim_node()]].src_add.nxdata, __nesc_ntoh_uint8(projectC$mess[sim_node()]->src_add.nxdata));
@@ -8139,72 +8131,72 @@ inline static error_t projectC$sendRandmsg$postTask(void ){
 #line 67
 }
 #line 67
-# 175 "projectC.nc"
+# 169 "projectC.nc"
 static inline void projectC$MilliTimer$fired(void )
-#line 175
+#line 169
 {
   projectC$sendRandmsg$postTask();
 }
 
-#line 441
+#line 436
 static inline void projectC$Timer_rout_1$fired(void )
-#line 441
+#line 436
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][1].status.nxdata, 0);
   sim_log_debug(185U, "radio_pack", "E' scaduta la tabella di routing 1\n");
 }
 
-#line 445
+#line 440
 static inline void projectC$Timer_rout_2$fired(void )
-#line 445
+#line 440
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][2].status.nxdata, 0);
   sim_log_debug(186U, "radio_pack", "E' scaduta la tabella di routing 2\n");
 }
 
-#line 449
+#line 444
 static inline void projectC$Timer_rout_3$fired(void )
-#line 449
+#line 444
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][3].status.nxdata, 0);
   sim_log_debug(187U, "radio_pack", "E' scaduta la tabella di routing 3\n");
 }
 
-#line 453
+#line 448
 static inline void projectC$Timer_rout_4$fired(void )
-#line 453
+#line 448
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][4].status.nxdata, 0);
   sim_log_debug(188U, "radio_pack", "E' scaduta la tabella di routing 4\n");
 }
 
-#line 457
+#line 452
 static inline void projectC$Timer_rout_5$fired(void )
-#line 457
+#line 452
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][5].status.nxdata, 0);
   sim_log_debug(189U, "radio_pack", "E' scaduta la tabella di routing 5\n");
 }
 
-#line 461
+#line 456
 static inline void projectC$Timer_rout_6$fired(void )
-#line 461
+#line 456
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][6].status.nxdata, 0);
   sim_log_debug(190U, "radio_pack", "E' scaduta la tabella di routing 6\n");
 }
 
-#line 465
+#line 460
 static inline void projectC$Timer_rout_7$fired(void )
-#line 465
+#line 460
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][7].status.nxdata, 0);
   sim_log_debug(191U, "radio_pack", "E' scaduta la tabella di routing 7\n");
 }
 
-#line 469
+#line 464
 static inline void projectC$Timer_rout_8$fired(void )
-#line 469
+#line 464
 {
   __nesc_hton_uint16(projectC$tab_routing[sim_node()][8].status.nxdata, 0);
   sim_log_debug(192U, "radio_pack", "E' scaduta la tabella di routing 8\n");
@@ -8212,8 +8204,9 @@ static inline void projectC$Timer_rout_8$fired(void )
 
 
 static inline void projectC$Timer_rrep_1$fired(void )
-#line 475
+#line 470
 {
+
   sim_log_debug(193U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 1 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
       if (__nesc_ntoh_uint16(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].dst_add.nxdata) == 1 && __nesc_ntoh_uint8(projectC$tab_discovery[sim_node()][projectC$n[sim_node()]].src_add.nxdata) == TOS_NODE_ID) {
@@ -8236,7 +8229,7 @@ static inline void projectC$Timer_rrep_1$fired(void )
 }
 
 static inline void projectC$Timer_rrep_2$fired(void )
-#line 497
+#line 493
 {
   sim_log_debug(194U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 2 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
@@ -8260,7 +8253,7 @@ static inline void projectC$Timer_rrep_2$fired(void )
 }
 
 static inline void projectC$Timer_rrep_3$fired(void )
-#line 519
+#line 515
 {
   sim_log_debug(195U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 3 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
@@ -8284,7 +8277,7 @@ static inline void projectC$Timer_rrep_3$fired(void )
 }
 
 static inline void projectC$Timer_rrep_4$fired(void )
-#line 541
+#line 537
 {
   sim_log_debug(196U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 4 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
@@ -8308,7 +8301,7 @@ static inline void projectC$Timer_rrep_4$fired(void )
 }
 
 static inline void projectC$Timer_rrep_5$fired(void )
-#line 563
+#line 559
 {
   sim_log_debug(197U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 5 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
@@ -8332,7 +8325,7 @@ static inline void projectC$Timer_rrep_5$fired(void )
 }
 
 static inline void projectC$Timer_rrep_6$fired(void )
-#line 585
+#line 581
 {
   sim_log_debug(198U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 6 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
@@ -8356,7 +8349,7 @@ static inline void projectC$Timer_rrep_6$fired(void )
 }
 
 static inline void projectC$Timer_rrep_7$fired(void )
-#line 607
+#line 603
 {
   sim_log_debug(199U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 7 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
@@ -8380,7 +8373,7 @@ static inline void projectC$Timer_rrep_7$fired(void )
 }
 
 static inline void projectC$Timer_rrep_8$fired(void )
-#line 629
+#line 625
 {
   sim_log_debug(200U, "radio_pack", "E' scaduta la RREP da sorgente %hhu e destinazione 8 \n", TOS_NODE_ID);
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < projectC$len_disc[sim_node()]; projectC$n[sim_node()]++) {
@@ -9144,9 +9137,9 @@ inline static error_t SimMainP$SoftwareInit$init(void ){
 #line 62
 }
 #line 62
-# 150 "projectC.nc"
+# 144 "projectC.nc"
 static inline void projectC$Boot$booted(void )
-#line 150
+#line 144
 {
   sim_log_debug(157U, "boot", "Application booted.\n");
   for (projectC$n[sim_node()] = 0; projectC$n[sim_node()] < 9; projectC$n[sim_node()]++) {
@@ -10849,9 +10842,9 @@ static void SimSchedulerBasicP$sim_scheduler_submit_event(void )
     }
 }
 
-# 181 "projectC.nc"
+# 175 "projectC.nc"
 static void projectC$AMSend$sendDone(message_t *buf, error_t err)
-#line 181
+#line 175
 {
 
   if (&projectC$packet[sim_node()] == buf && err == SUCCESS) {

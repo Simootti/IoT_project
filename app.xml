@@ -5330,9 +5330,9 @@
         <long>&#10; A Timer is TinyOS's general purpose timing interface. For more precise&#10; timing, you may wish to use a (platform-specific) component offering&#10; an Alarm interface.&#10;&#10; &#60;p>A Timer is parameterised by its &#34;precision&#34; (milliseconds,&#10; microseconds, etc), identified by a type. This prevents, e.g.,&#10; unintentionally mixing components expecting milliseconds with those&#10; expecting microseconds as those interfaces have a different type.&#10;&#10; &#60;p>See TEP102 for more details.&#10;&#10; @param precision_tag A type indicating the precision of this Alarm.&#10;&#10; @author Cory Sharp &#60;cssharp@eecs.berkeley.edu>&#10;</long>
       </documentation>
       <parameters>
-        <typedef name="precision_tag" ref="0x409afbbc" loc="53:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+        <typedef name="precision_tag" ref="0x409afae8" loc="53:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
           <interfacedef-ref qname="Timer"/>
-          <type-var size="U:" alignment="U:"><typedef-ref name="precision_tag" scoped="" ref="0x409afbbc"/></type-var>
+          <type-var size="U:" alignment="U:"><typedef-ref name="precision_tag" scoped="" ref="0x409afae8"/></type-var>
         </typedef>
       </parameters>
       <function command="" provided="0" name="getNow" ref="0x409a912c" loc="136:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
@@ -5351,7 +5351,7 @@
         <parameters>
         </parameters>
       </function>
-      <function event="" provided="0" name="fired" ref="0x409ab0bc" loc="83:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+      <function event="" provided="0" name="fired" ref="0x409ab010" loc="83:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
         <documentation loc="80:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
           <short>&#10; Signaled when the timer expires (one-shot) or repeats (periodic).</short>
           <long>&#10; Signaled when the timer expires (one-shot) or repeats (periodic).&#10;</long>
@@ -5383,7 +5383,7 @@
           </function-parameters>
         </type-function>
         <parameters>
-          <variable name="t0" ref="0x409abe18" loc="114:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+          <variable name="t0" ref="0x409abd6c" loc="114:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
             <type-int cname="unsigned int" unsigned="" size="I:4" alignment="I:4">
               <typename><typedef-ref name="uint32_t" ref="0x402192dc"/></typename>
             </type-int>
@@ -5395,7 +5395,7 @@
           </variable>
         </parameters>
       </function>
-      <function command="" provided="0" name="isOneShot" ref="0x409ab9a0" loc="98:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+      <function command="" provided="0" name="isOneShot" ref="0x409ab8f4" loc="98:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
         <documentation loc="94:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
           <short>&#10; Check if this is a one-shot timer.</short>
           <long>&#10; Check if this is a one-shot timer.&#10; @return TRUE for one-shot timers, FALSE for periodic timers.&#10;</long>
@@ -5443,7 +5443,7 @@
         <parameters>
         </parameters>
       </function>
-      <function command="" provided="0" name="isRunning" ref="0x409ab514" loc="92:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+      <function command="" provided="0" name="isRunning" ref="0x409ab468" loc="92:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
         <documentation loc="86:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
           <short>&#10; Check if timer is running.</short>
           <long>&#10; Check if timer is running. Periodic timers run until stopped or&#10; replaced, one-shot timers run until their deadline expires.&#10;&#10; @return TRUE if the timer is still running.&#10;</long>
@@ -5459,7 +5459,7 @@
         <parameters>
         </parameters>
       </function>
-      <function command="" provided="0" name="startPeriodic" ref="0x409ac1ec" loc="64:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+      <function command="" provided="0" name="startPeriodic" ref="0x409ac160" loc="64:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
         <documentation loc="56:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
           <short>&#10; Set a periodic timer to repeat every dt time units.</short>
           <long>&#10; Set a periodic timer to repeat every dt time units. Replaces any&#10; current timer settings. Equivalent to startPeriodicAt(getNow(),&#10; dt). The &#60;code>fired&#60;/code> will be signaled every dt units (first&#10; event in dt units).&#10;&#10; @param dt Time until the timer fires.&#10;</long>
@@ -5474,7 +5474,7 @@
           </function-parameters>
         </type-function>
         <parameters>
-          <variable name="dt" ref="0x409ac09c" loc="64:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+          <variable name="dt" ref="0x409ac010" loc="64:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
             <type-int cname="unsigned int" unsigned="" size="I:4" alignment="I:4">
               <typename><typedef-ref name="uint32_t" ref="0x402192dc"/></typename>
             </type-int>
@@ -5511,7 +5511,7 @@
           </variable>
         </parameters>
       </function>
-      <function command="" provided="0" name="startOneShot" ref="0x409ac84c" loc="73:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+      <function command="" provided="0" name="startOneShot" ref="0x409ac7c0" loc="73:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
         <documentation loc="66:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
           <short>&#10; Set a single-short timer to some time units in the future.</short>
           <long>&#10; Set a single-short timer to some time units in the future. Replaces&#10; any current timer settings. Equivalent to startOneShotAt(getNow(),&#10; dt). The &#60;code>fired&#60;/code> will be signaled when the timer expires.&#10;&#10; @param dt Time until the timer fires.&#10;</long>
@@ -5526,14 +5526,14 @@
           </function-parameters>
         </type-function>
         <parameters>
-          <variable name="dt" ref="0x409ac6fc" loc="73:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+          <variable name="dt" ref="0x409ac670" loc="73:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
             <type-int cname="unsigned int" unsigned="" size="I:4" alignment="I:4">
               <typename><typedef-ref name="uint32_t" ref="0x402192dc"/></typename>
             </type-int>
           </variable>
         </parameters>
       </function>
-      <function command="" provided="0" name="stop" ref="0x409acce8" loc="78:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
+      <function command="" provided="0" name="stop" ref="0x409acc5c" loc="78:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
         <documentation loc="75:/home/user/tinyos-main/tos/lib/timer/Timer.nc">
           <short>&#10; Cancel a timer.</short>
           <long>&#10; Cancel a timer.&#10;</long>
@@ -5585,33 +5585,33 @@
         <type-int cname="long" size="I:4" alignment="I:4"></type-int>
       </field>
     </union>
-    <nx_struct name="tab2" loc="37:project.h" ref="0x406eced8" defined="" size="I:7" alignment="I:1">
-      <field name="src_add" ref="0x4070d814" bit-offset="I:0" size="I:1">
+    <nx_struct name="tab2" loc="35:project.h" ref="0x406ece80" defined="" size="I:7" alignment="I:1">
+      <field name="src_add" ref="0x4070d790" bit-offset="I:0" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="dst_add" ref="0x4070d874" bit-offset="I:8" size="I:2">
+      <field name="dst_add" ref="0x4070d7f0" bit-offset="I:8" size="I:2">
         <type-int cname="unsigned short" unsigned="" size="I:2" alignment="I:1" network="nx_uint16_t">
           <typename><typedef-ref name="nx_uint16_t" ref="0x402f8cd4"/></typename>
         </type-int>
       </field>
-      <field name="status" ref="0x4070d8d4" bit-offset="I:24" size="I:1">
+      <field name="status" ref="0x4070d850" bit-offset="I:24" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="path" ref="0x4070d934" bit-offset="I:32" size="I:1">
+      <field name="path" ref="0x4070d8b0" bit-offset="I:32" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="msg_id" ref="0x4070d994" bit-offset="I:40" size="I:1">
+      <field name="msg_id" ref="0x4070d910" bit-offset="I:40" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="prec_node" ref="0x4070d9f4" bit-offset="I:48" size="I:1">
+      <field name="prec_node" ref="0x4070d970" bit-offset="I:48" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
@@ -5677,7 +5677,7 @@
         </type-int>
       </field>
     </nx_struct>
-    <enum loc="22:project.h" ref="0x406ec31c" defined="" size="I:4" alignment="I:4">
+    <enum loc="185:/home/user/tinyos-main/tos/chips/atm128/timer/Atm128Timer.h" ref="0x40afed20" defined="" size="I:4" alignment="I:4">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </enum>
     <struct name="gain_entry" loc="53:/home/user/tinyos-main/tos/lib/tossim/sim_gain.h" ref="0x405f04cc" defined="" size="I:16" alignment="I:4">
@@ -5693,9 +5693,6 @@
         </type-pointer>
       </field>
     </struct>
-    <enum loc="185:/home/user/tinyos-main/tos/chips/atm128/timer/Atm128Timer.h" ref="0x40afed20" defined="" size="I:4" alignment="I:4">
-      <type-int cname="int" size="I:4" alignment="I:4"></type-int>
-    </enum>
     <struct loc="85:/usr/include/i386-linux-gnu/bits/waitstatus.h" ref="0x4032a8ec" defined="" size="I:4" alignment="I:4">
       <field name="__w_stopval" ref="0x4032a9f4" bit-offset="I:0" bit-size="I:8">
         <type-int cname="unsigned int" unsigned="" size="I:4" alignment="I:4"></type-int>
@@ -5765,6 +5762,9 @@
     </attribute>
     <attribute name="number"  loc="NONE" ref="0x4002fc90" size="V:" alignment="V:">
     </attribute>
+    <enum loc="25:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h" ref="0x4070a010" defined="" size="I:4" alignment="I:4">
+      <type-int cname="int" size="I:4" alignment="I:4"></type-int>
+    </enum>
     <union loc="119:/usr/include/i386-linux-gnu/bits/pthreadtypes.h" ref="0x403649d0" defined="" size="I:32" alignment="I:4">
       <field name="__data" ref="0x40364ad8" bit-offset="I:0" size="I:32">
         <type-tag size="I:32" alignment="I:4"><struct-ref ref="0x403640f8"/></type-tag>
@@ -5928,37 +5928,37 @@
       </field>
     </struct>
     <nx_struct name="my_msg" loc="5:project.h" ref="0x40034438" defined="" size="I:9" alignment="I:1">
-      <field name="msg_type" ref="0x40034ea0" bit-offset="I:0" size="I:1">
+      <field name="msg_type" ref="0x40034e80" bit-offset="I:0" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="msg_id" ref="0x40034f00" bit-offset="I:8" size="I:2">
+      <field name="msg_id" ref="0x40034ee0" bit-offset="I:8" size="I:2">
         <type-int cname="unsigned short" unsigned="" size="I:2" alignment="I:1" network="nx_uint16_t">
           <typename><typedef-ref name="nx_uint16_t" ref="0x402f8cd4"/></typename>
         </type-int>
       </field>
-      <field name="value" ref="0x40034f60" bit-offset="I:24" size="I:2">
+      <field name="value" ref="0x40034f40" bit-offset="I:24" size="I:2">
         <type-int cname="unsigned short" unsigned="" size="I:2" alignment="I:1" network="nx_uint16_t">
           <typename><typedef-ref name="nx_uint16_t" ref="0x402f8cd4"/></typename>
         </type-int>
       </field>
-      <field name="dst_add" ref="0x406ec010" bit-offset="I:40" size="I:1">
+      <field name="dst_add" ref="0x40034fa0" bit-offset="I:40" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="src_add" ref="0x406ec070" bit-offset="I:48" size="I:1">
+      <field name="src_add" ref="0x406ec018" bit-offset="I:48" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="crt_add" ref="0x406ec0d0" bit-offset="I:56" size="I:1">
+      <field name="crt_add" ref="0x406ec078" bit-offset="I:56" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
       </field>
-      <field name="path" ref="0x406ec130" bit-offset="I:64" size="I:1">
+      <field name="path" ref="0x406ec0d8" bit-offset="I:64" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1" network="nx_uint8_t">
           <typename><typedef-ref name="nx_uint8_t" ref="0x402f8878"/></typename>
         </type-int>
@@ -6096,6 +6096,9 @@
         </type-pointer>
       </field>
     </attribute>
+    <enum loc="20:project.h" ref="0x406ec2c4" defined="" size="I:4" alignment="I:4">
+      <type-int cname="int" size="I:4" alignment="I:4"></type-int>
+    </enum>
     <union loc="133:/home/user/tinyos-main/tos/chips/atm128/timer/Atm128Timer.h" ref="0x40b010cc" defined="" size="I:1" alignment="I:1">
       <field name="flat" ref="0x40b011d4" bit-offset="I:0" size="I:1">
         <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1">
@@ -6326,9 +6329,6 @@
         </type-int>
       </field>
     </struct>
-    <enum loc="25:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h" ref="0x4070a04c" defined="" size="I:4" alignment="I:4">
-      <type-int cname="int" size="I:4" alignment="I:4"></type-int>
-    </enum>
     <attribute name="hwevent"  loc="NONE" ref="0x40031434" size="V:" alignment="V:">
     </attribute>
     <union loc="167:/home/user/tinyos-main/tos/chips/atm128/timer/Atm128Timer.h" ref="0x40afe9ac" defined="" size="I:1" alignment="I:1">
@@ -7196,18 +7196,18 @@
         </type-int>
       </field>
     </struct>
-    <nx_struct name="tab" loc="28:project.h" ref="0x406ec674" defined="" size="I:6" alignment="I:1">
-      <field name="dst_add" ref="0x406ecbb4" bit-offset="I:0" size="I:2">
+    <nx_struct name="tab" loc="26:project.h" ref="0x406ec61c" defined="" size="I:6" alignment="I:1">
+      <field name="dst_add" ref="0x406ecb5c" bit-offset="I:0" size="I:2">
         <type-int cname="unsigned short" unsigned="" size="I:2" alignment="I:1" network="nx_uint16_t">
           <typename><typedef-ref name="nx_uint16_t" ref="0x402f8cd4"/></typename>
         </type-int>
       </field>
-      <field name="next_hop" ref="0x406ecc14" bit-offset="I:16" size="I:2">
+      <field name="next_hop" ref="0x406ecbbc" bit-offset="I:16" size="I:2">
         <type-int cname="unsigned short" unsigned="" size="I:2" alignment="I:1" network="nx_uint16_t">
           <typename><typedef-ref name="nx_uint16_t" ref="0x402f8cd4"/></typename>
         </type-int>
       </field>
-      <field name="status" ref="0x406ecc74" bit-offset="I:32" size="I:2">
+      <field name="status" ref="0x406ecc1c" bit-offset="I:32" size="I:2">
         <type-int cname="unsigned short" unsigned="" size="I:2" alignment="I:1" network="nx_uint16_t">
           <typename><typedef-ref name="nx_uint16_t" ref="0x402f8cd4"/></typename>
         </type-int>
@@ -7472,7 +7472,7 @@
         </type-tag>
       </field>
     </struct>
-    <enum loc="51:projectC.nc" ref="0x40a7f968" defined="" scoped="" size="I:4" alignment="I:4">
+    <enum loc="49:projectC.nc" ref="0x40a7f968" defined="" scoped="" size="I:4" alignment="I:4">
       <component-ref qname="projectC"/>
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </enum>
@@ -8080,69 +8080,69 @@
         <typename><typedef-ref name="uint32_t" ref="0x402192dc"/></typename>
       </type-int>
     </variable>
-    <variable name="tab_routing" ref="0x409dac00" loc="49:projectC.nc">
+    <variable name="tab_routing" ref="0x409dac00" loc="47:projectC.nc">
       <component-ref qname="projectC"/>
       <type-array elements="I:9" size="I:54" alignment="I:1">
-        <type-tag size="I:6" alignment="I:1"><nx_struct-ref name="tab" ref="0x406ec674"/>
-          <typename><typedef-ref name="tab_r" ref="0x406ecd28"/></typename>
+        <type-tag size="I:6" alignment="I:1"><nx_struct-ref name="tab" ref="0x406ec61c"/>
+          <typename><typedef-ref name="tab_r" ref="0x406eccd0"/></typename>
         </type-tag>
       </type-array>
     </variable>
-    <variable name="tab_discovery" ref="0x409da950" loc="48:projectC.nc">
+    <variable name="tab_discovery" ref="0x409da950" loc="46:projectC.nc">
       <component-ref qname="projectC"/>
       <type-array elements="I:100" size="I:700" alignment="I:1">
-        <type-tag size="I:7" alignment="I:1"><nx_struct-ref name="tab2" ref="0x406eced8"/>
-          <typename><typedef-ref name="tab_d" ref="0x4070daa8"/></typename>
+        <type-tag size="I:7" alignment="I:1"><nx_struct-ref name="tab2" ref="0x406ece80"/>
+          <typename><typedef-ref name="tab_d" ref="0x4070da24"/></typename>
         </type-tag>
       </type-array>
     </variable>
-    <variable name="big_path" ref="0x409da688" loc="47:projectC.nc">
+    <variable name="big_path" ref="0x409da688" loc="45:projectC.nc">
       <component-ref qname="projectC"/>
       <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1">
         <typename><typedef-ref name="uint8_t" ref="0x40214e94"/></typename>
       </type-int>
     </variable>
-    <variable name="mess" ref="0x409db90c" loc="41:projectC.nc">
+    <variable name="mess" ref="0x409db8fc" loc="39:projectC.nc">
       <component-ref qname="projectC"/>
       <type-pointer size="I:4" alignment="I:4">
         <type-tag size="I:9" alignment="I:1"><nx_struct-ref name="my_msg" ref="0x40034438"/>
-          <typename><typedef-ref name="my_msg_t" ref="0x406ec1e4"/></typename>
+          <typename><typedef-ref name="my_msg_t" ref="0x406ec18c"/></typename>
         </type-tag>
       </type-pointer>
     </variable>
-    <variable name="mess_out" ref="0x409dbb4c" loc="42:projectC.nc">
+    <variable name="mess_out" ref="0x409dbb3c" loc="40:projectC.nc">
       <component-ref qname="projectC"/>
       <type-pointer size="I:4" alignment="I:4">
         <type-tag size="I:9" alignment="I:1"><nx_struct-ref name="my_msg" ref="0x40034438"/>
-          <typename><typedef-ref name="my_msg_t" ref="0x406ec1e4"/></typename>
+          <typename><typedef-ref name="my_msg_t" ref="0x406ec18c"/></typename>
         </type-tag>
       </type-pointer>
     </variable>
-    <variable name="temp" ref="0x409da2a0" loc="45:projectC.nc">
+    <variable name="temp" ref="0x409da2a0" loc="43:projectC.nc">
       <component-ref qname="projectC"/>
       <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1">
         <typename><typedef-ref name="uint8_t" ref="0x40214e94"/></typename>
       </type-int>
     </variable>
-    <variable name="counter" ref="0x409db654" loc="40:projectC.nc">
+    <variable name="counter" ref="0x409db644" loc="38:projectC.nc">
       <component-ref qname="projectC"/>
       <type-int cname="unsigned int" unsigned="" size="I:4" alignment="I:4">
         <typename><typedef-ref name="uint32_t" ref="0x402192dc"/></typename>
       </type-int>
     </variable>
-    <variable name="packet" ref="0x409dbd64" loc="43:projectC.nc">
+    <variable name="packet" ref="0x409dbd54" loc="41:projectC.nc">
       <component-ref qname="projectC"/>
       <type-tag size="I:41" alignment="I:1"><nx_struct-ref name="message_t" ref="0x406d103c"/>
         <typename><typedef-ref name="message_t" ref="0x406d1d6c"/></typename>
       </type-tag>
     </variable>
-    <variable name="n" ref="0x409da470" loc="46:projectC.nc">
+    <variable name="n" ref="0x409da470" loc="44:projectC.nc">
       <component-ref qname="projectC"/>
       <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1">
         <typename><typedef-ref name="uint8_t" ref="0x40214e94"/></typename>
       </type-int>
     </variable>
-    <variable name="len_disc" ref="0x409da010" loc="44:projectC.nc">
+    <variable name="len_disc" ref="0x409da010" loc="42:projectC.nc">
       <component-ref qname="projectC"/>
       <type-int cname="unsigned char" unsigned="" size="I:1" alignment="I:1">
         <typename><typedef-ref name="uint8_t" ref="0x40214e94"/></typename>
@@ -8437,7 +8437,7 @@
     <constant cst="I:5" name="ATM128_WAVE16_PWM_FAST_8BIT" ref="0x40b20af0" loc="217:/home/user/tinyos-main/tos/chips/atm128/timer/Atm128Timer.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:3" name="ATM128_PORTE" ref="0x4070a83c" loc="36:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:3" name="ATM128_PORTE" ref="0x4070a800" loc="36:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:7" name="FOC0" ref="0x40733c14" loc="844:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -8494,7 +8494,7 @@
     <constant cst="I:255" name="SERIAL_PROTO_PACKET_UNKNOWN" ref="0x406c37ec" loc="106:/home/user/tinyos-main/tos/lib/serial/Serial.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:6" name="ATM128_ADCSR" ref="0x4070924c" loc="47:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:6" name="ATM128_ADCSR" ref="0x40709224" loc="47:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:55" name="ATM128_TIMSK" ref="0x4071bd10" loc="182:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -8629,10 +8629,10 @@
     <constant cst="I:7" name="RXC0" ref="0x407397bc" loc="1030:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:8" name="ATM128_ACSR" ref="0x40709874" loc="54:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:8" name="ATM128_ACSR" ref="0x4070984c" loc="54:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:4" name="ATM128_ADCW" ref="0x4070aa44" loc="39:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:4" name="ATM128_ADCW" ref="0x4070aa08" loc="39:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:125" name="ATM128_ETIMSK" ref="0x40717868" loc="264:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -8872,7 +8872,7 @@
     <constant cst="I:120" name="ATM128_OCR1CL" ref="0x40717010" loc="254:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:0" name="ATM128_PINF" ref="0x4070a218" loc="27:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:0" name="ATM128_PINF" ref="0x4070a1dc" loc="27:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:23" name="ATM128_DDRB" ref="0x4070783c" loc="99:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -8947,7 +8947,7 @@
     <constant cst="I:3" name="ACME" ref="0x4073fbe0" loc="962:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:4" name="ATM128_ADCL" ref="0x4070ae2c" loc="43:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:4" name="ATM128_ADCL" ref="0x4070adf0" loc="43:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:7" name="FOC1A" ref="0x40741a70" loc="937:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -9184,7 +9184,7 @@
     <constant cst="I:8" name="DEFAULT_CHANNEL_SIZE" ref="0x4052f184" loc="48:/home/user/tinyos-main/tos/lib/tossim/sim_log.c">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:2" name="ATM128_DDRE" ref="0x4070a628" loc="33:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:2" name="ATM128_DDRE" ref="0x4070a5ec" loc="33:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:1" name="PING1" ref="0x4074ec10" loc="1298:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -9601,10 +9601,10 @@
     <constant cst="I:2" name="ACIC" ref="0x4074ba1c" loc="1076:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:6" name="AM_MY_MSG" ref="0x406ec4c0" loc="23:project.h">
+    <constant cst="I:6" name="AM_MY_MSG" ref="0x406ec468" loc="21:project.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:11" name="ATM128_UCSR0A" ref="0x40709ec8" loc="63:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:11" name="ATM128_UCSR0A" ref="0x40709ea0" loc="63:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:157" name="ATM128_UCSR1C" ref="0x40714ec0" loc="322:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -9835,7 +9835,7 @@
     <constant cst="I:1" name="TOS_SERIAL_CC1000_ID" ref="0x406c4824" loc="96:/home/user/tinyos-main/tos/lib/serial/Serial.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:4" name="ATM128_ADC" ref="0x4070ac34" loc="41:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:4" name="ATM128_ADC" ref="0x4070abf8" loc="41:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:2" name="_IScntrl" ref="0x4049f620" loc="59:/usr/include/ctype.h">
@@ -9916,7 +9916,7 @@
     <constant cst="I:7" name="ADEN" ref="0x4074a010" loc="1081:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:7" name="ATM128_ADMUX" ref="0x4070966c" loc="51:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:7" name="ATM128_ADMUX" ref="0x40709644" loc="51:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:4096" name="_ISxdigit" ref="0x40495088" loc="54:/usr/include/ctype.h">
@@ -9985,7 +9985,7 @@
     <constant cst="I:0" name="TOV0" ref="0x40737db0" loc="796:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:9" name="ATM128_UBRR0L" ref="0x40709a90" loc="57:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:9" name="ATM128_UBRR0L" ref="0x40709a68" loc="57:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:2" name="INTF2" ref="0x4071edd0" loc="774:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -10339,7 +10339,7 @@
     <constant cst="I:1" name="OCR0UB" ref="0x40731c14" loc="866:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:5" name="ATM128_ADCH" ref="0x40709038" loc="44:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:5" name="ATM128_ADCH" ref="0x40709010" loc="44:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:2" name="TOV3" ref="0x40735010" loc="810:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -10429,7 +10429,7 @@
     <constant cst="I:8" name="_ISalnum" ref="0x4049e508" loc="61:/usr/include/ctype.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:6" name="ATM128_ADCSRA" ref="0x40709458" loc="48:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:6" name="ATM128_ADCSRA" ref="0x40709430" loc="48:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:4" name="RXEN1" ref="0x4074da84" loc="1054:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -10522,7 +10522,7 @@
     <constant cst="I:3" name="TXEN0" ref="0x4074ca94" loc="1065:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:10" name="ATM128_UCSR0B" ref="0x40709cac" loc="60:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:10" name="ATM128_UCSR0B" ref="0x40709c84" loc="60:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:153" name="ATM128_UBRR1L" ref="0x40714664" loc="310:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -10552,7 +10552,7 @@
     <constant cst="I:0" name="XDIV0" ref="0x40722a60" loc="724:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:1" name="ATM128_PINE" ref="0x4070a420" loc="30:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
+    <constant cst="I:1" name="ATM128_PINE" ref="0x4070a3e4" loc="30:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
     <constant cst="I:26" name="ATM128_DDRA" ref="0x40707e60" loc="108:/home/user/tinyos-main/tos/chips/atm128/sim/atm128_sim.h">
@@ -10653,7 +10653,7 @@
       <component-ref qname="TossimPacketModelC"/>
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
-    <constant cst="I:3" name="sendRandmsg" ref="0x40a7f860" loc="51:projectC.nc">
+    <constant cst="I:3" name="sendRandmsg" ref="0x40a7f860" loc="49:projectC.nc">
       <component-ref qname="projectC"/>
       <type-int cname="int" size="I:4" alignment="I:4"></type-int>
     </constant>
@@ -10783,9 +10783,9 @@
         <typename><typedef-ref name="Atm128_OCR1BL_t" ref="0x40b19608"/></typename>
       </type-int>
     </typedef>
-    <typedef name="my_msg_t" ref="0x406ec1e4" loc="16:project.h">
+    <typedef name="my_msg_t" ref="0x406ec18c" loc="14:project.h">
       <type-tag size="I:9" alignment="I:1"><nx_struct-ref name="my_msg" ref="0x40034438"/>
-        <typename><typedef-ref name="my_msg_t" ref="0x406ec1e4"/></typename>
+        <typename><typedef-ref name="my_msg_t" ref="0x406ec18c"/></typename>
       </type-tag>
     </typedef>
     <typedef name="__intptr_t" ref="0x40345430" loc="189:/usr/include/i386-linux-gnu/bits/types.h">
@@ -10876,9 +10876,9 @@
         <typename><typedef-ref name="TMicro" ref="0x4099e944"/></typename>
       </type-tag>
     </typedef>
-    <typedef name="tab_r" ref="0x406ecd28" loc="33:project.h">
-      <type-tag size="I:6" alignment="I:1"><nx_struct-ref name="tab" ref="0x406ec674"/>
-        <typename><typedef-ref name="tab_r" ref="0x406ecd28"/></typename>
+    <typedef name="tab_r" ref="0x406eccd0" loc="31:project.h">
+      <type-tag size="I:6" alignment="I:1"><nx_struct-ref name="tab" ref="0x406ec61c"/>
+        <typename><typedef-ref name="tab_r" ref="0x406eccd0"/></typename>
       </type-tag>
     </typedef>
     <typedef name="__fsfilcnt_t" ref="0x4034663c" loc="177:/usr/include/i386-linux-gnu/bits/types.h">
@@ -12043,9 +12043,9 @@
         <typename><typedef-ref name="int16_t" ref="0x40214864"/></typename>
       </type-int>
     </typedef>
-    <typedef name="tab_d" ref="0x4070daa8" loc="47:project.h">
-      <type-tag size="I:7" alignment="I:1"><nx_struct-ref name="tab2" ref="0x406eced8"/>
-        <typename><typedef-ref name="tab_d" ref="0x4070daa8"/></typename>
+    <typedef name="tab_d" ref="0x4070da24" loc="43:project.h">
+      <type-tag size="I:7" alignment="I:1"><nx_struct-ref name="tab2" ref="0x406ece80"/>
+        <typename><typedef-ref name="tab_d" ref="0x4070da24"/></typename>
       </type-tag>
     </typedef>
     <typedef name="ulong" ref="0x4034e384" loc="151:/usr/include/i386-linux-gnu/sys/types.h">
@@ -12218,7 +12218,7 @@
         <typename><typedef-ref name="receive_message_t" scoped="" ref="0x40925eec"/></typename>
       </type-tag>
     </typedef>
-    <typedef name="__nesc_sillytask_sendRandmsg" ref="0x40a7fb50" loc="51:projectC.nc">
+    <typedef name="__nesc_sillytask_sendRandmsg" ref="0x40a7fb50" loc="49:projectC.nc">
       <component-ref qname="projectC"/>
       <type-array elements="I:3" size="I:12" alignment="I:4">
         <type-int cname="int" size="I:4" alignment="I:4"></type-int>

@@ -8,8 +8,7 @@ module projectC {
 	interface Boot;
 	interface Random;
     	interface AMPacket;	//to turning on the Radio and can modify the pkt I want to transmit
-	interface Packet;			
-	//interface PacketAcknowledgements;
+	interface Packet;
     	interface AMSend;			//interface to transmit the message
     	interface SplitControl;			//used basically to turning on the radio
     	interface Receive;
@@ -30,7 +29,6 @@ module projectC {
 	interface Timer<TMilli> as Timer_rrep_6;
 	interface Timer<TMilli> as Timer_rrep_7;
 	interface Timer<TMilli> as Timer_rrep_8;
-	//interface Read<uint16_t>;		//used to read Data from a sensor
   }
 
 } implementation {
@@ -53,11 +51,7 @@ module projectC {
 //*********************** Task Send Random Messages *********************************************************************//
 
 
-  task void sendRandmsg() {  // task che manda i messaggi casuali
-	
-	//uint8_t num = (call Random.rand16() % 8) + 1; //lo lascio solo per poter settare il destination address del broadcast
-
-	//SOLO campi che sono presenti in qualsiasi tipo di messaggio
+  task void sendRandmsg() {  // task che manda i messaggi
 
 	mess=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 	mess->msg_id = counter;
@@ -104,7 +98,7 @@ module projectC {
 
 		mess->msg_type = ROUTE_REQ;
 		
-		if (mess->dst_add == 1){
+		if (mess->dst_add == 1){ //timer che servono per la route reply che deve arrivare prima di un secondo (punto di inizio del timer)
 			call Timer_rrep_1.startOneShot (1000);								
 		}else if (mess->dst_add == 2){
 			call Timer_rrep_2.startOneShot (1000);								
@@ -257,8 +251,8 @@ module projectC {
 
 	if(mess->msg_type == ROUTE_REQ){
 
-	// PRIMO CONTROLLO: HO GIÀ RICEVUTO QUESTA ROUTE_REQ? (eliminazione duplicati)
-	// SE msg_id e src_add e msg_id corrispondono a qualcosa che ho già in memoria, allora scarto la seconda
+	// Eliminazione duplicati
+	// Se msg_id e src_add e msg_id corrispondono a qualcosa che ho già in memoria, allora scarto la seconda
 
 		for (n=0; n<len_disc; n++){ 	
 			
@@ -357,7 +351,7 @@ module projectC {
 				tab_routing[mess->src_add].status = 1;
 				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hhu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 				
-				if (tab_routing[mess->src_add].dst_add == 1){
+				if (tab_routing[mess->src_add].dst_add == 1){ //timer per la tabella di routing che dopo 90 secondi si elimina (nell'interfaccia del timer.fire)
 					call Timer_rout_1.startOneShot (90000);									
 				}else if (tab_routing[mess->src_add].dst_add == 2){
 					call Timer_rout_2.startOneShot (90000);									
@@ -435,10 +429,11 @@ module projectC {
 	} // chiude if (msq_type = ROUTE_REPLY)
 
 	return buf;
+
   } //interfaccia receive
 
-  //***************** Timer Routing Stop ********************//
-  event void Timer_rout_1.fired() {		
+  //***************** Timer Routing Stop ********************// 
+  event void Timer_rout_1.fired() {					//questa interfaccia serve quando il timer della tab_routing scade, metto lo status a zero così invalido la tabella
 	tab_routing[1].status = 0;
 	dbg("radio_pack","E' scaduta la tabella di routing 1\n");				
   }
@@ -472,7 +467,8 @@ module projectC {
   }
 
   //***************** Timer RREP Stop ********************//
-  event void Timer_rrep_1.fired() {
+  event void Timer_rrep_1.fired() {	//questa interfaccia serve quando il timer della RREP scade, metto lo status a zero così invalido tutte le tab_discovery con quella src e dst
+			
 	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 1 \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 1 && tab_discovery[n].src_add == TOS_NODE_ID){

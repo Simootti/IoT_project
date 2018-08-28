@@ -14,6 +14,14 @@ module projectC {
     	interface SplitControl;			//used basically to turning on the radio
     	interface Receive;
     	interface Timer<TMilli> as MilliTimer;
+        interface Timer<TMilli> as Timer_rout_1;
+	interface Timer<TMilli> as Timer_rout_2;
+	interface Timer<TMilli> as Timer_rout_3;
+	interface Timer<TMilli> as Timer_rout_4;
+        interface Timer<TMilli> as Timer_rout_5;
+	interface Timer<TMilli> as Timer_rout_6;
+	interface Timer<TMilli> as Timer_rout_7;
+	interface Timer<TMilli> as Timer_rout_8;
 	//interface Read<uint16_t>;		//used to read Data from a sensor
   }
 
@@ -316,6 +324,24 @@ module projectC {
 				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
 				tab_routing[mess->src_add].status = 1;
 				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hhu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+				
+				if (tab_routing[mess->src_add].dst_add == 1){
+					call Timer_rout_1.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 2){
+					call Timer_rout_2.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 3){
+					call Timer_rout_3.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 4){
+					call Timer_rout_4.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 5){
+					call Timer_rout_5.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 6){
+					call Timer_rout_6.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 7){
+					call Timer_rout_7.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 8){
+					call Timer_rout_8.startOneShot (90000);									
+				}
 			}
 			
 			//stampo cosa ho aggiornato nella mia tabella
@@ -353,6 +379,23 @@ module projectC {
 				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
 				tab_routing[mess->src_add].status = 1;
 				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hhu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+				if (tab_routing[mess->src_add].dst_add == 1){
+					call Timer_rout_1.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 2){
+					call Timer_rout_2.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 3){
+					call Timer_rout_3.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 4){
+					call Timer_rout_4.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 5){
+					call Timer_rout_5.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 6){
+					call Timer_rout_6.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 7){
+					call Timer_rout_7.startOneShot (90000);									
+				}else if (tab_routing[mess->src_add].dst_add == 8){
+					call Timer_rout_8.startOneShot (90000);									
+				}
 			}
 
 			mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
@@ -374,5 +417,39 @@ module projectC {
 
 	return buf;
   } //interfaccia receive
+
+  //***************** Timer Routing Stop ********************//
+  event void Timer_rout_1.fired() {		
+	tab_routing[1].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 1\n");				
+  }
+  event void Timer_rout_2.fired() {		
+	tab_routing[2].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 2\n");				
+  }
+  event void Timer_rout_3.fired() {		
+	tab_routing[3].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 3\n");				
+  }
+  event void Timer_rout_4.fired() {		
+	tab_routing[4].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 4\n");				
+  }
+  event void Timer_rout_5.fired() {		
+	tab_routing[5].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 5\n");				
+  }
+  event void Timer_rout_6.fired() {		
+	tab_routing[6].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 6\n");				
+  }
+  event void Timer_rout_7.fired() {		
+	tab_routing[7].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 7\n");				
+  }
+  event void Timer_rout_8.fired() {		
+	tab_routing[8].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 8\n");				
+  }
 
 }  //parentesi graffa di chiusura implementation

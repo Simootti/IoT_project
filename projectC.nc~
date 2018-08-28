@@ -22,6 +22,14 @@ module projectC {
 	interface Timer<TMilli> as Timer_rout_6;
 	interface Timer<TMilli> as Timer_rout_7;
 	interface Timer<TMilli> as Timer_rout_8;
+	interface Timer<TMilli> as Timer_rrep_1;
+	interface Timer<TMilli> as Timer_rrep_2;
+	interface Timer<TMilli> as Timer_rrep_3;
+	interface Timer<TMilli> as Timer_rrep_4;
+        interface Timer<TMilli> as Timer_rrep_5;
+	interface Timer<TMilli> as Timer_rrep_6;
+	interface Timer<TMilli> as Timer_rrep_7;
+	interface Timer<TMilli> as Timer_rrep_8;
 	//interface Read<uint16_t>;		//used to read Data from a sensor
   }
 
@@ -96,13 +104,31 @@ module projectC {
 
 		mess->msg_type = ROUTE_REQ;
 		
+		if (mess->dst_add == 1){
+			call Timer_rrep_1.startOneShot (1000);								
+		}else if (mess->dst_add == 2){
+			call Timer_rrep_2.startOneShot (1000);								
+		}else if (mess->dst_add == 3){
+			call Timer_rrep_3.startOneShot (1000);								
+		}else if (mess->dst_add == 4){
+			call Timer_rrep_4.startOneShot (1000);								
+		}else if (mess->dst_add == 5){
+			call Timer_rrep_5.startOneShot (1000);								
+		}else if (mess->dst_add == 6){
+			call Timer_rrep_6.startOneShot (1000);								
+		}else if (mess->dst_add == 7){
+			call Timer_rrep_7.startOneShot (1000);								
+		}else if (mess->dst_add == 8){
+			call Timer_rrep_8.startOneShot (1000);								
+		}
+		
 		tab_discovery[len_disc].msg_id = mess->msg_id;	
 		//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
 		tab_discovery[len_disc].src_add = mess->src_add;
 		tab_discovery[len_disc].path = 100;
 		tab_discovery[len_disc].dst_add = mess->dst_add;
 		tab_discovery[len_disc].prec_node = mess->crt_add;
-		//tab_discovery[len_disc].next_hop = TOS_NODE_ID;
+		tab_discovery[len_disc].status = 1;
 
 		dbg("radio_pack","Ho aggiornato la Tab_Discovery del nodo %hhu in posizione %hhu coi seguenti paramentri:\n\t Message ID: %hhu \n\t Source Address: %hhu \n\t Lunghezza del Path: %hhu \n\t Destination Address: %hhu \n\t Prec Node: %hhu \n\n", TOS_NODE_ID, len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add,tab_discovery[len_disc].path, tab_discovery[len_disc].dst_add, tab_discovery[len_disc].prec_node);
 
@@ -282,7 +308,7 @@ module projectC {
 			tab_discovery[len_disc].path = big_path;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
 			tab_discovery[len_disc].prec_node = mess->crt_add;
-			//tab_discovery[len_disc].next_hop = TOS_NODE_ID;
+			tab_discovery[len_disc].status = 1;
 
 			len_disc += 1;
 			
@@ -317,6 +343,12 @@ module projectC {
 				dbg("radio_pack","Non ho trovato la corrispondente tab discovery della Route_Req \n");
 				return buf;
 			}
+
+			if (tab_discovery[n].status != 1){
+				dbg("radio_pack","La RREP di questa tab_discovery è scaduta! \n");
+				return buf;
+			}
+
 			if (tab_discovery[n].path > mess->path){
 				tab_discovery[n].path = mess->path;
 				//salvare valori nella tabella di routing
@@ -349,20 +381,7 @@ module projectC {
 			dbg("radio_rec","ROUTE_REPLY received at time %s \n", sim_time_string());
 			dbg_clear("radio_pack","\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, mess->src_add);
 			dbg_clear("radio_pack","\t Table --> Destination address: %hhu \n", tab_routing[mess->src_add].dst_add);
-			dbg_clear("radio_pack","\t Table --> Next-Hop: %hhu \n", tab_routing[mess->src_add].next_hop);		
-
-			//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
-			mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-			mess_out->msg_id = mess->msg_id;
-			mess_out->msg_type = DATA;
-			mess_out->value = call Random.rand16();
-			mess_out->dst_add = mess->src_add;
-			mess_out->src_add = mess->dst_add;
-			mess_out->crt_add = TOS_NODE_ID;
-
-			// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
-			if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
-			}
+			dbg_clear("radio_pack","\t Table --> Next-Hop: %hhu \n", tab_routing[mess->src_add].next_hop);
 
 		}else{ //graffa che chiude il "se non sono io la sorgente"
 			
@@ -420,28 +439,213 @@ module projectC {
 
   //***************** Timer Routing Stop ********************//
   event void Timer_rout_1.fired() {		
-	tab_routing[1].status = 0;				
+	tab_routing[1].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 1\n");				
   }
   event void Timer_rout_2.fired() {		
-	tab_routing[2].status = 0;				
+	tab_routing[2].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 2\n");				
   }
   event void Timer_rout_3.fired() {		
-	tab_routing[3].status = 0;				
+	tab_routing[3].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 3\n");				
   }
   event void Timer_rout_4.fired() {		
-	tab_routing[4].status = 0;				
+	tab_routing[4].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 4\n");				
   }
   event void Timer_rout_5.fired() {		
-	tab_routing[5].status = 0;				
+	tab_routing[5].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 5\n");				
   }
   event void Timer_rout_6.fired() {		
-	tab_routing[6].status = 0;				
+	tab_routing[6].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 6\n");				
   }
   event void Timer_rout_7.fired() {		
-	tab_routing[7].status = 0;				
+	tab_routing[7].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 7\n");				
   }
   event void Timer_rout_8.fired() {		
-	tab_routing[8].status = 0;				
+	tab_routing[8].status = 0;
+	dbg("radio_pack","E' scaduta la tabella di routing 8\n");				
+  }
+
+  //***************** Timer RREP Stop ********************//
+  event void Timer_rrep_1.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 1 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 1 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 1;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
+  }
+
+  event void Timer_rrep_2.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 2 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 2 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 2;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
+  }
+
+  event void Timer_rrep_3.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 3 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 3 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 3;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
+  }
+
+  event void Timer_rrep_4.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 4 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 4 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 4;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
+  }
+
+  event void Timer_rrep_5.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 5 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 5 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 5;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
+  }
+
+  event void Timer_rrep_6.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 6 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 6 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 6;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
+  }
+
+  event void Timer_rrep_7.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 7 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 7 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 7;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
+  }
+
+  event void Timer_rrep_8.fired() {
+	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 8 \n", TOS_NODE_ID);
+	for (n=0;n<len_disc; n++){	
+		if(tab_discovery[n].dst_add == 8 && tab_discovery[n].src_add == TOS_NODE_ID){
+			tab_discovery[n].status = 0;
+		}		
+	}
+
+	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
+	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_type = DATA;
+	mess_out->value = call Random.rand16();
+	mess_out->dst_add = 8;
+	mess_out->src_add = TOS_NODE_ID;
+	mess_out->crt_add = TOS_NODE_ID;
+
+	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
+	}					
   }
 
 }  //parentesi graffa di chiusura implementation

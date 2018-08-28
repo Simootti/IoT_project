@@ -29,7 +29,7 @@ typedef nx_struct tab {
 	
 	nx_uint16_t dst_add;	//destinazione del pacchetto
 	nx_uint16_t next_hop;	//next_hop associato alla destinazione (segue il percorso, non importa che sia)
-	//nx_uint16_t status;
+	nx_uint16_t status;
 } tab_r;
 
 //**********************************************************************//
@@ -40,6 +40,7 @@ typedef nx_struct tab2 {
 	nx_uint16_t dst_add;	//destinazione del pacchetto
 	//nx_uint16_t next_hop;	//next_hop associato alla destinazione (segue il percorso, non importa che sia
 				//direttamente la destinazione)
+	nx_uint8_t status;	//se 1 è valida se 0 è scaduta o non ancora scritta
 	nx_uint8_t path;	//numero di nodi attraversati, serve per trovare il path migliore
 	nx_uint8_t msg_id;	//per verificare di non aver già ricevuto la ROUTE_REQ
 	nx_uint8_t prec_node;	//per salvare il nodo precedente

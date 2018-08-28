@@ -20,10 +20,14 @@ implementation {
   components new TimerMilliC() as Timer_rout_7C;
   components new TimerMilliC() as Timer_rout_8C;
 
-  
-
-  
-  
+  components new TimerMilliC() as Timer_rrep_1C;
+  components new TimerMilliC() as Timer_rrep_2C;
+  components new TimerMilliC() as Timer_rrep_3C;
+  components new TimerMilliC() as Timer_rrep_4C;
+  components new TimerMilliC() as Timer_rrep_5C;
+  components new TimerMilliC() as Timer_rrep_6C;
+  components new TimerMilliC() as Timer_rrep_7C;
+  components new TimerMilliC() as Timer_rrep_8C;
 
   //Boot interface
   App.Boot -> MainC.Boot;		//la Boot interface viene fatta sempre
@@ -43,6 +47,7 @@ implementation {
 
   //Timer interface
   App.MilliTimer -> TimerMilliC;
+
   App.Timer_rout_1 -> Timer_rout_1C;
   App.Timer_rout_2 -> Timer_rout_2C;
   App.Timer_rout_3 -> Timer_rout_3C;
@@ -51,6 +56,15 @@ implementation {
   App.Timer_rout_6 -> Timer_rout_6C;
   App.Timer_rout_7 -> Timer_rout_7C;
   App.Timer_rout_8 -> Timer_rout_8C;
+
+  App.Timer_rrep_1 -> Timer_rrep_1C;
+  App.Timer_rrep_2 -> Timer_rrep_2C;
+  App.Timer_rrep_3 -> Timer_rrep_3C;
+  App.Timer_rrep_4 -> Timer_rrep_4C;
+  App.Timer_rrep_5 -> Timer_rrep_5C;
+  App.Timer_rrep_6 -> Timer_rrep_6C;
+  App.Timer_rrep_7 -> Timer_rrep_7C;
+  App.Timer_rrep_8 -> Timer_rrep_8C;
 
   //Random interface and its initialization
   App.Random -> RandomC;	

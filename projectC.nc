@@ -33,7 +33,7 @@ module projectC {
 
 } implementation {
 
-//global variables declaration
+  //global variables declaration
 
   uint32_t counter = 0;	//in order to change the message ID
   my_msg_t* mess;
@@ -56,10 +56,12 @@ module projectC {
 	mess->msg_id = counter;
 	counter = counter + 1;
 	mess->dst_add = (call Random.rand16() % 8) + 1;
+
 	if (mess->dst_add == TOS_NODE_ID){
 		dbg("radio_pack","I sent a packet to myself, so AODV it's not necessary\n\n");
 		return;
 	}
+
 	mess->src_add = TOS_NODE_ID;
 	mess->crt_add = TOS_NODE_ID;
 
@@ -93,7 +95,8 @@ module projectC {
 		//set the message type (Route_Request) to send in Broadcast
 		mess->msg_type = ROUTE_REQ;
 
-		if (mess->dst_add == 1){ 	 //timers needed for the route reply, that must arrives before 1 second (1000 ms) ---> timer's starting point
+		//timers needed for the route reply, that must arrives before 1 second (1000 ms) ---> timer's starting point
+		if (mess->dst_add == 1){ 	 
 			call Timer_rrep_1.startOneShot (1000);								
 		}else if (mess->dst_add == 2){
 			call Timer_rrep_2.startOneShot (1000);								
@@ -129,19 +132,23 @@ module projectC {
 		
 	}
 
-
   } //closing "SEND RANDOM MSG" Task	
 
   //***************** Boot interface ********************//
+
   event void Boot.booted() {
+
 	dbg("boot","Application booted.\n");
+
 	for(n=0;n<9;n++){
 		tab_routing[n].status = 0;
 	}
-	call SplitControl.start();	
+
+	call SplitControl.start();
   }
 
   //***************** SplitControl interface ********************//
+
   event void SplitControl.startDone(error_t err){
 
     if(err == SUCCESS) {
@@ -162,6 +169,7 @@ module projectC {
   event void SplitControl.stopDone(error_t err){}
 
   //***************** MilliTimer interface ********************//
+
   event void MilliTimer.fired() {
 		
 	post sendRandmsg();	
@@ -250,7 +258,6 @@ module projectC {
 				dbg("radio_pack", "Discarding a duplicate of the REQ with ID: %hhu originated by %hhu and sent towards %hhu \n\n", mess->msg_id ,mess->src_add, mess->crt_add);
 
 				return buf;	//Discarding the duplicates, doing a "return buf" inside the "for cycle", so I stop the "receive interface"
-
 			}
 
 		} 
@@ -321,20 +328,16 @@ module projectC {
 
 			//in the case we don't find a correspondence inside the discovery table
 			if (n == len_disc){
-
 				dbg("radio_pack","Didn't find the corresponding Route_Req inside the tab_discovery \n\n");
 
 				return buf;
-
 			}
 
 			//check: if the timer of Route_Reply has expired
 			if (tab_discovery[n].status != 1){
-
 				dbg("radio_pack","The ROUTE_REPLY has expired! \n\n");
 
 				return buf;
-
 			}
 
 			//need to see the best route 
@@ -349,7 +352,7 @@ module projectC {
 				dbg("radio_pack","Updating the path length: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 
 				//timer for the routing table that after 90 seconds is deleted (in the interface of --> timer.fire) 
-				//---> starting point for each destination node
+				//starting point of the timers for each destination node
 				if (tab_routing[mess->src_add].dst_add == 1){ 
 					call Timer_rout_1.startOneShot (90000);									
 				}else if (tab_routing[mess->src_add].dst_add == 2){
@@ -374,7 +377,7 @@ module projectC {
 			dbg("radio_rec","ROUTE_REPLY received at time %s \n", sim_time_string());
 			dbg_clear("radio_pack","\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, mess->src_add);
 			dbg_clear("radio_pack","\t Table --> Destination address: %hhu \n", tab_routing[mess->src_add].dst_add);
-			dbg_clear("radio_pack","\t Table --> Next-Hop: %hhu \n", tab_routing[mess->src_add].next_hop);
+			dbg_clear("radio_pack","\t Table --> Next-Hop: %hhu \n\n", tab_routing[mess->src_add].next_hop);
 
 		}else{ //if I'm not the Original Source
 			
@@ -385,11 +388,9 @@ module projectC {
 
 			//in the case we don't find a correspondence inside the discovery table
 			if (n == len_disc){
-
 				dbg("radio_pack","Didn't find the corresponding Route_Req inside the tab_discovery");
 
 				return buf;
-
 			}
 
 			//need to see the best route 
@@ -404,7 +405,7 @@ module projectC {
 				dbg("radio_pack","Updating the path length: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 
 				//timer for the routing table that after 90 seconds it's eliminated (in the interface of --> timer.fire) 
-				//---> starting point for each destination node
+				//starting point of the timers for each destination node
 				if (tab_routing[mess->src_add].dst_add == 1){
 					call Timer_rout_1.startOneShot (90000);									
 				}else if (tab_routing[mess->src_add].dst_add == 2){

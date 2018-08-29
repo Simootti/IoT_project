@@ -19,7 +19,7 @@ typedef nx_struct my_msg {	//defines the payload of the msg
 #define ROUTE_REPLY 3
 
 enum{
-AM_MY_MSG = 6,			//this is the active message ID
+	AM_MY_MSG = 6,			//this is the active message ID
 };
 
 //**********************************************************************//

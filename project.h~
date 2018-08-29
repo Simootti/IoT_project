@@ -14,7 +14,7 @@ typedef nx_struct my_msg {	//defines the payload of the msg
 
 } my_msg_t;
 
-#define DATA 1			//this 3 define are used to differentiate a msg_type in the payload of message
+#define DATA 1			//this 3 "define" are used to differentiate a msg_type in the payload of message
 #define ROUTE_REQ 2
 #define ROUTE_REPLY 3
 

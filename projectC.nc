@@ -64,7 +64,7 @@ module projectC {
 	mess->crt_add = TOS_NODE_ID;
 
 	dbg_clear("radio_send", "\n");
-	dbg("radio_pack", "I am the Node --> %hhu sending a message with the following parameters: \n\t\t Source Address:%hhu \n\t\t Destination Address: %hhu \n\t\t Message ID:%hhu \n\n ", TOS_NODE_ID, mess->src_add, mess->dst_add, mess->msg_id);
+	dbg("radio_pack", "I am the Node --> %hhu sending a message with the following parameters: \n\t\t Source Address:%hhu \n\t\t Destination Address: %hhu \n\t\t Message ID:%hhu \n\n", TOS_NODE_ID, mess->src_add, mess->dst_add, mess->msg_id);
 
 	//First case: found a match inside the Routing Table
 	if (tab_routing[mess->dst_add].dst_add == mess->dst_add && tab_routing[mess->dst_add].status == 1){
@@ -120,7 +120,7 @@ module projectC {
 		tab_discovery[len_disc].prec_node = mess->crt_add;
 		tab_discovery[len_disc].status = 1;	//to make valid the table valid
 
-		dbg("radio_pack","Tab_Discovery of the Node %hhu UPDATED in position %hhu with the following parameters:\n\t Message ID: %hhu \n\t Source Address: %hhu \n\t Path length: %hhu \n\t Destination Address: %hhu \n\t Prec Node: %hhu \n\n", TOS_NODE_ID, len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add,tab_discovery[len_disc].path, tab_discovery[len_disc].dst_add, tab_discovery[len_disc].prec_node);
+		dbg("radio_pack","Tab_Discovery of the Node %hhu UPDATED in position %hhu with the following parameters:\n\t Message ID: %hhu \n\t Source Address: %hhu \n\t Destination Address: %hhu \n\t Prec Node: %hhu \n\n", TOS_NODE_ID, len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add, tab_discovery[len_disc].dst_add, tab_discovery[len_disc].prec_node);
 
 		len_disc += 1;
 
@@ -151,7 +151,7 @@ module projectC {
 
 	if ( TOS_NODE_ID ) {
 		dbg("role","I'm node %d: start sending periodical request\n" , TOS_NODE_ID );
-		call MilliTimer.startPeriodic( 30000 );
+		call MilliTimer.startPeriodic( 30000 );		//send packets every 30 seconds
 	}
 
     }else{
@@ -175,11 +175,11 @@ module projectC {
 
     if(&packet == buf && err == SUCCESS ) {
 	
-	dbg("radio_send", "Packet sent...\n\n");
+	//dbg("radio_send", "Packet sent...\n\n"); uncomment to print a verification of the actual packet expedition
 					
     }else{
 
-	dbg_clear("radio_pack", "but ack was not received\n\n"); 		
+	dbg_clear("radio_pack", "Error: packet not sent\n\n"); 		
     }
 
   }
@@ -213,8 +213,7 @@ module projectC {
 					dbg("radio_pack","Packet sent to destination");
 					dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n\n", tab_routing[mess->dst_add].next_hop);		
 				}else{
-					dbg("radio_pack","Packet sent to next hop");
-					dbg_clear("radio_pack", "\t Next-Hop address: %hhu\n\n", tab_routing[mess->dst_add].next_hop);
+					dbg("radio_pack","Packet sent to next hop --> %hhu\n\n", tab_routing[mess->dst_add].next_hop);
 				}
 				
 				//create a new packet that must be sent to the destination because of the arrival of the route reply
@@ -300,7 +299,7 @@ module projectC {
 			mess_out->src_add = mess->src_add;
 			mess_out->crt_add = TOS_NODE_ID;
 
-			dbg("radio_pack","I am the Node %hhu, sending a ROUTE_REQ in BROADCAST because I am NOT the DST \n", TOS_NODE_ID );
+			dbg("radio_pack","I am the Node %hhu, sending a ROUTE_REQ in BROADCAST because I am NOT the Destination \n", TOS_NODE_ID );
 			dbg("radio_pack","Sending a ROUTE_REQ to find a path from Source %hhu to Destination %hhu with ID %hhu \n \n", mess_out->src_add, mess_out->dst_add, mess_out->msg_id );
 
 	  		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
@@ -349,7 +348,7 @@ module projectC {
 				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive, so the next one in the tab_routing
 				tab_routing[mess->src_add].status = 1;	//to make valid the table valid
 
-				dbg("radio_pack","Updating the path inside the tab_discovery: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+				dbg("radio_pack","Updating the path length: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 
 				//timer for the routing table that after 90 seconds it's eliminated (in the interface of --> timer.fire) ---> starting point for each destination node
 				if (tab_routing[mess->src_add].dst_add == 1){ 
@@ -403,7 +402,7 @@ module projectC {
 				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive, so the next one in the tab_routing
 				tab_routing[mess->src_add].status = 1;	//to make valid the table valid
 
-				dbg("radio_pack","Updating the path inside the tab_discovery: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+				dbg("radio_pack","Updating the path length: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 
 				//timer for the routing table that after 90 seconds it's eliminated (in the interface of --> timer.fire) ---> starting point for each destination node
 				if (tab_routing[mess->src_add].dst_add == 1){
@@ -452,42 +451,42 @@ module projectC {
   //we need this inteface when the Timer of the tab_routing expires, putting the "status" equal to 0 in order to invalidate the Table
   event void Timer_rout_1.fired() {					
 	tab_routing[1].status = 0;
-	dbg("radio_pack","Routing Table 1 has expired\n");				
+	dbg("radio_pack","Routing Table 1 has expired\n\n");				
   }
 
   event void Timer_rout_2.fired() {		
 	tab_routing[2].status = 0;
-	dbg("radio_pack","Routing Table 2 has expired\n");				
+	dbg("radio_pack","Routing Table 2 has expired\n\n");				
   }
 
   event void Timer_rout_3.fired() {		
 	tab_routing[3].status = 0;
-	dbg("radio_pack","Routing Table 3 has expired\n");				
+	dbg("radio_pack","Routing Table 3 has expired\n\n");				
   }
 
   event void Timer_rout_4.fired() {		
 	tab_routing[4].status = 0;
-	dbg("radio_pack","Routing Table 4 has expired\n");				
+	dbg("radio_pack","Routing Table 4 has expired\n\n");				
   }
 
   event void Timer_rout_5.fired() {		
 	tab_routing[5].status = 0;
-	dbg("radio_pack","Routing Table 5 has expired\n");				
+	dbg("radio_pack","Routing Table 5 has expired\n\n");				
   }
 
   event void Timer_rout_6.fired() {		
 	tab_routing[6].status = 0;
-	dbg("radio_pack","Routing Table 6 has expired\n");				
+	dbg("radio_pack","Routing Table 6 has expired\n\n");				
   }
 
   event void Timer_rout_7.fired() {		
 	tab_routing[7].status = 0;
-	dbg("radio_pack","Routing Table 7 has expired\n");				
+	dbg("radio_pack","Routing Table 7 has expired\n\n");				
   }
 
   event void Timer_rout_8.fired() {		
 	tab_routing[8].status = 0;
-	dbg("radio_pack","Routing Table 8 has expired\n");				
+	dbg("radio_pack","Routing Table 8 has expired\n\n");				
   }
 
   //***************** Timer RREP Stop ********************//
@@ -495,7 +494,7 @@ module projectC {
   //we need this interface when the timer of the Route_Reply expires, putting the status equal to 0, so invalidates every tab_discovery with same source and destination
   event void Timer_rrep_1.fired() {	
 			
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 1 has expired\n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 1 has expired\n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 1 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
@@ -517,7 +516,7 @@ module projectC {
   }
 
   event void Timer_rrep_2.fired() {
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 2 has expired \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 2 has expired \n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 2 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
@@ -539,7 +538,7 @@ module projectC {
   }
 
   event void Timer_rrep_3.fired() {
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 3 has expired \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 3 has expired \n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 3 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
@@ -561,7 +560,7 @@ module projectC {
   }
 
   event void Timer_rrep_4.fired() {
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 4 has expired \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 4 has expired \n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 4 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
@@ -583,7 +582,7 @@ module projectC {
   }
 
   event void Timer_rrep_5.fired() {
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 5 has expired \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 5 has expired \n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 5 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
@@ -605,7 +604,7 @@ module projectC {
   }
 
   event void Timer_rrep_6.fired() {
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 6 has expired \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 6 has expired \n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 6 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
@@ -627,7 +626,7 @@ module projectC {
   }
 
   event void Timer_rrep_7.fired() {
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 7 has expired \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 7 has expired \n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 7 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
@@ -649,7 +648,7 @@ module projectC {
   }
 
   event void Timer_rrep_8.fired() {
-	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 8 has expired \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 8 has expired \n\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 8 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;

@@ -6,12 +6,12 @@ configuration ProjectAppC {}
 implementation {
 
   components MainC, RandomC, projectC as App;
-  components new AMSenderC(AM_MY_MSG);		//Sender e Receiver attivi sul canale AM_MY_MSG
-  components new AMReceiverC(AM_MY_MSG);	//AM_MY_MSG is the channel!!!
+  components new AMSenderC(AM_MY_MSG);	
+  components new AMReceiverC(AM_MY_MSG);	
   components ActiveMessageC;
   components new TimerMilliC();
 
-  components new TimerMilliC() as Timer_rout_1C; //Timer for each valor of the valid tab_routing (i.e. every position except 0)
+  components new TimerMilliC() as Timer_rout_1C; //Timer for each value of the valid tab_routing (i.e. every position except 0)
   components new TimerMilliC() as Timer_rout_2C;
   components new TimerMilliC() as Timer_rout_3C;
   components new TimerMilliC() as Timer_rout_4C;
@@ -20,7 +20,7 @@ implementation {
   components new TimerMilliC() as Timer_rout_7C;
   components new TimerMilliC() as Timer_rout_8C;
 
-  components new TimerMilliC() as Timer_rrep_1C; //Timer(for each source) to invalid everything has been sent from this node till the specific destination if RREP doesn't arrive in time
+  components new TimerMilliC() as Timer_rrep_1C; //Timer (for each source) to invalid everything has been sent from this node till the specific destination if RREP doesn't arrive in time
   components new TimerMilliC() as Timer_rrep_2C;
   components new TimerMilliC() as Timer_rrep_3C;
   components new TimerMilliC() as Timer_rrep_4C;
@@ -31,7 +31,6 @@ implementation {
 
   //Boot interface
   App.Boot -> MainC.Boot;		//la Boot interface must be done always
-
 
   //Send and Receive interfaces
   App.Receive -> AMReceiverC;
@@ -70,4 +69,3 @@ implementation {
   RandomC <- MainC.SoftwareInit;
 
 }
-

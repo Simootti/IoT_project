@@ -33,72 +33,73 @@ module projectC {
 
 } implementation {
 
-//dichiarazioni variabili globali
+//global variables declaration
 
   uint32_t counter = 0;
   my_msg_t* mess;
   my_msg_t* mess_out;
   message_t packet;
-  uint8_t len_disc=0; //per tenere il conto dell'occupazione della tab discovery
+  uint8_t len_disc=0; //in order to count the occupancy of the tab discovery
   uint8_t temp;
   uint8_t n;
   uint8_t big_path;
   tab_d tab_discovery[100];
-  tab_r tab_routing[9]; // deve essere 9 perchè altrimenti va da 0 a 7, noi vogliamo da 0 a 8 (e non usiamo la posizione 0)
+  tab_r tab_routing[9]; // it must be 9 because we need (for our idea) the positions from 1 to 8 (we won't use position 0)
 
   task void sendRandmsg();
 
 //*********************** Task Send Random Messages *********************************************************************//
 
 
-  task void sendRandmsg() {  // task che manda i messaggi
+  task void sendRandmsg() {  // task which send messages
 
 	mess=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 	mess->msg_id = counter;
 	counter = counter + 1;
 	mess->dst_add = (call Random.rand16() % 8) + 1;
 	if (mess->dst_add == TOS_NODE_ID){
-		dbg("radio_pack","Invio il pacchetto a me stesso quindi non serve AODV\n\n");
+		dbg("radio_pack","I sent a packet to myself, so AODV it's not necessary\n\n");
 		return;
 	}
 	mess->src_add = TOS_NODE_ID;
 	mess->crt_add = TOS_NODE_ID;
 
 	dbg_clear("radio_send", "\n");
-	dbg("radio_pack", "Sono il nodo --> %hhu e invio un messaggio con i seguenti parametri: \n\t\t Source Address:%hhu \n\t\t Destination Address: %hhu \n\t\t Message ID:%hhu \n\n ", TOS_NODE_ID, mess->src_add, mess->dst_add, mess->msg_id);
+	dbg("radio_pack", "I am the Node --> %hhu sending a message with the following parameters: \n\t\t Source Address:%hhu \n\t\t Destination Address: %hhu \n\t\t Message ID:%hhu \n\n ", TOS_NODE_ID, mess->src_add, mess->dst_add, mess->msg_id);
 
 
-	//primo caso: trovo una corrispondenza nella Routing Table
+	//First case: found a match inside the Routing Table
 	if (tab_routing[mess->dst_add].dst_add == mess->dst_add && tab_routing[mess->dst_add].status == 1){
 			dbg("radio_pack","Found a match in the Routing Table \n");
 
-		// allora mando al Next-Hop
-		// verifico se è effettivamente la destinazione e lo scrivo (serve solo per controllare) 
-		// stampo comunque tutto per vedere come è stato creato il pacchetto
-		// inoltre, aggiungo i dati (msg_value, msg_type = 1 (DATA))
+		// then I send to Next-Hop
+		// verify if it's the true destination, then write it (just checking)
+		// print everythingh to see the packet
+		// add the data (msg_value, msg_type = 1 (DATA))
 
 		if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
-			dbg("radio_pack","Packet sent to destination\n");	
+			dbg("radio_pack","Packet sent to destination\n");
+			dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n\n", tab_routing[mess->dst_add].next_hop);	
 		}else{
 			dbg("radio_pack","Packet sent to next hop");
-			dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n", tab_routing[mess->dst_add].next_hop);
+			dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n\n", tab_routing[mess->dst_add].next_hop);
 		}
 		
 		mess->msg_type = DATA;	
 		mess->value = call Random.rand16();
 
-		// mando effettivamente il pacchetto al (tab_routing[mess->des.add].next_hop)
+		// I actually send the message to (tab_routing[mess->des.add].next_hop)
 		if(call AMSend.send(tab_routing[mess->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 		}
 
 	}else{			
-	// secondo caso: non trovo corrispondenza nella tabella ---> dovrò mandare il messaggio in broadcast
+	// Second case: Match in the Routing Table not found---> message sent in Broadcast
 
-		dbg("radio_pack","Match not found, sending a ROUTE_REQ in Broadcast in order to update the Routing Table, e per inviare il pacchetto alla destinazione %hhu \n\n", mess->dst_add);
+		dbg("radio_pack","Match not found, sending a ROUTE_REQ in Broadcast in order to update the Routing Table, and to send the packet towards the destination %hhu \n\n", mess->dst_add);
 
 		mess->msg_type = ROUTE_REQ;
-		
-		if (mess->dst_add == 1){ //timer che servono per la route reply che deve arrivare prima di un secondo (punto di inizio del timer)
+
+		if (mess->dst_add == 1){ 	// Timers nedded for the Route_Reply, that must arrives before 1 second (Timer's starting point)
 			call Timer_rrep_1.startOneShot (1000);								
 		}else if (mess->dst_add == 2){
 			call Timer_rrep_2.startOneShot (1000);								
@@ -117,27 +118,27 @@ module projectC {
 		}
 		
 		tab_discovery[len_disc].msg_id = mess->msg_id;	
-		//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
+		//saving the msg_id of this ROUTE_REQ for a following comparison and to remove the duplicates	
 		tab_discovery[len_disc].src_add = mess->src_add;
 		tab_discovery[len_disc].path = 100;
 		tab_discovery[len_disc].dst_add = mess->dst_add;
 		tab_discovery[len_disc].prec_node = mess->crt_add;
 		tab_discovery[len_disc].status = 1;
 
-		dbg("radio_pack","Ho aggiornato la Tab_Discovery del nodo %hhu in posizione %hhu coi seguenti paramentri:\n\t Message ID: %hhu \n\t Source Address: %hhu \n\t Lunghezza del Path: %hhu \n\t Destination Address: %hhu \n\t Prec Node: %hhu \n\n", TOS_NODE_ID, len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add,tab_discovery[len_disc].path, tab_discovery[len_disc].dst_add, tab_discovery[len_disc].prec_node);
+		dbg("radio_pack","Tab_Discovery of the Node %hhu UPDATED in position %hhu with the following parameters:\n\t Message ID: %hhu \n\t Source Address: %hhu \n\t Path length: %hhu \n\t Destination Address: %hhu \n\t Prec Node: %hhu \n\n", TOS_NODE_ID, len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add,tab_discovery[len_disc].path, tab_discovery[len_disc].dst_add, tab_discovery[len_disc].prec_node);
 
 		len_disc += 1;
 
-		//prova: mando in broadcast scrivendo tutto
-		//fare una task potrebbe darmi errori, almeno qua in teoria so che manda i dati giusti che sono stati definiti in questa interfaccia
+		//prova: Sending in Broadcast the Route_Req
+		//I'm sending data which has been defined in this Interface
 
   		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){	
 		}
 		
-	}	//graffa che chiude l'else del Match non trovato
+	}	//closing the "else" of the Match NOT found
 
 
-  } //graffa che chiude la Task di SEND RANDOM MSG 	
+  } //closing "SEND RANDOM MSG" Task  	
 
 
   //***************** Boot interface ********************//
@@ -192,20 +193,19 @@ module projectC {
   event message_t* Receive.receive(message_t* buf,void* payload, uint8_t len) {
 	
 	temp=0;
-	big_path=100; //contatore che serve più avanti (per trovare il più piccolo path di routing che serve per eliminare gli altri)
+	big_path=100; //counter needed to find the shortest routing path
 	mess=(my_msg_t*)payload;
 
 // 1) IF msg_type is DATA
 	if(mess->msg_type == DATA){
 		
-		//CONTROLLO: sono io il nodo di destinazione?
-		//se lo sono, allora stampo tutto perchè avrò tutti i dati
+		//CHECK: Am I the Destination Node?
 		if(mess->dst_add == TOS_NODE_ID){
-			dbg("radio_pack","Il pacchetto DATA inviato da %hhu a %hhu è arrivato a destinazione\n", mess->src_add , mess->dst_add);
-			dbg("radio_pack","DATA packet reached the ORIGINAL DESTINATION correctly!\n");
+			dbg("radio_pack","DATA packet send originally from %hhu to %hhu reached its Destination\n", mess->src_add , mess->dst_add);
+			dbg("radio_pack","DATA packet reached the ORIGINAL DESTINATION correctly!\n\n");
 		}else{
-			//se NON sono io la destinazione allora dovrò fare forward
-			dbg("radio_pack","Sono il nodo %hhu e ho ricevuto un pkt da %hhu verso %hhu \n", TOS_NODE_ID , mess->src_add, mess->dst_add);
+			//If I'm NOT the destination, then I must forward
+			dbg("radio_pack","I am the Node %hhu, received a pkt from Source %hhu directed to Destination %hhu \n", TOS_NODE_ID , mess->src_add, mess->dst_add);
 
 			//controllo la tabella di routing
 
@@ -218,10 +218,11 @@ module projectC {
 
 			
 				if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
-					dbg("radio_pack","Packet sent to destination\n");	
+					dbg("radio_pack","Packet sent to destination");
+					dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n\n", tab_routing[mess->dst_add].next_hop);		
 				}else{
 					dbg("radio_pack","Packet sent to next hop");
-					dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n", tab_routing[mess->dst_add].next_hop);
+					dbg_clear("radio_pack", "\t Next-Hop address: %hhu\n\n", tab_routing[mess->dst_add].next_hop);
 				}
 				
 				mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
@@ -235,48 +236,44 @@ module projectC {
 				if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){
 				}
 
-			}else{ //graffa che chiude [[if (tab_routing[mess->dst_add].dst_add == mess->dst_add)]]
+			}else{ //closing [[if (tab_routing[mess->dst_add].dst_add == mess->dst_add)]]
 
-				// Se siamo qui è perché c'è un errore nelle tabelle di routing
-				dbg("radio_pack","La tabella di routing è scaduta, quindi è impossibile inoltrare il pacchetto! \n\n");
+				// If we're here, there is an error ---> Routing Table has expired
+				dbg("radio_pack","Routing Table has expired, so it's impossible to forward the packet! \n\n");
 
 			}
 
-		}	//graffa che chiude l'else (TOS_NODE_ID)
+		}	//closing "else (TOS_NODE_ID)"
 
-	} // graffa che chiude if(msg_type == 1) ---> DATA type 
+	} // closing [if(msg_type == 1) ---> DATA type] 
 //********************************************************************************************************************************************//
 
-// 2) caso due : IF msg_type == ROUTE_REQ
+// 2) Second Case : IF msg_type == ROUTE_REQ
 
 	if(mess->msg_type == ROUTE_REQ){
 
-	// Eliminazione duplicati
-	// Se msg_id e src_add e msg_id corrispondono a qualcosa che ho già in memoria, allora scarto la seconda
+	// Elimination of Duplicates
+	// If msg_id and src_add and dst_add are equal to somethingh already in memory, duplicate Route_Req are discarded
 
 		for (n=0; n<len_disc; n++){ 	
 			
 			if(tab_discovery[n].src_add == mess->src_add && tab_discovery[n].msg_id == mess->msg_id && tab_discovery[n].dst_add == mess->dst_add){
-				dbg("radio_pack", "Elimino un duplicato della richiesta con id: %hhu originata da %hhu e mandata da %hhu \n\n", mess->msg_id ,mess->src_add, mess->crt_add);
+				dbg("radio_pack", "Discarding a duplicate of the REQ with ID: %hhu originated by %hhu and sent towards %hhu \n\n", mess->msg_id ,mess->src_add, mess->crt_add);
 
 				return buf;
 			}
 
-		} //elimina il pacchetto duplicato, se duplicato faccio return buf dentro al for così interrompo l'interfaccia receive
+		} //Discarding the duplicate, doing a "return buf" inside the "for cycle" so I stop the "receive interface"
 		
-		// a) controllo se sono io il nodo destinazione
+		// a) Checking if I am the Destination Node
 		if(mess->dst_add == TOS_NODE_ID){
 
 			dbg("radio_pack","I am Node %hhu, the Destination of the Route_Req sent originally by Node %hhu of the message with ID: %hhu \n",TOS_NODE_ID, mess->src_add , mess->msg_id );
-			// dovrebbe stamparmi sia l'id della route_req sia la VERA sorgente
+			// it should print the id of the route_req and the REAL source
 			dbg("radio_pack","I send a ROUTE_REPLY to %hhu with source %hhu \n\n",mess->src_add, mess->dst_add );
 			/*
-			deve stamparmi il nodo che mi ha "consegnato" la ROUTE_REQ (crt_add indica ancora l'ultimo hop che ha fatto forward)
-			se src e dst sono collegati, allora in questo caso src_add == crt_add )
-	
-			nella richiesta non mi è richiesto di aggiornare la tabella della destinazione, quindi mi limito a mandare una ROUTE_REPLY
-			che riattraverserà tutti i nodi
-			-->la gestione del riattraversare tutti gli hop è affidata al ricevimento di una ROUTE_REPLY (definiamo più avanti) 
+			sending a ROUTE_REPLY which crosses all the nodes backwards
+			-->the management of coming back to the source depends by the arrival of a ROUTE_REPLY (defined later in the program) 
 			*/
 
 			temp = mess->crt_add;			
@@ -287,17 +284,17 @@ module projectC {
 			mess_out->dst_add = mess->src_add;
 			mess_out->src_add = mess->dst_add;
 			mess_out->crt_add = TOS_NODE_ID;
-			mess_out->path = 1;		//inizia il calcolo del path da qua, e troverà un percorso grazie alle tab_discovery
+			mess_out->path = 1;		//here we start to calculate the path, and will find a way thanks to the tab_discovery
 
 			if(call AMSend.send(temp,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
 
-		}else{ // graffa che chiude [[if(mess->dst_add == TOS_NODE_ID)]] --> se esco da questo if, vuol dire che non sono io la DST
+		}else{ // closing [[if(mess->dst_add == TOS_NODE_ID)]] --> if I exit from this "if", it means I'm NOT the DST
 		
-			//se sono qui, vuol dire che non sono la destinazione
+			//If I'm here, I am NOT the Destination
 
 			tab_discovery[len_disc].msg_id = mess->msg_id;	
-			//mi salvo il msg_id di questa ROUTE_REQ per fare un confronto successivo ed eliminare i doppioni	
+			//saving the msg_id of this ROUTE_REQ to compare later and discard the duplicates	
 			tab_discovery[len_disc].src_add = mess->src_add;
 			tab_discovery[len_disc].path = big_path;
 			tab_discovery[len_disc].dst_add = mess->dst_add;
@@ -313,45 +310,46 @@ module projectC {
 			mess_out->src_add = mess->src_add;
 			mess_out->crt_add = TOS_NODE_ID;
 
-			dbg("radio_pack","Sono il nodo %hhu, Invio una ROUTE_REQ in BROADCAST perchè NON sono io la dst \n", TOS_NODE_ID );
-			dbg("radio_pack","Invio una ROUTE_REQ per trovare un percorso da sorgente %hhu a destinazione %hhu con ID %hhu \n \n", mess_out->src_add, mess_out->dst_add, mess_out->msg_id );
+			dbg("radio_pack","I am the Node %hhu, sending a ROUTE_REQ in BROADCAST because I am NOT the DST \n", TOS_NODE_ID );
+			dbg("radio_pack","Sending a ROUTE_REQ to find a path from Source %hhu to Destination %hhu with ID %hhu \n \n", mess_out->src_add, mess_out->dst_add, mess_out->msg_id );
 
 	  		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){
 			}
 
-		} //graffa che chiude l'else
+		} //closing the "else"
  
-	}	//graffa che chiude if(mess->msg_type == ROUTE_REQ)
+	}	//closing --> if(mess->msg_type == ROUTE_REQ)
 
 //********************************************************************************************************************************************************//
 
-// 2) caso due : If msg_type == ROUTE_REPLY
+// 3) Third Case : If msg_type == ROUTE_REPLY
 
 	if(mess->msg_type == ROUTE_REPLY){
 
-		if(mess->dst_add == TOS_NODE_ID){	//se sono io la sorgente
+		if(mess->dst_add == TOS_NODE_ID){	//IF I'm the Source
 			
 			for (n=0; (tab_discovery[n].dst_add != mess->src_add || tab_discovery[n].msg_id != mess->msg_id || tab_discovery[n].src_add != mess->dst_add) && n<len_disc; n++){
 			}
 			if (n == len_disc){
-				dbg("radio_pack","Non ho trovato la corrispondente tab discovery della Route_Req \n");
+				dbg("radio_pack","Didn't find the corrispondent tab_discovery of the Route_Req \n");
 				return buf;
 			}
 
 			if (tab_discovery[n].status != 1){
-				dbg("radio_pack","La RREP di questa tab_discovery è scaduta! \n");
+				dbg("radio_pack","The ROUTE_REPLY of this tab_discovery has expired! \n");
 				return buf;
 			}
 
 			if (tab_discovery[n].path > mess->path){
 				tab_discovery[n].path = mess->path;
-				//salvare valori nella tabella di routing
+				//saving data inside the routing table
 				tab_routing[mess->src_add].dst_add = mess->src_add;
-				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
+				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive, so the next one in the tab_routing
 				tab_routing[mess->src_add].status = 1;
-				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hhu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
-				
-				if (tab_routing[mess->src_add].dst_add == 1){ //timer per la tabella di routing che dopo 90 secondi si elimina (nell'interfaccia del timer.fire)
+				dbg("radio_pack","Updating the path inside the tab_discovery: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+
+				//timer for the routing table that after 90 seconds it's eliminated (in the interface of --> timer.fire)
+				if (tab_routing[mess->src_add].dst_add == 1){ 
 					call Timer_rout_1.startOneShot (90000);									
 				}else if (tab_routing[mess->src_add].dst_add == 2){
 					call Timer_rout_2.startOneShot (90000);									
@@ -370,28 +368,28 @@ module projectC {
 				}
 			}
 			
-			//stampo cosa ho aggiornato nella mia tabella
-			dbg("radio_rec","Sono la destinazione della ROUTE_REPLY\n");
+			//print what has been updated
+			dbg("radio_rec","I am the Destination of the ROUTE_REPLY\n");
 			dbg("radio_rec","ROUTE_REPLY received at time %s \n", sim_time_string());
 			dbg_clear("radio_pack","\t Routing Table of the node %hhu in position %hhu \n", TOS_NODE_ID, mess->src_add);
 			dbg_clear("radio_pack","\t Table --> Destination address: %hhu \n", tab_routing[mess->src_add].dst_add);
 			dbg_clear("radio_pack","\t Table --> Next-Hop: %hhu \n", tab_routing[mess->src_add].next_hop);
 
-		}else{ //graffa che chiude il "se non sono io la sorgente"
+		}else{ //closing the "if I'm the Original Source"
 			
 			for (n=0; (tab_discovery[n].dst_add != mess->src_add || tab_discovery[n].msg_id != mess->msg_id || tab_discovery[n].src_add != mess->dst_add) && n<len_disc; n++){
 			}
 			if (n == len_disc){
-				dbg("radio_pack","Non ho trovato la corrispondente tab discovery della route req");
+				dbg("radio_pack","Didn't find the corrispondent tab_discovery of the Route_Req");
 				return buf;
 			}
 			if (tab_discovery[n].path > mess->path){
 				tab_discovery[n].path = mess->path;
-				//salvare valori nella tabella di routing
+				//saving data inside the routing table
 				tab_routing[mess->src_add].dst_add = mess->src_add;
-				tab_routing[mess->src_add].next_hop = mess->crt_add; //nodo corrente della richiesta che ricevo quindi di fatto quello sucessivo nella tab routing
+				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive, so the next one in the tab_routing
 				tab_routing[mess->src_add].status = 1;
-				dbg("radio_pack","Aggiorno path nella tabella di discovery: %hhu dal nodo %hhu al nodo %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
+				dbg("radio_pack","Updating the path inside the tab_discovery: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 				if (tab_routing[mess->src_add].dst_add == 1){
 					call Timer_rout_1.startOneShot (90000);									
 				}else if (tab_routing[mess->src_add].dst_add == 2){
@@ -419,229 +417,235 @@ module projectC {
 			mess_out->crt_add = TOS_NODE_ID;
 			mess_out->path = mess->path + 1;
 
-			dbg("radio_pack","INOLTRO UNA ROUTE_REPLY da sorgente %hhu a destinazione %hhu \n \n", mess_out->src_add, mess_out->dst_add );
+			dbg("radio_pack","FORWARDING a ROUTE_REPLY from Source %hhu to Destination %hhu \n \n", mess_out->src_add, mess_out->dst_add );
 
 			if(call AMSend.send(tab_discovery[n].prec_node,&packet,sizeof(my_msg_t))){
 			}
 
-		} //graffa che chiude else che diceva che non sono io la sorgente
+		} //closing the "else" that said "I'm not the Source"
 
-	} // chiude if (msq_type = ROUTE_REPLY)
+	} // closing --> if (msq_type = ROUTE_REPLY)
 
 	return buf;
 
-  } //interfaccia receive
+  } // closing the Receive Interface
 
   //***************** Timer Routing Stop ********************// 
-  event void Timer_rout_1.fired() {					//questa interfaccia serve quando il timer della tab_routing scade, metto lo status a zero così invalido la tabella
+
+//we need this inteface when the Timer of the tab_routing expires, putting the "status" equal to 0 in order to invalidate the Table
+
+  event void Timer_rout_1.fired() {					
 	tab_routing[1].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 1\n");				
+	dbg("radio_pack","Routing Table 1 has expired\n");				
   }
   event void Timer_rout_2.fired() {		
 	tab_routing[2].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 2\n");				
+	dbg("radio_pack","Routing Table 2 has expired\n");				
   }
   event void Timer_rout_3.fired() {		
 	tab_routing[3].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 3\n");				
+	dbg("radio_pack","Routing Table 3 has expired\n");				
   }
   event void Timer_rout_4.fired() {		
 	tab_routing[4].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 4\n");				
+	dbg("radio_pack","Routing Table 4 has expired\n");				
   }
   event void Timer_rout_5.fired() {		
 	tab_routing[5].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 5\n");				
+	dbg("radio_pack","Routing Table 5 has expired\n");				
   }
   event void Timer_rout_6.fired() {		
 	tab_routing[6].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 6\n");				
+	dbg("radio_pack","Routing Table 6 has expired\n");				
   }
   event void Timer_rout_7.fired() {		
 	tab_routing[7].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 7\n");				
+	dbg("radio_pack","Routing Table 7 has expired\n");				
   }
   event void Timer_rout_8.fired() {		
 	tab_routing[8].status = 0;
-	dbg("radio_pack","E' scaduta la tabella di routing 8\n");				
+	dbg("radio_pack","Routing Table 8 has expired\n");				
   }
 
   //***************** Timer RREP Stop ********************//
-  event void Timer_rrep_1.fired() {	//questa interfaccia serve quando il timer della RREP scade, metto lo status a zero così invalido tutte le tab_discovery con quella src e dst
+
+//we need this interface when the timer of the Route_Reply expires, putting the status equal to 0, so invalidates every tab_discovery with same src e dst
+
+  event void Timer_rrep_1.fired() {	
 			
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 1 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 1 has expired\n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 1 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 1;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
   event void Timer_rrep_2.fired() {
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 2 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 2 has expired \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 2 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 2;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
   event void Timer_rrep_3.fired() {
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 3 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 3 has expired \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 3 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 3;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
   event void Timer_rrep_4.fired() {
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 4 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 4 has expired \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 4 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 4;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
   event void Timer_rrep_5.fired() {
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 5 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 5 has expired \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 5 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 5;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
   event void Timer_rrep_6.fired() {
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 6 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 6 has expired \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 6 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 6;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
   event void Timer_rrep_7.fired() {
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 7 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 7 has expired \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 7 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 7;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
   event void Timer_rrep_8.fired() {
-	dbg("radio_pack","E' scaduta la RREP da sorgente %hhu e destinazione 8 \n", TOS_NODE_ID);
+	dbg("radio_pack","ROUTE_REPLY from Source %hhu and Destination 8 has expired \n", TOS_NODE_ID);
 	for (n=0;n<len_disc; n++){	
 		if(tab_discovery[n].dst_add == 8 && tab_discovery[n].src_add == TOS_NODE_ID){
 			tab_discovery[n].status = 0;
 		}		
 	}
 
-	//setto il pacchetto come DATA da inviare --> reimposto coi dati che ho ora della RoutingTable
+	//setting the packet as DATA to send --> using the data that I have now in the RoutingTable
 	mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
-	mess_out->msg_id = 0; //per non lasciarlo "vuoto"
+	mess_out->msg_id = 0; //in order to don't let this "empty"
 	mess_out->msg_type = DATA;
 	mess_out->value = call Random.rand16();
 	mess_out->dst_add = 8;
 	mess_out->src_add = TOS_NODE_ID;
 	mess_out->crt_add = TOS_NODE_ID;
 
-	// mando effettivamente il pacchetto al (tab_routing[n].next_hop)
+	// actually sending the packet to (tab_routing[n].next_hop)
 	if(call AMSend.send(tab_routing[mess_out->dst_add].next_hop,&packet,sizeof(my_msg_t)) == SUCCESS){	
 	}					
   }
 
-}  //parentesi graffa di chiusura implementation
+}  //closing the Implementation

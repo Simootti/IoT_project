@@ -56,7 +56,7 @@ module projectC {
 	mess->msg_id = counter;
 	counter = counter + 1;
 	mess->dst_add = (call Random.rand16() % 8) + 1;
-	if (mess->dst_add == TOS_NODE_ID){  //in case i send the packet to myself
+	if (mess->dst_add == TOS_NODE_ID){
 		dbg("radio_pack","I sent a packet to myself, so AODV it's not necessary\n\n");
 		return;
 	}
@@ -70,13 +70,12 @@ module projectC {
 	if (tab_routing[mess->dst_add].dst_add == mess->dst_add && tab_routing[mess->dst_add].status == 1){
 			dbg("radio_pack","Found a match in the Routing Table \n");
 
-		//verify if the true destination or only the next-hop
+		//verify if it's the true destination or only the next-hop
 		if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
-			dbg("radio_pack","Packet sent to destination\n");
-			dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n\n", tab_routing[mess->dst_add].next_hop);	
+			dbg("radio_pack","Packet sent to destination--> %hhu\n\n", tab_routing[mess->dst_add].next_hop);
+
 		}else{
-			dbg("radio_pack","Packet sent to next hop");
-			dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n\n", tab_routing[mess->dst_add].next_hop);
+			dbg("radio_pack","Packet sent to next hop--> %hhu\n\n", tab_routing[mess->dst_add].next_hop);
 		}
 
 		//add message type and value (msg_value, msg_type=1 (DATA)) 
@@ -91,10 +90,10 @@ module projectC {
 		//Second case: Match in the Routing Table not found---> message sent in Broadcast
 		dbg("radio_pack","Match not found, sending a ROUTE_REQ in Broadcast in order to update the Routing Table, and to send the packet towards the destination %hhu \n\n", mess->dst_add);
 		
-		//set the message type (route request) to send in broadcast
+		//set the message type (Route_Request) to send in Broadcast
 		mess->msg_type = ROUTE_REQ;
 
-		if (mess->dst_add == 1){ 			//timers needed for the route reply, that must arrives before 1 second (1000 ms) ---> timer's starting point
+		if (mess->dst_add == 1){ 	 //timers needed for the route reply, that must arrives before 1 second (1000 ms) ---> timer's starting point
 			call Timer_rrep_1.startOneShot (1000);								
 		}else if (mess->dst_add == 2){
 			call Timer_rrep_2.startOneShot (1000);								
@@ -115,16 +114,16 @@ module projectC {
 		//saving the message specifications of this ROUTE_REQ in the discovery table for a following comparison and to remove the duplicates
 		tab_discovery[len_disc].msg_id = mess->msg_id;		
 		tab_discovery[len_disc].src_add = mess->src_add;
-		tab_discovery[len_disc].path = 100;	//not to leave it empty, i put it with an impossibile number of path
+		tab_discovery[len_disc].path = 100;	//in order to don't leave it "empty", I assign an impossible value to ".path"
 		tab_discovery[len_disc].dst_add = mess->dst_add;
 		tab_discovery[len_disc].prec_node = mess->crt_add;
-		tab_discovery[len_disc].status = 1;	//to make valid the table valid
+		tab_discovery[len_disc].status = 1;	//in order to validate the table
 
 		dbg("radio_pack","Tab_Discovery of the Node %hhu UPDATED in position %hhu with the following parameters:\n\t Message ID: %hhu \n\t Source Address: %hhu \n\t Destination Address: %hhu \n\t Prec Node: %hhu \n\n", TOS_NODE_ID, len_disc, tab_discovery[len_disc].msg_id, tab_discovery[len_disc].src_add, tab_discovery[len_disc].dst_add, tab_discovery[len_disc].prec_node);
 
 		len_disc += 1;
 
-		//Sending in Broadcast the route request
+		//Sending in Broadcast the Route_Request
   		if(call AMSend.send(AM_BROADCAST_ADDR,&packet,sizeof(my_msg_t)) == SUCCESS){	
 		}
 		
@@ -208,15 +207,14 @@ module projectC {
 
 				dbg("radio_pack","Found a match in the Routing Table \n");
 
-				//verify if the true destination or only the next-hop
+				//verify if it's the true destination or only the next-hop
 				if (tab_routing[mess->dst_add].next_hop == mess->dst_add){
-					dbg("radio_pack","Packet sent to destination");
-					dbg_clear("radio_pack", "\t Next-Hop address: %hhu \n\n", tab_routing[mess->dst_add].next_hop);		
+					dbg("radio_pack","Packet sent to destination--> %hhu\n\n", tab_routing[mess->dst_add].next_hop);
 				}else{
 					dbg("radio_pack","Packet sent to next hop --> %hhu\n\n", tab_routing[mess->dst_add].next_hop);
 				}
 				
-				//create a new packet that must be sent to the destination because of the arrival of the route reply
+				//create a new packet that must be sent to the destination because of the arrival of the Route_Reply
 				mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 				mess_out->msg_id = mess->msg_id;
 				mess_out->msg_type = DATA;
@@ -245,13 +243,13 @@ module projectC {
 	if(mess->msg_type == ROUTE_REQ){
 
 		//Elimination of Duplicates
-		//If msg_id, src_add and dst_add are equal to something already in memory, duplicate Route_Req are discarded
+		//If msg_id, src_add and dst_add are equal to something already in memory, duplicated Route_Req are discarded
 		for (n=0; n<len_disc; n++){ 	
 			
 			if(tab_discovery[n].src_add == mess->src_add && tab_discovery[n].msg_id == mess->msg_id && tab_discovery[n].dst_add == mess->dst_add){
 				dbg("radio_pack", "Discarding a duplicate of the REQ with ID: %hhu originated by %hhu and sent towards %hhu \n\n", mess->msg_id ,mess->src_add, mess->crt_add);
 
-				return buf;	//Discarding the duplicate, doing a "return buf" inside the "for cycle" so I stop the "receive interface"
+				return buf;	//Discarding the duplicates, doing a "return buf" inside the "for cycle", so I stop the "receive interface"
 
 			}
 
@@ -263,11 +261,11 @@ module projectC {
 			dbg("radio_pack","I am Node %hhu, the Destination of the Route_Req sent originally by Node %hhu of the message with ID: %hhu \n",TOS_NODE_ID, mess->src_add , mess->msg_id );
 			dbg("radio_pack","I send a ROUTE_REPLY to %hhu with source %hhu \n\n",mess->src_add, mess->dst_add );
 
-			//sending a ROUTE_REPLY which crosses all the nodes backwards -->the management of coming back to the source depends by the arrival of a ROUTE_REPLY
+			//sending a ROUTE_REPLY which crosses all the nodes backwards --> the management of coming back to the source depends by the arrival of a ROUTE_REPLY
 
-			temp = mess->crt_add;	//using "temp" in order to find a way back for the route reply	
+			temp = mess->crt_add;	//using "temp" in order to find a way back for the Route_Reply	
 			
-			//create a new packet that must be sent to the source a route reply because of the arrival of the route request
+			//create a new packet that must be sent to the source --> a Route_Reply because of the arrival of the Route_Request
 			mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 			mess_out->msg_id = mess->msg_id;
 			mess_out->msg_type = ROUTE_REPLY;
@@ -291,7 +289,7 @@ module projectC {
 
 			len_disc += 1;
 
-			//set the message type (route request) to send in broadcast			
+			//set the message type (Route_Request) to send in broadcast			
 			mess_out=(my_msg_t*)(call Packet.getPayload(&packet,sizeof(my_msg_t)));
 			mess_out->msg_id = mess->msg_id;
 			mess_out->msg_type = ROUTE_REQ;
@@ -314,26 +312,26 @@ module projectC {
 // 3)if the message type is ROUTE REPLY
 	if(mess->msg_type == ROUTE_REPLY){
 
-		if(mess->dst_add == TOS_NODE_ID){	//if i'm the Source
+		if(mess->dst_add == TOS_NODE_ID){	//if I'm the Source
 
-			//when we receive route reply, we need to know which is the route request to which we are answering
+			//when we receive a Route_Reply, we need to know which is the Route_Request to which we are answering
 			//this "for" cycle is necessary to find the right position inside the discovery table which corresponds to the previous route request 			
 			for (n=0; (tab_discovery[n].dst_add != mess->src_add || tab_discovery[n].msg_id != mess->msg_id || tab_discovery[n].src_add != mess->dst_add) && n<len_disc; n++){
 			}
 
-			//in the case we don't find a correspondence discovery table
+			//in the case we don't find a correspondence inside the discovery table
 			if (n == len_disc){
 
-				dbg("radio_pack","Didn't find the corrispondent tab_discovery of the Route_Req \n\n");
+				dbg("radio_pack","Didn't find the corresponding Route_Req inside the tab_discovery \n\n");
 
 				return buf;
 
 			}
 
-			//check: if the timer of route reply has expired
+			//check: if the timer of Route_Reply has expired
 			if (tab_discovery[n].status != 1){
 
-				dbg("radio_pack","The ROUTE_REPLY of this tab_discovery has expired! \n\n");
+				dbg("radio_pack","The ROUTE_REPLY has expired! \n\n");
 
 				return buf;
 
@@ -345,12 +343,13 @@ module projectC {
 				//saving data inside the routing table
 				tab_discovery[n].path = mess->path;
 				tab_routing[mess->src_add].dst_add = mess->src_add;
-				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive, so the next one in the tab_routing
-				tab_routing[mess->src_add].status = 1;	//to make valid the table valid
+				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive
+				tab_routing[mess->src_add].status = 1;	//to validate the table
 
 				dbg("radio_pack","Updating the path length: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 
-				//timer for the routing table that after 90 seconds it's eliminated (in the interface of --> timer.fire) ---> starting point for each destination node
+				//timer for the routing table that after 90 seconds is deleted (in the interface of --> timer.fire) 
+				//---> starting point for each destination node
 				if (tab_routing[mess->src_add].dst_add == 1){ 
 					call Timer_rout_1.startOneShot (90000);									
 				}else if (tab_routing[mess->src_add].dst_add == 2){
@@ -379,15 +378,15 @@ module projectC {
 
 		}else{ //if I'm not the Original Source
 			
-			//when we receive route reply, we need to know which is the route request to which we are answering
+			//when we receive a Route_Reply, we need to know which is the Route_Request to which we are answering
 			//this "for" cycle is necessary to find the right position inside the discovery table which corresponds to the previous route request
 			for (n=0; (tab_discovery[n].dst_add != mess->src_add || tab_discovery[n].msg_id != mess->msg_id || tab_discovery[n].src_add != mess->dst_add) && n<len_disc; n++){
 			}
 
-			//in the case we don't find a correspondence discovery table
+			//in the case we don't find a correspondence inside the discovery table
 			if (n == len_disc){
 
-				dbg("radio_pack","Didn't find the corrispondent tab_discovery of the Route_Req");
+				dbg("radio_pack","Didn't find the corresponding Route_Req inside the tab_discovery");
 
 				return buf;
 
@@ -399,12 +398,13 @@ module projectC {
 				//saving data inside the routing table
 				tab_discovery[n].path = mess->path;
 				tab_routing[mess->src_add].dst_add = mess->src_add;
-				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive, so the next one in the tab_routing
-				tab_routing[mess->src_add].status = 1;	//to make valid the table valid
+				tab_routing[mess->src_add].next_hop = mess->crt_add; //current node of the request that I receive
+				tab_routing[mess->src_add].status = 1;	//to validate the table
 
 				dbg("radio_pack","Updating the path length: %hhu, from node %hhu to node %hhu \n", tab_discovery[n].path,tab_discovery[n].src_add,tab_discovery[n].dst_add);
 
-				//timer for the routing table that after 90 seconds it's eliminated (in the interface of --> timer.fire) ---> starting point for each destination node
+				//timer for the routing table that after 90 seconds it's eliminated (in the interface of --> timer.fire) 
+				//---> starting point for each destination node
 				if (tab_routing[mess->src_add].dst_add == 1){
 					call Timer_rout_1.startOneShot (90000);									
 				}else if (tab_routing[mess->src_add].dst_add == 2){

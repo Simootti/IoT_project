@@ -30,7 +30,7 @@ implementation {
   components new TimerMilliC() as Timer_rrep_8C;
 
   //Boot interface
-  App.Boot -> MainC.Boot;		//la Boot interface must be done always
+  App.Boot -> MainC.Boot;		//the Boot interface must be done always
 
   //Send and Receive interfaces
   App.Receive -> AMReceiverC;

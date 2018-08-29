@@ -32,7 +32,6 @@ implementation {
   //Boot interface
   App.Boot -> MainC.Boot;		//la Boot interface must be done always
 
-
   //Send and Receive interfaces
   App.Receive -> AMReceiverC;
   App.AMSend -> AMSenderC;
@@ -70,4 +69,3 @@ implementation {
   RandomC <- MainC.SoftwareInit;
 
 }
-
